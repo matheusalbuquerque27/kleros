@@ -1,0 +1,45 @@
+@if ($cultos)
+    @if ($origin == 'historico')
+        @foreach ($cultos as $item)
+        <div class="list-item">
+            <div class="item item-1">
+                <p>{{$item->data_culto}}</p>
+            </div>
+            <div class="item item-15">
+                <p>{{$item->preletor}}</p>
+            </div>
+            <div class="item item-1">
+                <p>{{$item->quant_visitantes}}</p>
+            </div>
+            <div class="item item-1">
+                <p>@if ($item->evento)
+                        {{$item->evento->titulo}}
+                    @else Nenhum @endif
+                </p>
+            </div>
+        </div><!--list-item-->
+        @endforeach  
+    @elseif ($origin == 'agenda')
+        @foreach ($cultos as $item)
+            <div class="list-item">
+                <div class="item item-15">
+                    <p>{{$item->data_culto}}</p>
+                </div>
+                <div class="item item-15">
+                    <p>{{$item->preletor}}</p>
+                </div>
+                <div class="item item-15">
+                    <p>@if ($item->evento)
+                            {{$item->evento->titulo}}
+                        @else Nenhum @endif
+                    </p>
+                </div>
+            </div><!--list-item-->
+        @endforeach
+    @endif
+
+@else
+    <div class="card">
+        <p><i class="bi bi-exclamation-triangle"></i> Nenhum culto retornado para esta pesquisa.</p>
+    </div>
+@endif
