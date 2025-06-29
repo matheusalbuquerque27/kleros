@@ -9,7 +9,7 @@
         <div class="info">
             <h3>Dados Gerais</h3>
             <div class="card-container">
-                <div class="info_item">
+                <div class="info_item center">
                     <b>Data de Hoje: </b>
                     <p>{{date('d/m/Y')}}</p>
                     <p>@php
@@ -29,7 +29,7 @@
                     </p>
                 </div>
                 @if ($culto_hoje)
-                <div class="info_item">
+                <div class="info_item center">
                     <b>Preletor: </b>
                     @if($culto_hoje[0]->preletor)
                         <p>{{$culto_hoje[0]->preletor}}</p>
@@ -64,7 +64,7 @@
             <div class="card-container">
                 @if($recados)
                     @foreach ($recados as $item)
-                    <div class="card info_item">
+                    <div class="card info_item center">
                         <form action="{{ route('recados.excluir', $item->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
@@ -137,7 +137,7 @@
             <div class="card-container">
                 @if ($visitantes)
                     @foreach ($visitantes as $visitante)
-                    <div class="card">
+                    <div class="info_item">
                         <div class="card-title"><i class="bi bi-person-raised-hand"></i> {{$visitante->nome}}</div>
                         <div class="card-owner">{{$visitante->sit_visitante->titulo}}</div>
                         <div class="card-description">{{$visitante->observacoes}}</div>
