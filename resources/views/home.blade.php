@@ -28,8 +28,9 @@
                         @endphp
                     </p>
                 </div>
-                @if ($culto_hoje)
                 <div class="info_item center">
+                @if ($culto_hoje)
+                
                     <b>Preletor: </b>
                     @if($culto_hoje[0]->preletor)
                         <p>{{$culto_hoje[0]->preletor}}</p>
@@ -52,11 +53,10 @@
                     @endif
                 </div>
                 @else
-                    <div class="info_item">
-                        <b>Nenhum culto cadastrado. </b>
-                        <p><a href="/cultos/cultos">Registrar culto</a></p>
-                    </div>
+                    <b>Nenhum culto cadastrado. </b>
+                    <p><a href="/cultos/cultos">Registrar culto</a></p>
                 @endif
+                </div><!--info-item center-->
             </div>
         </div>
         <div class="info" id="recados">
