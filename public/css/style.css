@@ -426,3 +426,17 @@ footer {
       display: none;
     }
   }
+
+@media screen and (max-width:500px) {
+    
+    header nav {
+        display: flex;
+        flex-direction:column;
+    }
+
+     header nav .nav-menu {
+        margin-top: -20px;
+        margin-bottom: 20px;
+    }
+
+}
