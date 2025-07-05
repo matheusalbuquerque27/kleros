@@ -112,7 +112,7 @@ h1 {
     font-size: 1.1em;
     padding: 8px;
     min-width: 150px;
-    margin: 0 5px;
+    margin: 5px;
     background-color: #9acbe7;
     border: 0;
     border-radius: 20px;
@@ -141,6 +141,8 @@ h1 {
     padding: 15px;
     min-width: 180px;
     flex: 1;
+    border: 1px solid #1060a5;
+    box-shadow: 1px 1px;
 }
 
 .card-date{
@@ -226,6 +228,7 @@ h1 {
     flex: 0 0 1;
     margin: 0 5px 5px 0;
     background-color:#9acbe7;
+    box-shadow: 1px 1px;
 }
 
 /*Listas
@@ -300,13 +303,12 @@ Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
 .search-panel button {
     padding: 15px;
     font-size: 18px;
-    height: 100%;
     width: 100px;
     color: #0a1929;
     background-color: #9acbe7;
     border-radius: 20px;
     border: 0;
-    
+    margin-top: 5px;
 }
 
 .search-panel button:hover {

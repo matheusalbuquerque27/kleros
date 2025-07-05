@@ -32,19 +32,19 @@ return new class extends Migration
         Schema::create('membros', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->string('rg');
-            $table->string('cpf');
+            $table->string('rg')->nullable();
+            $table->string('cpf')->nullable();
             $table->date('data_nascimento');
             $table->string('telefone');
-            $table->foreignId('estado_civ_id')->constrained('estado_civs'); // Cria a chave estrangeira
-            $table->foreignId('escolaridade_id')->constrained('escolaridades'); // Cria a chave estrangeira
-            $table->string('profissao');
-            $table->string('endereco');
-            $table->string('numero');
-            $table->string('bairro');
+            $table->foreignId('estado_civ_id')->nullable()->constrained('estado_civs'); // Cria a chave estrangeira
+            $table->foreignId('escolaridade_id')->nullable()->constrained('escolaridades'); // Cria a chave estrangeira
+            $table->string('profissao')->nullable();
+            $table->string('endereco')->nullable();
+            $table->string('numero')->nullable();
+            $table->string('bairro')->nullable();
             $table->date('data_batismo')->nullable();
-            $table->string('denominacao_origem');
-            $table->foreignId('ministerio_id')->constrained('ministerios'); // Cria a chave estrangeira
+            $table->string('denominacao_origem')->nullable();
+            $table->foreignId('ministerio_id')->nullable()->constrained('ministerios'); // Cria a chave estrangeira
             $table->date('data_consagracao')->nullable();
             $table->string('nome_paterno')->nullable();
             $table->string('nome_materno')->nullable();

@@ -63,7 +63,9 @@
                     <p>{{$item->endereco}}, {{$item->numero}} - {{$item->bairro}}</p>
                 </div>
                 <div class="item item-1">
-                    <p>{{$item->ministerio->titulo}}</p>
+                    @isset($item->ministerio->titulo)
+                        <p>Título do Ministério: {{ $item->ministerio->titulo }}</p>
+                    @endisset
                 </div>
                 
             </div><!--list-item-->

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nome');
             $table->string('descricao');
-            $table->foreignId('membro_id')->constrained('membros');
+            $table->foreignId('membro_id')->nullable()->constrained('membros');
             $table->timestamps();
         });
 
