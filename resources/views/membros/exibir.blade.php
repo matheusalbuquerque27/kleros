@@ -39,7 +39,7 @@
                     </div>
                     <div class="form-item">
                         <label for="estado_civil">Estado civil: </label>
-                        <div class="card-title">{{$membro->estadoCiv->titulo}}</div>
+                        <div class="card-title">{{$membro->estadoCiv?->titulo}}</div>
                     </div>
                     <div class="form-item">
                         <label for="escolaridade">Escolaridade: </label>

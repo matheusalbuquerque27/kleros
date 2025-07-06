@@ -143,6 +143,8 @@ h1 {
     flex: 1;
     border: 1px solid #1060a5;
     box-shadow: 1px 1px;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
 .card-date{

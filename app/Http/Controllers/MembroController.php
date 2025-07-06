@@ -23,7 +23,16 @@ class MembroController extends Controller
     public function store(Request $request) {
 
         $membro = new Membro;
-        $msg = $request->nome.' se tornou membro da AD Jerusalém.';
+
+        $request->validate([
+            'nome' => 'required',
+            'telefone' => 'required',
+            'data_nascimento' => 'required'
+        ], [
+            'nome.required' => 'Nome do membro não informado',
+            'telefone.required' => 'Número de telefone não informado',
+            'data_nascimento.required' => 'Data de nascimento não informada'
+        ]);        
 
         $membro->nome = $request->nome;
         $membro->rg = $request->rg;
@@ -44,6 +53,7 @@ class MembroController extends Controller
         $membro->created_at = date('Y-m-d H:i:s');
         $membro->updated_at = date('Y-m-d H:i:s');
 
+        $msg = $request->nome.' se tornou membro da AD Jerusalém.';
         $membro->save();
 
         return redirect()->route('membros.adicionar')->with('msg', $msg);

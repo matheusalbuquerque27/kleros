@@ -8,12 +8,28 @@
     <h1>Editar membro</h1>
     <form action="/membros/editar" method="post">
         @csrf
+
+        {{-- Exibe erros gerais, se houver --}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="form-control">
             <div class="form-block">
                 <h3>Informações básicas</h3>
                 <div class="form-item">
                     <label for="Nome">Nome: </label>
-                    <input type="text" name="nome" placeholder="Nome completo">
+                    <input type="text" name="nome" placeholder="Nome completo" required>
+                    {{-- Exibe erro específico para o campo 'nome' --}}
+                    @error('nome')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="form-item">
                     <label for="rg">RG: </label>
@@ -25,11 +41,11 @@
                 </div>
                 <div class="form-item">
                     <label for="data_nascimento">Data de nascimento: </label>
-                    <input type="date" name="data_nascimento">
+                    <input type="date" name="data_nascimento" required>
                 </div>
                 <div class="form-item">
                     <label for="telefone">Telefone: </label>
-                    <input type="text" name="telefone" placeholder="Telefone">
+                    <input type="text" name="telefone" placeholder="Telefone" required>
                 </div>
                 <div class="form-item">
                     <label for="estado_civil">Estado civil: </label>
