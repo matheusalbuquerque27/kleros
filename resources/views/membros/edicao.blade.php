@@ -6,8 +6,9 @@
 
 <div class="container">
     <h1>Editar membro</h1>
-    <form action="/membros/editar" method="post">
+    <form action="{{ route('membros.atualizar', $membro->id)}}" method="post">
         @csrf
+        @method('PUT') {{-- Método PUT para atualização --}}
 
         {{-- Exibe erros gerais, se houver --}}
         @if ($errors->any())
@@ -25,7 +26,7 @@
                 <h3>Informações básicas</h3>
                 <div class="form-item">
                     <label for="Nome">Nome: </label>
-                    <input type="text" name="nome" placeholder="Nome completo" required>
+                    <input type="text" name="nome" placeholder="Nome completo" value="{{ old('nome', $membro->nome) }}" required>
                     {{-- Exibe erro específico para o campo 'nome' --}}
                     @error('nome')
                         <div class="text-danger">{{ $message }}</div>
@@ -33,25 +34,27 @@
                 </div>
                 <div class="form-item">
                     <label for="rg">RG: </label>
-                    <input type="text" name="rg" placeholder="RG">
+                    <input type="text" name="rg" placeholder="RG" value="{{ old('rg', $membro->rg) }}">
                 </div>
                 <div class="form-item">
                     <label for="cpf">CPF: </label>
-                    <input type="text" name="cpf" placeholder="CPF">
+                    <input type="text" name="cpf" placeholder="CPF" value="{{ old('cpf', $membro->cpf) }}" required>
                 </div>
                 <div class="form-item">
                     <label for="data_nascimento">Data de nascimento: </label>
-                    <input type="date" name="data_nascimento" required>
+                    <input type="date" name="data_nascimento" value="{{ old('data_nascimento', $membro->data_nascimento) }}" required>
                 </div>
                 <div class="form-item">
                     <label for="telefone">Telefone: </label>
-                    <input type="text" name="telefone" placeholder="Telefone" required>
+                    <input type="text" name="telefone" placeholder="Telefone" value="{{ old('telefone', $membro->telefone) }}" required>
                 </div>
                 <div class="form-item">
                     <label for="estado_civil">Estado civil: </label>
                     <select name="estado_civil" id="">
                         @foreach ($estado_civil as $item)
-                            <option value="{{$item->id}}">{{$item->titulo}}</option>
+                            <option value="{{$item->id}}" {{ old('estado_civil', $membro->estado_civil) == $item->id ? 'selected' : '' }}>
+                                {{$item->titulo}}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -59,7 +62,9 @@
                     <label for="escolaridade">Escolaridade: </label>
                     <select name="escolaridade" id="">
                         @foreach ($escolaridade as $item)
-                            <option value="{{$item->id}}">{{$item->titulo}}</option>
+                            <option value="{{$item->id}}" {{ old('escolaridade', $membro->escolaridade) == $item->id ? 'selected' : '' }}>
+                                {{$item->titulo}}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -72,15 +77,15 @@
                 <h3>Informações de endereço</h3>
                 <div class="form-item">
                     <label for="endereco">Endereço: </label>
-                    <input type="text" name="endereco" placeholder="Endereço">
+                    <input type="text" name="endereco" placeholder="Endereço" value="{{ old('endereco', $membro->endereco) }}">
                 </div>
                 <div class="form-item">
                     <label for="numero">Número: </label>
-                    <input type="text" name="numero" placeholder="Número">
+                    <input type="text" name="numero" placeholder="Número" value="{{ old('numero', $membro->numero) }}">
                 </div>
                 <div class="form-item">
                     <label for="bairro">Bairro: </label>
-                    <input type="text" name="bairro" placeholder="Bairro">
+                    <input type="text" name="bairro" placeholder="Bairro" value="{{ old('bairro', $membro->bairro) }}">
                 </div>
             </div>
             <div class="form-block">
@@ -97,7 +102,9 @@
                     <label for="ministerio">Ministério: </label>
                     <select name="ministerio" id="">
                         @foreach ($ministerios as $item)
-                            <option value="{{$item->id}}">{{$item->titulo}}</option>
+                            <option value="{{$item->id}}" {{ old('ministerio', $membro->ministerio_id) == $item->id ? 'selected' : '' }}>
+                                {{$item->titulo}}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -114,7 +121,7 @@
                 </div>
             </div>
             <div class="form-options">
-                <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> Adicionar Membro</button>
+                <button class="btn" type="submit"><i class="bi bi-save"></i> Atualizar Membro</button>
                 <a href="/"><button type="button" class="btn"><i class="bi bi-x-circle"></i> Cancelar</button></a>
             </div>
         </div><!--form-control-->

@@ -43,7 +43,7 @@
                     </div>
                     <div class="form-item">
                         <label for="escolaridade">Escolaridade: </label>
-                        <div class="card-title">{{$membro->escolaridade->titulo}}</div>
+                        <div class="card-title">{{$membro->escolaridade?->titulo}}</div>
                     </div>
                     <div class="form-item">
                         <label for="profissao">Profissão: </label>
@@ -88,7 +88,7 @@
                     </div>
                     <div class="form-item">
                         <label for="ministerio">Ministério: </label>
-                        <div class="card-title">{{$membro->ministerio->titulo}}</div>
+                        <div class="card-title">{{$membro->ministerio?->titulo}}</div>
                     </div>
                     <div class="form-item">
                         <label for="ministerio">Data de Consagração: </label>
@@ -111,7 +111,7 @@
                 </div>
             </div>{{-- form-control --}}
             <div class="form-options nao-imprimir">
-                <a href="/membros/editar/{{$membro->id}}"></a><button class="btn" type="submit"><i class="bi bi-pencil-square"></i> Editar</button>
+                <a href="/membros/editar/{{$membro->id}}"><button class="btn" type="button"><i class="bi bi-pencil-square"></i> Editar</button></a>   
                 <button class="btn imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
                 <button type="button" onclick="window.history.back()" class="btn"><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
             </div>{{-- form-options --}}

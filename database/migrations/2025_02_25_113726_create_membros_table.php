@@ -44,7 +44,7 @@ return new class extends Migration
             $table->string('bairro')->nullable();
             $table->date('data_batismo')->nullable();
             $table->string('denominacao_origem')->nullable();
-            $table->foreignId('ministerio_id')->nullable()->constrained('ministerios'); // Cria a chave estrangeira
+            $table->foreignId('ministerio_id')->nullable()->constrained('ministerios')->onDelete('set null'); // Cria a chave estrangeira
             $table->date('data_consagracao')->nullable();
             $table->string('nome_paterno')->nullable();
             $table->string('nome_materno')->nullable();

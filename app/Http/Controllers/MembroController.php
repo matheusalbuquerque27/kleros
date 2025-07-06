@@ -87,8 +87,56 @@ class MembroController extends Controller
         return view('/membros/exibir', ['membro' => $membro]);
     }
 
-    public function editar() {
-        return view('/membros/edicao');
+    public function editar($id) {
+
+        $membro = Membro::findOrFail($id);
+        $estado_civil = EstadoCiv::all();;
+        $escolaridade = Escolaridade::all();
+        $ministerio = Ministerio::all();
+
+        return view('/membros/edicao', ['membro' => $membro, 'estado_civil' => $estado_civil, 'escolaridade' => $escolaridade, 'ministerios' => $ministerio]);
+    }
+
+    public function update(Request $request, $id) {
+
+        $membro = Membro::findOrFail($id);
+
+        $request->validate([
+            'nome' => 'required',
+            'telefone' => 'required',
+            'data_nascimento' => 'required'
+        ], [
+            'nome.required' => 'Nome do membro não informado',
+            'telefone.required' => 'Número de telefone não informado',
+            'data_nascimento.required' => 'Data de nascimento não informada'
+        ]);
+
+        $membro->nome = $request->nome;
+        $membro->rg = $request->rg;
+        $membro->cpf = $request->cpf;
+        $membro->data_nascimento = $request->data_nascimento;
+        $membro->telefone = $request->telefone;
+        $membro->estado_civ_id = $request->estado_civil;
+        $membro->escolaridade_id = $request->escolaridade;
+        $membro->profissao = $request->profissao;
+        $membro->endereco = $request->endereco;
+        $membro->numero = $request->numero;
+        $membro->bairro = $request->bairro;
+        $membro->data_batismo= $request->data_batismo;
+        $membro->denominacao_origem= $request->denominacao_origem;
+        $membro->ministerio_id = $request->ministerio;
+        $membro->nome_paterno = $request->nome_paterno;
+        $membro->nome_materno = $request->nome_materno;
+
+        // Atualiza os timestamps
+        $membro->updated_at = date('Y-m-d H:i:s');
+
+        // Salva as alterações
+        if ($membro->save()) {
+            return redirect()->route('membros.painel')->with('msg', 'Membro atualizado com sucesso!');
+        } else {
+            return redirect()->back()->withErrors(['msg' => 'Erro ao atualizar membro.']);
+        }
     }
     
     public function destroy() {

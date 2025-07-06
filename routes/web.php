@@ -15,11 +15,12 @@ Route::get('/', [HomeController::class, 'index']);
 
 Route::post('/membros', [MembroController::class, 'store']);
 Route::get('/membros/adicionar', [MembroController::class, 'adicionar'])->name('membros.adicionar'); 
-Route::get('/membros/painel', [MembroController::class, 'painel']);
+Route::get('/membros/painel', [MembroController::class, 'painel'])->name('membros.painel');
 Route::post('/membros/search', [MembroController::class, 'search']);
 Route::get('/membros/exibir/{id}', [MembroController::class, 'show']);
 Route::get('/membros/editar/{id}', [MembroController::class, 'editar']);
-Route::delete('/membros/{id}', [RecadoController::class, 'destroy'])->name('membros.excluir');
+Route::put('/membros/{id}', [MembroController::class, 'update'])->name('membros.atualizar');
+Route::delete('/membros/{id}', [MembroController::class, 'destroy'])->name('membros.excluir');
 
 Route::post('/visitantes', [VisitanteController::class, 'store']);
 Route::get('/visitantes/adicionar', [VisitanteController::class, 'create'])->name('visitantes.adicionar');
@@ -32,7 +33,6 @@ Route::delete('/grupos/{id}', [GrupoController::class, 'destroy']);
 Route::get('/grupos/integrantes/{id}', [GrupoController::class, 'show'])->name('grupos.integrantes');
 Route::post('/grupos/integrantes', [GrupoController::class, 'addMember']);
 Route::get('/grupos/imprimir/{data}', [GrupoController::class, 'print']);
-
 
 Route::post('/eventos', [EventoController::class, 'store']);
 Route::get('/eventos/adicionar', [EventoController::class, 'create']);
