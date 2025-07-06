@@ -45,7 +45,7 @@
                 </div>
                 <div class="form-item">
                     <label for="estado_civil">Estado civil: </label>
-                    <select name="estado_civil" id="" value="{{ old('estado_civil') }}">
+                    <select name="estado_civil" id="">
                         @foreach ($estado_civil as $item)
                             <option value="{{$item->id}}">{{$item->titulo}}</option>
                         @endforeach
@@ -53,7 +53,7 @@
                 </div>
                 <div class="form-item">
                     <label for="escolaridade">Escolaridade: </label>
-                    <select name="escolaridade" id="" value="{{ old('escolaridade') }}">
+                    <select name="escolaridade" id="">
                         @foreach ($escolaridade as $item)
                             <option value="{{$item->id}}">{{$item->titulo}}</option>
                         @endforeach
@@ -91,7 +91,7 @@
                 </div>
                 <div class="form-item">
                     <label for="ministerio">Ministério: </label>
-                    <select name="ministerio" id="" value="{{ old('ministerio') }}">
+                    <select name="ministerio" id="">
                         @foreach ($ministerios as $item)
                             <option value="{{$item->id}}">{{$item->titulo}}</option>
                         @endforeach

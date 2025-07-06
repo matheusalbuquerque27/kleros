@@ -95,6 +95,7 @@ h1 {
     padding: 10px 0;
     display: flex;
     justify-content: space-between;
+
 }
 
 .form-control .form-item label {
@@ -156,10 +157,12 @@ h1 {
 }
 
 .card-owner{
-    border: 1px solid #9acbe7;
+    background-color: #1060a5;
+    color: white;
     width: fit-content;
     padding: 5px;
     margin-bottom: 5px;
+    border-radius: 5px;
 }
 
 /*Buttons*/
@@ -413,8 +416,18 @@ footer {
     text-align: center;
 }
 
+/*Limita uma div a 80%*/
+.limit-80 {
+   max-width: 80%;
+   margin: auto;
+}
+
 .clear {
     clear: both;
+}
+
+.tx-right {
+    text-align: right;
 }
 
 /*Estilo para impressão*/
@@ -438,9 +451,13 @@ footer {
         flex-direction:column;
     }
 
-     header nav .nav-menu {
+    header nav .nav-menu {
         margin-top: -20px;
         margin-bottom: 20px;
+    }
+
+    .limit-80 {
+        max-width: 100%;
     }
 
 }

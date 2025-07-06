@@ -8,13 +8,13 @@
     <h1>Informações de Membro</h1>
     <form action="/membros/editar" method="post">
         @csrf
-        <div class="info form-control">
-            <h3>Informações básicas</h3>
-            <div class="form-control">
+        <div class="info">
+            <div class="form-control limit-80">
+                <h3>Informações básicas</h3>
                 <div class="form-block ">
                     <div class="form-item">
                         <label for="nome">Nome completo: </label>
-                        <div class="card-title">{{$membro->nome}}</div>
+                        <div class="card-title tx-right">{{$membro->nome}}</div>
                     </div>
                     <div class="form-item">
                         <label for="rg">RG: </label>
@@ -51,8 +51,9 @@
                     </div>
                 </div>
             </div>{{-- form-control --}}
-            <h3>Informações de endereço</h3>
-            <div class="form-control">
+        
+            <div class="form-control limit-80">
+                <h3>Informações de endereço</h3>
                 <div class="form-block">
                     <div class="form-item">
                         <label for="endereco">Endereço: </label>
@@ -69,9 +70,9 @@
                 </div>
             </div>{{-- form-control --}}
 
-            <h3>Informações específicas</h3>
-            <div class="form-control">
+            <div class="form-control limit-80">
                 <div class="form-block">
+                    <h3>Informações específicas</h3>
                     <div class="form-item">
                         <label for="data_batismo">Data de Batismo: </label>
                         <div class="card-title">
@@ -97,8 +98,8 @@
                 </div>
             </div>{{-- form-control --}}
 
-            <h3>Filiação</h3>
-            <div class="form-control">
+            <div class="form-control limit-80">
+                <h3>Filiação</h3>
                 <div class="form-block">
                     <div class="form-item">
                         <label for="nome_paterno">Nome paterno: </label>
@@ -110,7 +111,7 @@
                     </div>
                 </div>
             </div>{{-- form-control --}}
-            <div class="form-options nao-imprimir">
+            <div class="form-options nao-imprimir limit-80">
                 <a href="/membros/editar/{{$membro->id}}"><button class="btn" type="button"><i class="bi bi-pencil-square"></i> Editar</button></a>   
                 <button class="btn imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
                 <button type="button" onclick="window.history.back()" class="btn"><i class="bi bi-arrow-return-left"></i> Voltar</button></a>

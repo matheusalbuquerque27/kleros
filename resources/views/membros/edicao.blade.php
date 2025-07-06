@@ -38,7 +38,7 @@
                 </div>
                 <div class="form-item">
                     <label for="cpf">CPF: </label>
-                    <input type="text" name="cpf" placeholder="CPF" value="{{ old('cpf', $membro->cpf) }}" required>
+                    <input type="text" name="cpf" placeholder="CPF" value="{{ old('cpf', $membro->cpf) }}">
                 </div>
                 <div class="form-item">
                     <label for="data_nascimento">Data de nascimento: </label>
