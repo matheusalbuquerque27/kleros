@@ -23,7 +23,7 @@
                     <label>Nome/Telefone: </label>
                     <input type="text" name="" placeholder="Nome ou telefone" id="chave">
                 </div>
-                <div class="search-panel-item">
+                <div class="form-control">
                     <button class="submit" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
                     <a href="/membros/adicionar"><button type="button"><i class="bi bi-plus-circle"></i> Novo</button></a>
                     <button class="imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>

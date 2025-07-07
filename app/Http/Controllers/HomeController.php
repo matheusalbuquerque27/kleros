@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use App\Models\Culto;
 use App\Models\Evento;
 use App\Models\Membro;
@@ -13,6 +13,24 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    public function __construct() {
+        $this->middleware('auth')->except(['login', 'authenticate']);
+    }
+
+    public function login() {
+        return view('login');
+    }
+
+    public function authenticate(Request $request) {
+        $credentials = $request->only('name', 'password');
+
+        if (auth()->attempt($credentials)) {
+            return redirect()->route('index');
+        }
+
+        return redirect()->back()->withErrors(['user' => 'Credenciais inválidas.']);
+    }
+
     public function index() {
 
         /*Esta parte pega informações do culto e verifica se existe um cadastro realizado para o dia atual

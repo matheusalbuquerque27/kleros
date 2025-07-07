@@ -11,7 +11,7 @@ use App\Http\Controllers\RecadoController;
 use App\Http\Controllers\VisitanteController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('index');
 
 Route::post('/membros', [MembroController::class, 'store']);
 Route::get('/membros/adicionar', [MembroController::class, 'adicionar'])->name('membros.adicionar'); 
@@ -57,3 +57,7 @@ Route::delete('/ministerios/{id}', [MinisterioController::class, 'destroy']);
 Route::get('/ministerios/imprimir/{data}', [MinisterioController::class, 'print']);
 
 Route::get('/cadastros', [CadastroController::class, 'index']);
+
+Route::get('/login', [HomeController::class, 'login'])->name('login');
+Route::post('/login', [HomeController::class, 'authenticate']);
+Route::get('/logout', function () {auth()->logout();return redirect()->route('login');})->name('logout');
