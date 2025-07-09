@@ -4,6 +4,16 @@
 
 @section('content')
 
+@if($errors->all())
+<div class="msg">
+    <div class="error">
+        <ul>
+            {{$errors->first()}}
+        </ul>
+    </div>
+</div>
+@endif
+
 <div class="container">
     <h1>Cadastrar Culto</h1>
     <div class="info" id="registrar">
@@ -13,11 +23,11 @@
             <div class="form-control">
                 <div class="form-item">
                     <label for="data_culto">Data do culto: </label>
-                    <input type="date" name="data_culto" id="">
+                    <input type="date" name="data_culto" id="" required>
                 </div>
                 <div class="form-item">
                     <label for="preletor">Preletor: </label>
-                    <input type="text" name="preletor" id="">
+                    <input type="text" name="preletor" id="" required>
                 </div>
                 <div class="form-item">
                     <label for="evento">Evento: </label>

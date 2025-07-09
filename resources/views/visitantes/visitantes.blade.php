@@ -4,6 +4,14 @@
 
 @section('content')
 
+@if ($errors->any())
+    <div class="msg">
+        <div class="error">
+            {{ $errors->first() }}
+        </div>
+    </div>
+@endif
+
 <div class="container">
     <h1>Cadastrar Visitante</h1>
     <form action="/visitantes" method="post">
@@ -11,15 +19,15 @@
         <div class="form-control">
             <div class="form-item">
                 <label for="Nome">Nome: </label>
-                <input type="text" name="nome" placeholder="Nome completo">
+                <input type="text" name="nome" placeholder="Nome completo" required>
             </div>
             <div class="form-item">
                 <label for="telefone">Telefone/Celular: </label>
-                <input type="tel" name="telefone" id="telefone" placeholder="(00)00000-0000">
+                <input type="tel" name="telefone" id="telefone" placeholder="(00)00000-0000" required>
             </div>
             <div class="form-item">
                 <label for="data_visita">Data de visita: </label>
-                <input type="date" name="data_visita" value="{{date("Y-m-d")}}" placeholder="Data de visita">
+                <input type="date" name="data_visita" value="{{date("Y-m-d")}}" placeholder="Data de visita" required>
             </div>
             <div class="form-item">
                 <label for="situacao">Situação: </label>

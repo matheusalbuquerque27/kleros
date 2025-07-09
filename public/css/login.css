@@ -3,7 +3,9 @@
     padding: 0;
     font-family: Teko, sans-serif;
     font-size: 20px;
-    background-color: #9acbe7;
+    /*background-color: #9acbe7;*/
+    background-image: url('../images/banner.png');
+    background-position: center;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -11,7 +13,7 @@
 }
 
 .login-container {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.9);;
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -49,7 +51,7 @@
 
 .login-container button {
     width: 100%;
-    color: white;
+    color: black;
     border: none;
     font-weight: bold;
     cursor: pointer;
@@ -66,5 +68,5 @@
 .login-container button:hover {
     cursor: pointer;
     background-color: #1060a5;
-    color: #9acbe7;
+    color: white;
 }

@@ -64,7 +64,7 @@
                 </div>
                 <div class="item item-1">
                     @isset($item->ministerio->titulo)
-                        <p>Título do Ministério: {{ $item->ministerio->titulo }}</p>
+                        <p>{{ $item->ministerio->titulo }}</p>
                     @endisset
                 </div>
                 

@@ -21,6 +21,14 @@ class VisitanteController extends Controller
         $visitante = new Visitante;
         $msg = $request->nome.' foi cadastrado(a) como visitante!';
 
+        $request->validate([
+            'nome' => 'required',
+            'telefone' => 'required',
+            'data_visita' => 'required'
+        ], [
+            '*.required' => 'Nome do visitante, Telefone e Data de visita são obrigatórios',
+        ]);    
+
         $visitante->nome = $request->nome;
         $visitante->telefone = $request->telefone;
         $visitante->data_visita = $request->data_visita;

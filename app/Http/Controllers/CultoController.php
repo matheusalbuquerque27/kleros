@@ -35,7 +35,7 @@ class CultoController extends Controller
         $cultos = Culto::whereDate('data_culto', '>=', date('Y/m/d'))->get();
         $cultos = $cultos->isEmpty() ? '' : $cultos;
 
-        $eventos = Evento::whereDate('data_evento', '>=', date('Y/m/d'))->distinct('titulo')->pluck('titulo');
+        $eventos = Evento::whereDate('data_inicio', '>=', date('Y/m/d'))->distinct('titulo')->pluck('titulo');
 
         return view('cultos/agenda', ['cultos' => $cultos, 'eventos' => $eventos]);
     }

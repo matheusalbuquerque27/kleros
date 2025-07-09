@@ -24,7 +24,7 @@ class HomeController extends Controller
     public function authenticate(Request $request) {
         $credentials = $request->only('name', 'password');
 
-        if (auth()->attempt($credentials)) {
+        if (auth('web')->attempt($credentials)) {
             return redirect()->route('index');
         }
 
@@ -58,7 +58,7 @@ class HomeController extends Controller
             Se não houver ele envia uma informação vazia, com mensagem sobre a ausencia de eventos.
         */
         
-        $eventos = Evento::whereDate('data_evento', '>', date('Y/m/d'))->limit(4)->orderBy('data_evento', 'asc')->get();
+        $eventos = Evento::whereDate('data_inicio', '>', date('Y/m/d'))->limit(4)->orderBy('data_inicio', 'asc')->get();
         
         if($eventos->isEmpty()) {
             $eventos = '';

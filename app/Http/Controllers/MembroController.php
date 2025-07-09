@@ -29,9 +29,7 @@ class MembroController extends Controller
             'telefone' => 'required',
             'data_nascimento' => 'required'
         ], [
-            'nome.required' => 'Nome do membro não informado',
-            'telefone.required' => 'Número de telefone não informado',
-            'data_nascimento.required' => 'Data de nascimento não informada'
+            '*.required' => 'Nome, Telefone e Data de nascimento são obrigatórios'
         ]);        
 
         $membro->nome = $request->nome;

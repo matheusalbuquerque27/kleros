@@ -8,9 +8,7 @@
     <div class="msg">
         <div class="error">
             <ul>
-                @foreach ($errors->all() as $erro)
-                    <li>{{ $erro }}</li>
-                @endforeach
+                {{$errors->first()}}
             </ul>
         </div>
     </div>

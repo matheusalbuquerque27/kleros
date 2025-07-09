@@ -49,7 +49,7 @@
                     <div class="card">
                         <div class="card-date"><i class="bi bi-calendar-event"></i>
                             @php
-                                $data = new DateTime($item->data_evento);
+                                $data = new DateTime($item->data_inicio);
                             @endphp
                             {{$data->format('d/m')}}
                         </div>
@@ -95,11 +95,11 @@
             @foreach ($grupos as $item)
                 <div class="list-title">
                     <div class="item-15">
-                        <div class="card-description">{{$item->nome}}</div>
+                        <div class="card-title">{{$item->nome}}</div>
+                        <div class="card-description">{{$item->descricao}}</div>
                     </div>
                     <div class="item-2">
                         <div class="card-description"><b>Líder: </b>{{$item->membro->nome}}</div>
-                        <div class="card-description">{{$item->descricao}}</div>
                     </div>
                     <div class="item-15">
                         <form method="POST">

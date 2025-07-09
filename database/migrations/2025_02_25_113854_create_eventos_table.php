@@ -23,8 +23,9 @@ return new class extends Migration
             $table->id();
             $table->string('titulo');
             $table->foreignId('grupo_id')->nullable()->constrained('grupos');
-            $table->text('descricao');
-            $table->date('data_evento');
+            $table->text('descricao')->nullable();
+            $table->date('data_inicio');
+            $table->date('data_encerramento');
             $table->timestamps();
         });
     }

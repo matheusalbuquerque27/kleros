@@ -88,7 +88,7 @@
                     <div class="card">
                         <div class="card-date"><i class="bi bi-calendar-event"></i>
                             @php
-                                $data = new DateTime($item->data_evento);
+                                $data = new DateTime($item->data_inicio);
                             @endphp
                             {{$data->format('d/m')}}
                         </div>

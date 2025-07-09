@@ -25,7 +25,7 @@ class CadastroController extends Controller
 
             Se não houver ele envia uma informação vazia, com mensagem sobre a ausencia de eventos.
         */
-        $eventos = Evento::whereDate('data_evento', '>', date('Y/m/d'))->limit(4)->orderBy('data_evento', 'asc')->get();
+        $eventos = Evento::whereDate('data_inicio', '>', date('Y/m/d'))->limit(4)->orderBy('data_inicio', 'asc')->get();
         $eventos = $eventos->isEmpty() ? '' : $eventos;
 
         /*Essa parte verifica o tal de visitantes do mês, se não houver ele receberá uma string vazia*/

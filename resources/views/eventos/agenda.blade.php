@@ -60,7 +60,7 @@
             @foreach ($eventos as $item)
             <div class="list-item">
                 <div class="item item-1">
-                    <p>{{$item->data_evento}}</p>
+                    <p>{{$item->data_inicio}}</p>
                 </div>
                 <div class="item item-1">
                     <p>{{$item->titulo}}</p>
