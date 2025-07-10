@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recados', function (Blueprint $table) {
+        Schema::create('igrejas', function (Blueprint $table) {
             $table->id();
-            $table->text('mensagem');
-            $table->date('data_recado');
-            $table->boolean('status');
-            $table->foreignId('congregacao_id')->constrained('congregacoes')->onDelete('cascade');
-            $table->foreignId('culto_id')->constrained('cultos')->onDelete('cascade');
-
+            $table->string('nome');
+            $table->boolean('ativa');
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('recados');
+        Schema::dropIfExists('igrejas');
     }
 };

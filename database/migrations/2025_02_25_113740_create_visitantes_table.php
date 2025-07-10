@@ -19,6 +19,7 @@ return new class extends Migration
 
         Schema::create('visitantes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('congregacao_id')->constrained('congregacao')->onDelete('cascade');
             $table->string('nome');
             $table->string('telefone');
             $table->date('data_visita');

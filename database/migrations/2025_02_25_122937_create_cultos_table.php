@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->date('data_culto');
             $table->string('preletor')->nullable();
+            $table->string('tema_sermao')->nullable();
+            $table->string('texto_base')->nullable();
             $table->integer('quant_visitantes')->nullable();
+            $table->integer('quant_adultos')->nullable();
+            $table->integer('quant_criancas')->nullable();
             $table->foreignId('evento_id')->nullable()->constrained('eventos')->onDelete('set null');
             $table->timestamps();
         });

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('grupos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('congregacao_id')->constrained('congregacao')->onDelete('cascade');
             $table->string('nome');
             $table->string('descricao');
             $table->foreignId('membro_id')->nullable()->constrained('membros');
@@ -21,6 +22,7 @@ return new class extends Migration
 
         Schema::create('eventos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('congregacao_id')->constrained('congregacao')->onDelete('cascade');
             $table->string('titulo');
             $table->foreignId('grupo_id')->nullable()->constrained('grupos');
             $table->text('descricao')->nullable();
