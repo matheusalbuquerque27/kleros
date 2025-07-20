@@ -15,14 +15,38 @@ class Membro extends Model
     public function ministerio() {
         return $this->belongsTo(Ministerio::class);
     }
-    public function obreiro(){
-        return $this->hasMany(Obreiro::class);
+    public function denominacao() {
+        return $this->belongsTo(Denominacao::class);
+    }
+    public function congregacao() {
+        return $this->belongsTo(Congregacao::class);
+    }
+    public function setor() {
+        return $this->belongsTo(Setor::class);
+    }
+    public function departamento() {
+        return $this->belongsTo(Departamento::class);
+    }
+    public function celula() {
+        return $this->belongsTo(Celula::class);
     }
     public function grupo(){
         return $this->hasMany(Grupo::class);
     }
     public function gruposMembro(){
         return $this->belongsToMany(Grupo::class, 'grupo_integrantes');
+    }
+    public function eventos()
+    {
+        return $this->belongsToMany(Evento::class, 'evento_membro', 'membro_id', 'evento_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function reunioes()
+    {
+        return $this->belongsToMany(Reuniao::class, 'reuniao_membro', 'membro_id', 'reuniao_id');
     }
 
 }

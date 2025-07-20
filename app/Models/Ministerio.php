@@ -9,8 +9,8 @@ class Ministerio extends Model
     public function membro(){
         return $this->hasMany(Membro::class);
     }
-
-    public function obreiro(){
-        return $this->hasMany(Obreiro::class);
+    public function denominacao()
+    {
+        return $this->belongsTo(Denominacao::class);
     }
 }

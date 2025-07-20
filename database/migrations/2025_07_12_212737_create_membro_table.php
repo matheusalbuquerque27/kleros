@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('ministerios', function (Blueprint $table) {
             $table->id();
             $table->string('titulo');
+            $table->foreignId('denominacao_id')->constrained('denominacoes')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -31,7 +32,7 @@ return new class extends Migration
 
         Schema::create('membros', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('congregacao_id')->constrained('congregacao')->onDelete('cascade');
+            $table->foreignId('congregacao_id')->constrained('congregacoes')->onDelete('cascade');
             $table->string('nome');
             $table->string('rg')->nullable();
             $table->string('cpf')->nullable();
@@ -52,6 +53,9 @@ return new class extends Migration
             $table->date('data_consagracao')->nullable();
             $table->string('nome_paterno')->nullable();
             $table->string('nome_materno')->nullable();
+            $table->string('foto')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null'); // Cria a chave estrangeira
+            $table->boolean('ativo')->default(true);
             $table->timestamps();
         });
 

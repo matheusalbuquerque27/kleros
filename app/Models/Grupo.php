@@ -7,11 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Grupo extends Model
 {
     public function evento(){
-        return $this->hasMany(Grupo::class);
-    }
-
-    public function grupo(){
-        return $this->hasMany(Grupo::class);
+        return $this->hasMany(Evento::class);
     }
 
     public function membro(){

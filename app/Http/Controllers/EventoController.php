@@ -33,12 +33,13 @@ class EventoController extends Controller
 
         $grupos = Grupo::all();
 
-        return view('eventos/eventos', ['grupos' => $grupos]);
+        return view('eventos/cadastro', ['grupos' => $grupos]);
     }
 
     public function store(Request $request) {
 
         $evento = new Evento;
+        $congregacao_id = session('congregacao_id');
 
         $request->validate([
             'titulo' => 'required',
@@ -47,11 +48,15 @@ class EventoController extends Controller
             '*.required' => 'Título e Data de início são obrigatórios'
         ]);
 
+        $evento->congregacao_id = $congregacao_id;
         $evento->titulo = $request->titulo;
         $evento->grupo_id = $request->grupo_id;
         $evento->descricao = $request->descricao;
+        $evento->recorrente = $request->recorrente == "1" ? true : false;
         $geracao_cultos = $request->geracao_cultos == "1" ? true : false;
-        $evento->data_inicio = $request->data_inicio;
+        $evento->local = $request->local;
+        $evento->requer_inscricao = $request->requer_inscricao == "1" ? true : false;
+        $evento->data_inicio = $request->data_inicio;        
 
         //Transformar string de datas em DateTime
         $dataInicioObj = new DateTime($request->data_inicio);
@@ -64,7 +69,7 @@ class EventoController extends Controller
             ?  $request->data_encerramento 
             : $request->data_inicio;
             
-        if($evento->save()){
+        if($evento->save() && $evento->recorrente) {
             if($geracao_cultos){
                 $startDate = $evento->data_inicio;                
                 $finalDate = $evento->data_encerramento;

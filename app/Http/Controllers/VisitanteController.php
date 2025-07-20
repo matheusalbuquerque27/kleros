@@ -13,7 +13,7 @@ class VisitanteController extends Controller
 
         $situacao_visitante = SituacaoVisitante::all();
 
-        return view('visitantes/visitantes', ['situacao_visitante' => $situacao_visitante]);
+        return view('visitantes/cadastro', ['situacao_visitante' => $situacao_visitante]);
     }
 
     public function store(Request $request) {

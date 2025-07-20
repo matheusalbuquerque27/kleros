@@ -17,7 +17,7 @@ class MembroController extends Controller
         $ministerios = Ministerio::all();
         $estado_civil = EstadoCiv::all();
 
-        return view('/membros/membros', ['escolaridade' => $escolaridade, 'ministerios' => $ministerios, 'estado_civil' => $estado_civil]);
+        return view('/membros/cadastro', ['escolaridade' => $escolaridade, 'ministerios' => $ministerios, 'estado_civil' => $estado_civil]);
     }
 
     public function store(Request $request) {

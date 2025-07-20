@@ -25,6 +25,9 @@ class HomeController extends Controller
         $credentials = $request->only('name', 'password');
 
         if (auth('web')->attempt($credentials)) {
+            $request->session()->put('congregacao_id', auth('web')->user()->congregacao_id);
+            $request->session()->put('user_id', auth('web')->user()->id);
+            $request->session()->regenerate();
             return redirect()->route('index');
         }
 

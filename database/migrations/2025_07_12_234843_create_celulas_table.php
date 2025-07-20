@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('cep')->nullable();
             $table->tinyInteger('dia_encontro')->nullable()->comment('Dia da semana da reunião (1=Segunda, 7=Domingo)');
             $table->time('hora_encontro')->nullable()->comment('Hora da reunião (HH:MM:SS)');
+            $table->boolean('ativa')->default(true)->comment('Indica se a célula está ativa');
+            $table->text('descricao')->nullable();
 
             $table->timestamps();
         });

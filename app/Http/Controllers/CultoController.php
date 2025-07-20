@@ -27,7 +27,7 @@ class CultoController extends Controller
 
         $eventos = Evento::all();
 
-        return view('cultos/cultos', ['cultos' => $cultos, 'eventos' => $eventos]);
+        return view('cultos/cadastro', ['cultos' => $cultos, 'eventos' => $eventos]);
     }
 
     public function agenda() {

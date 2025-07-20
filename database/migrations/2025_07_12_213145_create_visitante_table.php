@@ -19,9 +19,9 @@ return new class extends Migration
 
         Schema::create('visitantes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('congregacao_id')->constrained('congregacao')->onDelete('cascade');
+            $table->foreignId('congregacao_id')->constrained('congregacoes')->onDelete('cascade');
             $table->string('nome');
-            $table->string('telefone');
+            $table->string('telefone')->nullable();
             $table->date('data_visita');
             $table->foreignId('sit_visitante_id')->constrained('situacao_visitantes');
             $table->text('observacoes')->nullable();

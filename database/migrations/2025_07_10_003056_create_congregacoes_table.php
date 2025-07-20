@@ -12,35 +12,46 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cidades', function (Blueprint $table) {
+        
+        Schema::create('paises', function (Blueprint $table) {
             $table->id();
+            $table->char('codigo', 2);
             $table->string('nome');
-            $table->foreignId('estado_id')->constrained('estados')->onDelete('cascade');
         });
 
         Schema::create('estados', function (Blueprint $table) {
             $table->id();
+            $table->integer('codigo_uf');
             $table->string('nome');
+            $table->char('uf', 2)->unique();
+            $table->integer('regiao_id')->nullable();
             $table->foreignId('pais_id')->constrained('paises')->onDelete('cascade');
         });
 
-        Schema::create('paises', function (Blueprint $table) {
+        Schema::create('cidades', function (Blueprint $table) {
             $table->id();
+            $table->integer('codigo');
             $table->string('nome');
+            $table->char('uf', 2);
+            $table->foreign('uf')->references('uf')->on('estados')->onDelete('cascade');
         });
-
+        
         Schema::create('congregacoes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('igreja_id')->constrained('igrejas')->onDelete('cascade');
+            $table->foreignId('denominacao_id')->constrained('denominacoes')->onDelete('cascade');
             $table->string('identificacao');
+            $table->string('cnpj')->nullable();
             $table->boolean('ativa');
             $table->string('endereco')->nullable();
             $table->string('numero')->nullable();
             $table->string('bairro')->nullable();
+            $table->string('complemento')->nullable();
+            $table->string('telefone')->nullable();
+            $table->string('email')->nullable();
             $table->string('cep')->nullable();
-            $table->foreignId('cidade_id')->constrained('cidades')->onDelete('set null');
-            $table->foreignId('estado_id')->constrained('estados')->onDelete('set null');
-            $table->foreignId('pais_id')->constrained('paises')->onDelete('set null');
+            $table->foreignId('cidade_id')->nullable()->constrained('cidades')->onDelete('set null');
+            $table->foreignId('estado_id')->nullable()->constrained('estados')->onDelete('set null');
+            $table->foreignId('pais_id')->nullable()->constrained('paises')->onDelete('set null');
                         
             $table->timestamps();
         });
@@ -51,7 +62,7 @@ return new class extends Migration
             $table->string('css_caminho');
         });
 
-        Schema::create('congregacao_configuracoes', function (Blueprint $table) {
+        Schema::create('congregacao_configs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('congregacao_id')->constrained('congregacoes')->onDelete('cascade');
             $table->string('logo_caminho')->nullable();
@@ -70,8 +81,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('congregacoes');
-        Schema::dropIfExists('congregacoes_configuracoes');
+        Schema::dropIfExists('congregacaos');
+        Schema::dropIfExists('congregacao_configs');
         Schema::dropIfExists('cidades');
         Schema::dropIfExists('estados');
         Schema::dropIfExists('paises');

@@ -14,7 +14,7 @@ class GrupoController extends Controller
 
         $membros = Membro::all();
 
-        return view('grupos/grupos', ['membros' => $membros]);
+        return view('grupos/cadastro', ['membros' => $membros]);
     }
 
     public function store(Request $request){

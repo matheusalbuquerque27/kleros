@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class RecadoController extends Controller
 {
     public function create() {
-        return view('recados');
+        return view('recados/cadastro');
     }
 
     public function store(Request $request) {

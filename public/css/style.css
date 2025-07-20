@@ -102,7 +102,7 @@ h1 {
     width: 30%;
 }
 
-.form-control .form-item input[type="text"], .form-control .form-item input[type="tel"], .form-control .form-item textarea,  .form-control .form-item input[type="date"], .form-control .form-item select {
+.form-control .form-item input[type="text"], .form-control .form-item input[type="tel"], .form-control .form-item textarea,  .form-control .form-item input[type="date"], .form-control .form-item input[type="email"], .form-control .form-item input[type="url"], .form-control .form-item select {
     width: 70%;
     font-size: 1.1em;
     padding: 4px;
@@ -416,6 +416,17 @@ footer {
     text-align: center;
 }
 
+.square {
+    padding: 15px;
+    min-width: 180px;
+    min-height: 80px;
+    flex: 1;
+    border: 1px solid black;
+    box-shadow: 1px 1px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
 /*Limita uma div a 80%*/
 .limit-80 {
    max-width: 80%;
@@ -428,6 +439,17 @@ footer {
 
 .tx-right {
     text-align: right;
+}
+
+
+/*Estilo de elementos específicos*/
+.tag {
+    display: inline-block;
+    background: #1060a5;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    cursor: pointer;
 }
 
 /*Estilo para impressão*/

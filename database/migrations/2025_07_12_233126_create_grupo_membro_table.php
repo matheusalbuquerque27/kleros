@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('grupo_integrantes', function (Blueprint $table) {
+        Schema::create('grupo_membros', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('membro_id');
             $table->unsignedBigInteger('grupo_id');
+            $table->foreignId('congregacao_id')->constrained('congregacoes')->onDelete('cascade');
             $table->foreign('membro_id')->references('id')->on('membros')->onDelete('cascade');
             $table->foreign('grupo_id')->references('id')->on('grupos')->onDelete('cascade');
             $table->timestamps();

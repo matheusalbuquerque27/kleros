@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class MinisterioController extends Controller
 {
     public function create() {
-        return view('ministerios/ministerios');
+        return view('ministerios/cadastro');
     }
 
     public function store(Request $request){

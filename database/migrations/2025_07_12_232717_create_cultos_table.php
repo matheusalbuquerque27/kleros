@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('quant_adultos')->nullable();
             $table->integer('quant_criancas')->nullable();
             $table->foreignId('evento_id')->nullable()->constrained('eventos')->onDelete('set null');
+            $table->foreignId('congregacao_id')->nullable()->constrained('congregacoes')->onDelete('cascade');
             $table->timestamps();
         });
     }
