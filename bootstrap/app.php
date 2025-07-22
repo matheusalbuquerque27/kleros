@@ -11,7 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'dominio' => \App\Http\Middleware\AcessarCongregacaoPeloDominio::class,
+        ]);
+    
+        $middleware->append(\App\Http\Middleware\AcessarCongregacaoPeloDominio::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -1,20 +1,21 @@
 insert into bases_doutrinarias (nome) values 
-('Batista'), 
-('Pentecostal'), 
-('Luterana'), 
-('Metodista'), 
-('Anglicana'), 
-('Congregacional'), 
-('Presbiteriana'), 
-('Carismática'), 
-('Reformada'), 
-('Outra');
+('Batista'), ('Pentecostal'), ('Luterana'), ('Metodista'), ('Anglicana'), ('Congregacional'), ('Presbiteriana'), 
+('Carismática'), ('Reformada'), ('Outra');
 
-insert into denominacaos (nome, base_doutrinaria, ativa, ministerios_eclesiasticos) values ('Assembleia de Deus Jerusalém', 'Pentecostal', true, '["Pastor", "Evangelista", "Diácono"]');
+insert into denominacoes (nome, base_doutrinaria, ativa, ministerios_eclesiasticos) values ('Assembleia de Deus Jerusalém', 2, true, '["Pastor", "Evangelista", "Diácono"]');
+insert into congregacoes (denominacao_id, identificacao, ativa) values (1, 'Ilha Solteira', true);
+insert into dominios (congregacao_id, dominio, ativo) values (1, 'adjerusalemilha.local', true);
+insert into congregacao_configs (congregacao_id, logo_caminho, banner_caminho, conjunto_cores, font_family, tema_id) values 
+(1, 'images/logo.png', 'images/banner.png', '{"primaria": "#3490dc", "secundaria": "#ffed4a", "terciaria": "#e3342f"}', 'Arial, sans-serif', null);
 
-insert into congregacaos (igreja_id, identificacao, ativa) values (1, 'Ilha Solteira', true);
+insert into denominacoes (nome, base_doutrinaria, ativa, ministerios_eclesiasticos) values ('Agape House', 2, true, '["Pastor", "Evangelista", "Diácono"]');
+insert into congregacoes (denominacao_id, identificacao, ativa) values (2, 'Ilha Solteira', true);
+insert into dominios (congregacao_id, dominio, ativo) values (2, 'agapehouseisa.local', true);
+insert into congregacao_configs (congregacao_id, logo_caminho, banner_caminho, conjunto_cores, font_family, tema_id) values 
+(2, 'images/logo_agape2.jpeg', 'images/banner_agape.jpg', '{"primaria": "#3490dc", "secundaria": "#ffed4a", "terciaria": "#e3342f"}', 'Arial, sans-serif', null);
 
-insert into congregacao_configs (congregacao_id, logo_caminho, banner_caminho, conjunto_cores, font_family, tema_id) values (1, null, null, null, null, null);
+insert into users (name, email, password, email_verified_at, denominacao_id, congregacao_id, membro_id) values 
+('kleros.admin', 'admin@kleros.com', null, '$2y$12$vYj8Ljo3wkj9vXg.zePicejHiV6n9kOOib6clWt.gqrwddLrgdPka', null, null, null);
 
 insert into ministerios (nome) values 
 ('Pastor(a)'),

@@ -16,6 +16,10 @@ class Congregacao extends Model
     {
         return $this->belongsTo(Denominacao::class, 'denominacao_id');
     }
+    public function dominio()
+    {
+        return $this->hasOne(Dominio::class);
+    }
     public function membros()
     {
         return $this->hasMany(Membro::class, 'congregacao_id');

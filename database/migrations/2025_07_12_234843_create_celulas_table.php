@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('congregacao_id')->constrained('congregacoes')->onDelete('cascade');
             $table->string('identificacao');
             $table->foreignId('lider_id')->nullable()->constrained('membros')->onDelete('set null');
+            $table->foreignId('colider_id')->nullable()->constrained('membros')->onDelete('set null');
             $table->foreignId('anfitriao_id')->nullable()->constrained('membros')->onDelete('set null');
             $table->string('endereco')->nullable();
             $table->string('numero')->nullable();

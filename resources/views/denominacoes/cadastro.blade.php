@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.kleros')
 
 @section('title', 'Check-In - Cadastre sua denominação')
 

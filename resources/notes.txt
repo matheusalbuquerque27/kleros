@@ -1,3 +1,8 @@
 1. Configurar Cultos para que não se possa criar outro no mesmo dia
 2. Criar gestão dos visitantes
 3. Dar fresh no Migrate, ajustando todos os itens que podem ser nulos
+
+
+Este sistema usa Vite no front-end, que depende do NodeJs.
+Estou utilizando SCSS que permite aplicar variáveis nos css. Além disso, também estou com uma arquitetura modular 
+nos arquivos de estilo css.

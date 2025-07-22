@@ -10,6 +10,7 @@ use App\Models\Recado;
 use App\Models\Visitante;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -18,15 +19,23 @@ class HomeController extends Controller
     }
 
     public function login() {
-        return view('login');
+
+        // Verifica se a aplicação está rodando em modo admin
+        if (app('modo_admin')) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        $congregacao = app('congregacao');
+
+        return view('login', ['congregacao' => $congregacao]);
     }
 
     public function authenticate(Request $request) {
         $credentials = $request->only('name', 'password');
 
-        if (auth('web')->attempt($credentials)) {
-            $request->session()->put('congregacao_id', auth('web')->user()->congregacao_id);
-            $request->session()->put('user_id', auth('web')->user()->id);
+        if (Auth::attempt($credentials)) {
+            $request->session()->put('congregacao_id', Auth::user()->congregacao_id);
+            $request->session()->put('user_id', Auth::user()->id);
             $request->session()->regenerate();
             return redirect()->route('index');
         }
@@ -35,6 +44,13 @@ class HomeController extends Controller
     }
 
     public function index() {
+
+        if (app('modo_admin')) {
+            // Painel geral da plataforma
+            return view('admin.dashboard');
+        }
+        
+        $congregacao = app('congregacao');
 
         /*Esta parte pega informações do culto e verifica se existe um cadastro realizado para o dia atual
 

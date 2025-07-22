@@ -30,5 +30,9 @@ class AppServiceProvider extends ServiceProvider
             'reuniao' => Reuniao::class,
             'encontro_celula' => EncontroCelula::class,
         ]);
+
+        app()->singleton('modo_admin', function () {
+            return request()->getHost() === 'kleros.local';
+        });
     }
 }

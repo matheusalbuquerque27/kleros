@@ -3,7 +3,6 @@
 @extends('name')
 
 @section('content')
-
 <h1>Configurações Gerais</h1>
 <form action="" method="POST">
     @csrf

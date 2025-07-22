@@ -1,0 +1,49 @@
+/*Buttons*/
+.btn-confirm {
+    width: 100%;
+    padding: 8px;
+    background-color: #1060a5;
+    color: #fff;
+    font-size: 20px;
+    border-radius: 20px;
+    border: 0;
+    margin: 20px 0;
+    cursor: pointer;
+}
+
+.btn-edit{
+    width: fit-content;
+    padding: 5px;
+    background-color: #9acbe7;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.btn-options {
+    font-size: 1em;
+    padding: 4px;
+    min-width: 120px;
+    margin: 2px;
+    background-color: #e9f8fd;
+    border: 0;
+    border-radius: 20px;
+}
+
+.btn-options:hover {
+    background-color: #1060a5;
+    color: #9acbe7;
+    cursor: pointer;
+}
+
+.float-btn {
+    font-size: 2.2em;
+    height: 60px;
+    width: 60px;
+    border: 0;
+    position: sticky;
+    bottom: 10px;
+    float: right;
+    background-color: transparent;
+    color: #0a1929;
+    cursor: pointer;
+}

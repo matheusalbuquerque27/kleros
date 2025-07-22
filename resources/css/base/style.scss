@@ -78,59 +78,6 @@ h1 {
     text-align: center;
 }
 
-.form-control {
-    padding: 20px 0;
-}
-
-.form-control .form-block {
-    padding: 0 0 50px 0;
-}
-
-.form-control .form-block h3 {
-    margin-bottom: 20px;
-    border-bottom: 2px solid #1060a5;
-}
-
-.form-control .form-item {
-    padding: 10px 0;
-    display: flex;
-    justify-content: space-between;
-
-}
-
-.form-control .form-item label {
-    width: 30%;
-}
-
-.form-control .form-item input[type="text"], .form-control .form-item input[type="tel"], .form-control .form-item textarea,  .form-control .form-item input[type="date"], .form-control .form-item input[type="email"], .form-control .form-item input[type="url"], .form-control .form-item select {
-    width: 70%;
-    font-size: 1.1em;
-    padding: 4px;
-    box-sizing: border-box;
-}
-
-.form-control input[type="submit"], .btn{
-    font-size: 1.1em;
-    padding: 8px;
-    min-width: 150px;
-    margin: 5px;
-    background-color: #9acbe7;
-    border: 0;
-    border-radius: 20px;
-}
-
-.form-control input[type="submit"]:hover, .btn:hover{
-    cursor: pointer;
-    background-color: #1060a5;
-    color: #9acbe7;
-
-}
-
-.form-control .form-options {
-    margin: 40px 0;
-    text-align: center;
-}
-
 /*Cards*/
 .card-container {
     display: flex;
@@ -164,57 +111,6 @@ h1 {
     margin-bottom: 5px;
     border-radius: 5px;
 }
-
-/*Buttons*/
-.btn-confirm {
-    width: 100%;
-    padding: 8px;
-    background-color: #1060a5;
-    color: #fff;
-    font-size: 20px;
-    border-radius: 20px;
-    border: 0;
-    margin: 20px 0;
-    cursor: pointer;
-}
-
-.btn-edit{
-    width: fit-content;
-    padding: 5px;
-    background-color: #9acbe7;
-    border-radius: 20px;
-    cursor: pointer;
-}
-
-.btn-options {
-    font-size: 1em;
-    padding: 4px;
-    min-width: 120px;
-    margin: 2px;
-    background-color: #e9f8fd;
-    border: 0;
-    border-radius: 20px;
-}
-
-.btn-options:hover {
-    background-color: #1060a5;
-    color: #9acbe7;
-    cursor: pointer;
-}
-
-.float-btn {
-    font-size: 2.2em;
-    height: 60px;
-    width: 60px;
-    border: 0;
-    position: sticky;
-    bottom: 10px;
-    float: right;
-    background-color: transparent;
-    color: #0a1929;
-    cursor: pointer;
-}
-
 
 /*Div Info*/
 .info {
