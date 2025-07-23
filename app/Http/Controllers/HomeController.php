@@ -106,6 +106,6 @@ class HomeController extends Controller
         }
 
 
-        return view('home', ['visitantes' => $visitantes, 'culto_hoje' => $culto_hoje, 'recados' => $recados, 'eventos' => $eventos, 'membros' => $membros]);
+        return view('home', ['visitantes' => $visitantes, 'culto_hoje' => $culto_hoje, 'recados' => $recados, 'eventos' => $eventos, 'membros' => $membros, 'congregacao' => $congregacao]);
     }
 }

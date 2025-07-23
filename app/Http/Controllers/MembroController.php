@@ -60,8 +60,9 @@ class MembroController extends Controller
     public function painel() {
 
         $membros = Membro::all();
+        $congregacao = app('congregacao');
         
-        return view('/membros/painel', ['membros' => $membros]);
+        return view('/membros/painel', ['membros' => $membros, 'congregacao' => $congregacao]);
     }
 
     public function search(Request $request) {

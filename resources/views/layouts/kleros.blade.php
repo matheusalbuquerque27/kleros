@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/admin.css">
+    @vite(['resources/css/app.scss', 'resources/js/app.js'])
 </head>
 <body>
     <div class="popup">

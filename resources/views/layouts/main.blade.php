@@ -12,12 +12,26 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Teko" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital" rel="stylesheet">
         
         <!-- Icons -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
         <!-- CSS -->
-        @vite(['resources/css/app.scss'])
+        @vite(['resources/css/app.scss', 'resources/js/app.js'])
+
+        <style>
+        /* CSS dinâmico injetado aqui */
+        :root {
+            --primary-color: {{$congregacao->config->conjunto_cores['primaria'] ?? '#677b96'}};
+            --secondary-color: {{$congregacao->config->conjunto_cores['secundaria'] ?? '#0a1929'}};
+            --terciary-color: {{$congregacao->config->conjunto_cores['terciaria'] ?? '#f44916'}};
+            --background-color: {{$congregacao->config->conjunto_cores['fundo'] ?? 'ffffff'}};
+            --text-color: {{$congregacao->config->conjunto_cores['texto'] ?? '000000'}};
+
+            --text-font: {{$congregacao->config->font_family}};
+        }
+        </style>
     </head>
     <body>
         <div class="popup">
@@ -29,7 +43,7 @@
         <header class="nao-imprimir">
             <nav class="main-navbar">
                 <div class="nav-logo">
-                    <img src="/images/logo.png" alt="">
+                    <img src="{{asset($congregacao->config->logo_caminho)}}" alt="{{$congregacao->denominacao->nome}} Logo">
                 </div>
                 <div class="nav-menu">
                     <ul>

@@ -6,16 +6,18 @@ insert into denominacoes (nome, base_doutrinaria, ativa, ministerios_eclesiastic
 insert into congregacoes (denominacao_id, identificacao, ativa) values (1, 'Ilha Solteira', true);
 insert into dominios (congregacao_id, dominio, ativo) values (1, 'adjerusalemilha.local', true);
 insert into congregacao_configs (congregacao_id, logo_caminho, banner_caminho, conjunto_cores, font_family, tema_id) values 
-(1, 'images/logo.png', 'images/banner.png', '{"primaria": "#3490dc", "secundaria": "#ffed4a", "terciaria": "#e3342f"}', 'Arial, sans-serif', null);
+(1, 'images/logo.png', 'images/banner.png', '{{"primaria": "#9acbe7", "secundaria": "#1060a5", "terciaria": "#dcc43d", "texto": "#000000", "fundo":"#e9f8fd"}}', 'Teko', null);
 
 insert into denominacoes (nome, base_doutrinaria, ativa, ministerios_eclesiasticos) values ('Agape House', 2, true, '["Pastor", "Evangelista", "Diácono"]');
 insert into congregacoes (denominacao_id, identificacao, ativa) values (2, 'Ilha Solteira', true);
 insert into dominios (congregacao_id, dominio, ativo) values (2, 'agapehouseisa.local', true);
 insert into congregacao_configs (congregacao_id, logo_caminho, banner_caminho, conjunto_cores, font_family, tema_id) values 
-(2, 'images/logo_agape2.jpeg', 'images/banner_agape.jpg', '{"primaria": "#3490dc", "secundaria": "#ffed4a", "terciaria": "#e3342f"}', 'Arial, sans-serif', null);
+(2, 'images/logo_agape2.jpeg', 'images/banner_agape.jpg', '{{{"primaria": "#343A40", "secundaria": "#6C757D", "terciaria": "#DEE2E6", "texto":"#212529", "fundo": "#F8F9FA"}}}', 'Roboto', null);
 
 insert into users (name, email, password, email_verified_at, denominacao_id, congregacao_id, membro_id) values 
-('kleros.admin', 'admin@kleros.com', null, '$2y$12$vYj8Ljo3wkj9vXg.zePicejHiV6n9kOOib6clWt.gqrwddLrgdPka', null, null, null);
+('kleros.admin', 'admin@kleros.com', '$2y$12$vYj8Ljo3wkj9vXg.zePicejHiV6n9kOOib6clWt.gqrwddLrgdPka', null, null, null, null);
+
+
 
 insert into ministerios (nome) values 
 ('Pastor(a)'),

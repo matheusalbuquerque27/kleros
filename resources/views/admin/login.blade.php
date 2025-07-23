@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin - Login</title>
-    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+    @vite(['resources/css/app.scss', 'resources/js/app.js'])
 </head>
 <body class="body-login">
     <div class="login-container">

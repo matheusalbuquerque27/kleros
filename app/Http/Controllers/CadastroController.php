@@ -35,7 +35,8 @@ class CadastroController extends Controller
         $ministerios = Ministerio::whereNot('id', 1)->get();
 
         $grupos = Grupo::all();
+        $congregacao = app('congregacao');
 
-        return view('/cadastros', ['eventos' => $eventos, 'grupos' => $grupos, 'ministerios' => $ministerios, 'cultos' => $cultos, 'visitantes_total' => $visitantes_mes]);
+        return view('/cadastros', ['eventos' => $eventos, 'grupos' => $grupos, 'ministerios' => $ministerios, 'cultos' => $cultos, 'visitantes_total' => $visitantes_mes, 'congregacao' => $congregacao]);
     }
 }

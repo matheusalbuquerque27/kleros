@@ -12,8 +12,9 @@ class VisitanteController extends Controller
     public function create() {
 
         $situacao_visitante = SituacaoVisitante::all();
+        $congregacao = app('congregacao');
 
-        return view('visitantes/cadastro', ['situacao_visitante' => $situacao_visitante]);
+        return view('visitantes/cadastro', ['situacao_visitante' => $situacao_visitante, 'congregacao' => $congregacao]);
     }
 
     public function store(Request $request) {

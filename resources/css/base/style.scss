@@ -1,17 +1,7 @@
 * {
     padding: 0;
     margin: 0;
-    font-family: Teko;
-}
-
-#paleta_cores {
-    color: #e9f8fd;
-    color: #9acbe7;
-    color: #677b96;
-    color: #1060a5;
-    color: #dcc43d;
-    color: #f44916;
-    color: #0a1929;
+    font-family: var(--text-font);
 }
 
 /*Config do header*/
@@ -19,7 +9,7 @@
 header nav {
     display: flex;
     width: 100%;
-    border-bottom: 4px solid #1060a5;
+    border-bottom: 4px solid var(--secondary-color);
     border-radius: 20px;
 }
 
@@ -48,18 +38,18 @@ header nav .nav-menu ul{
 
 header nav .nav-menu ul a {
     text-decoration: none;
-    color: black;
+    color: var(--text-color);
 }
 
 header nav .nav-menu ul li{
     padding: 8px;
     margin: 2px;
-    border-bottom: 4px solid #dcc43d;
-    font-size: 1.4em;
+    border-bottom: 4px solid var(--terciary-color);
+    font-size: 1.3em;
 }
 
 header nav .nav-menu ul li:hover {
-    border-bottom: 4px solid #1060a5;
+    border-bottom: 4px solid var(--secondary-color);
     cursor: pointer;
     transform: scale(1.02);
 }
@@ -89,7 +79,7 @@ h1 {
     padding: 15px;
     min-width: 180px;
     flex: 1;
-    border: 1px solid #1060a5;
+    border: 1px solid var(--secondary-color);
     box-shadow: 1px 1px;
     border-radius: 5px;
     margin-bottom: 10px;
@@ -104,8 +94,8 @@ h1 {
 }
 
 .card-owner{
-    background-color: #1060a5;
-    color: white;
+    background-color: var(--secondary-color);
+    color: var(--background-color);
     width: fit-content;
     padding: 5px;
     margin-bottom: 5px;
@@ -119,7 +109,7 @@ h1 {
 
 .info h3 {
     margin-bottom: 20px;
-    border-bottom: 2px solid #1060a5;
+    border-bottom: 2px solid var(--secondary-color);
 }
 
 .info_item {
@@ -128,7 +118,7 @@ h1 {
     min-width: 20%;
     flex: 0 0 1;
     margin: 0 5px 5px 0;
-    background-color:#9acbe7;
+    background-color:var(--primary-color);
     box-shadow: 1px 1px;
 }
 
@@ -145,7 +135,7 @@ Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
 }
 
 .list a {
-    color: black;
+    color: var(--text-color);
     text-decoration: none;
 }
 
@@ -153,17 +143,17 @@ Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
     width: 100%;
     display: flex;
     flex-direction: row;
-    border-bottom: 1px solid #9acbe7;
+    border-bottom: 1px solid var(--primary-color);
     padding: 10px 0;
     justify-content: space-between;
 }
 
 .list-item:hover {
-    background-color: #9acbe7;
+    background-color: var(--primary-color);
 }
 
 .list-item .item, .list-title .item{
-    border-left: 1px solid #9acbe7;
+    border-left: 1px solid var(--primary-color);
     padding-left: 2px;
 }
 
@@ -205,8 +195,8 @@ Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
     padding: 15px;
     font-size: 18px;
     width: 100px;
-    color: #0a1929;
-    background-color: #9acbe7;
+    color: var(--secondary-color);
+    background-color: var(--primary-color);
     border-radius: 20px;
     border: 0;
     margin-top: 5px;
@@ -214,8 +204,8 @@ Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
 
 .search-panel button:hover {
     cursor: pointer;
-    background-color: #1060a5;
-    color: #9acbe7;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
 }
 
 
@@ -226,8 +216,8 @@ footer {
     height: 120px;
     align-items: center;
     flex-direction: column;
-    background-color: #1060a5;
-    color: #9acbe7;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
     width: 100%;
 }
 
@@ -242,7 +232,7 @@ footer {
 }
 
 .msg div{
-    color: #ffffff;
+    color: var(--background-color);
     text-align: center;
     font-size: 20px;
     width: 60%;
@@ -251,7 +241,7 @@ footer {
 }
 
 .msg .success {
-    background-color: #dcc43d;
+    background-color: var(--terciary-color);
 }
 
 .msg .error{
@@ -265,9 +255,9 @@ footer {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
+    background-color: var(--background-color);
     padding: 25px;
-    border: 10px outset #677b96;
+    border: 10px outset var(--secondary-color);
     min-width: 280px;
     text-align: center;
     opacity: 0;
@@ -281,7 +271,7 @@ footer {
 }
 
 .popup h2{
-    border-bottom: 1px solid #0a1929;
+    border-bottom: 1px solid var(--secondary-color);
 }
 
 .popup p {
@@ -290,7 +280,7 @@ footer {
 }
 
 .popup button{
-    background-color: #9acbe7;
+    background-color: var(--primary-color);
     border: 0;
     padding: 5px 20px;
     border-radius: 20px;
@@ -298,8 +288,8 @@ footer {
 }
 
 .popup button:hover{
-    background-color: #1060a5;
-    color: #9acbe7;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
     cursor: pointer;
 }
 
@@ -317,7 +307,7 @@ footer {
     min-width: 180px;
     min-height: 80px;
     flex: 1;
-    border: 1px solid black;
+    border: 1px solid var(--text-color);
     box-shadow: 1px 1px;
     border-radius: 5px;
     margin-bottom: 10px;
@@ -341,8 +331,8 @@ footer {
 /*Estilo de elementos específicos*/
 .tag {
     display: inline-block;
-    background: #1060a5;
-    color: white;
+    background: var(--secondary-color);
+    color: var(--background-color);
     padding: 4px 10px;
     border-radius: 12px;
     cursor: pointer;
@@ -352,10 +342,10 @@ footer {
 @media print {
     body {
       font-size: 12pt;
-      color: #000;
+      color: var(--text-color);
     }
     h1 {
-      color: blue;
+      color: var(--secondary-color);
     }
     .nao-imprimir {
       display: none;
