@@ -95,7 +95,7 @@ h1 {
 
 .card-owner{
     background-color: var(--secondary-color);
-    color: var(--background-color);
+    color: var(--secondary-contrast);
     width: fit-content;
     padding: 5px;
     margin-bottom: 5px;
@@ -119,6 +119,7 @@ h1 {
     flex: 0 0 1;
     margin: 0 5px 5px 0;
     background-color:var(--primary-color);
+    color: var(--primary-contrast);
     box-shadow: 1px 1px;
 }
 
@@ -195,7 +196,7 @@ Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
     padding: 15px;
     font-size: 18px;
     width: 100px;
-    color: var(--secondary-color);
+    color: var(--primary-contrast);
     background-color: var(--primary-color);
     border-radius: 20px;
     border: 0;
@@ -205,7 +206,7 @@ Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
 .search-panel button:hover {
     cursor: pointer;
     background-color: var(--secondary-color);
-    color: var(--primary-color);
+    color: var(--secondary-contrast);
 }
 
 
@@ -217,35 +218,41 @@ footer {
     align-items: center;
     flex-direction: column;
     background-color: var(--secondary-color);
-    color: var(--primary-color);
+    color: var(--secondary-contrast);
     width: 100%;
 }
 
 /*Flesh Messages*/
-.msg {
-    margin-top: 10px;
-    height: fit-content;
+main .msg {
+    position: fixed;
+    bottom: 6px;
+    left: 6px;
+    min-height: 100px;
+    width: fit-content;
     display: flex;
     justify-content: center;
-    align-content: center;
-    width: 100%;
+    align-items: center;
+    background-color: (--terciary-color);
+    color: var(--terciary-contrast);
 }
 
-.msg div{
-    color: var(--background-color);
-    text-align: center;
-    font-size: 20px;
-    width: 60%;
-    padding: 5px;
-    border-radius: 20px;
+main .msg .close{
+    float: right;
+    cursor: pointer;
+    width: fit-content;
+    padding: 4px;
+    font-size: 1.2em;
 }
 
-.msg .success {
+main .msg .success {
     background-color: var(--terciary-color);
+    padding: 15px;
+
 }
 
-.msg .error{
+main .msg .error{
     background-color: #8B0000;
+    padding: 15px;
 }
 
 /* Popup */
@@ -281,6 +288,7 @@ footer {
 
 .popup button{
     background-color: var(--primary-color);
+    color: var(--primary-contrast);
     border: 0;
     padding: 5px 20px;
     border-radius: 20px;
@@ -289,7 +297,7 @@ footer {
 
 .popup button:hover{
     background-color: var(--secondary-color);
-    color: var(--primary-color);
+    color: var(--secondary-color);
     cursor: pointer;
 }
 
@@ -332,10 +340,15 @@ footer {
 .tag {
     display: inline-block;
     background: var(--secondary-color);
-    color: var(--background-color);
+    color: var(--secondary-contrast);
     padding: 4px 10px;
     border-radius: 12px;
     cursor: pointer;
+}
+
+.link-standard {
+    color: var(--secondary-color);
+    text-decoration: underline;
 }
 
 /*Estilo para impressão*/

@@ -23,11 +23,15 @@
         <style>
         /* CSS dinâmico injetado aqui */
         :root {
+            <?php getContrastTextColor($congregacao->config->conjunto_cores['terciaria']); ?>
             --primary-color: {{$congregacao->config->conjunto_cores['primaria'] ?? '#677b96'}};
             --secondary-color: {{$congregacao->config->conjunto_cores['secundaria'] ?? '#0a1929'}};
             --terciary-color: {{$congregacao->config->conjunto_cores['terciaria'] ?? '#f44916'}};
             --background-color: {{$congregacao->config->conjunto_cores['fundo'] ?? 'ffffff'}};
             --text-color: {{$congregacao->config->conjunto_cores['texto'] ?? '000000'}};
+            --primary-contrast: {{ getContrastTextColor($congregacao->config->conjunto_cores['primaria'])}};
+            --secondary-contrast: {{ getContrastTextColor($congregacao->config->conjunto_cores['secundaria'])}};
+            --terciary-contrast: {{ getContrastTextColor($congregacao->config->conjunto_cores['terciaria'])}};
 
             --text-font: {{$congregacao->config->font_family}};
         }
@@ -58,7 +62,7 @@
         <main>
             @if (session('msg'))
                 <div class="msg">
-                    <div class="success"> {{ session('msg') }}</div>
+                    <div class="success"><div class="close"><i class="bi bi-x"></i></div> {{ session('msg') }}</div>
                 </div>
             @endif
             @if (session('msg-error'))
@@ -83,8 +87,12 @@
             $(document).ready(function(){
             
                 $('#telefone').mask('(00) 00000-0000');
-           
+                
+                $('.msg .close').click(function(){
+                    this.closest('.msg').remove();
+                })
             });
+
         </script>
         
         @stack('scripts')

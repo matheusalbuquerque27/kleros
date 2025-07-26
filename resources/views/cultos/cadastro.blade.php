@@ -43,7 +43,7 @@
                 </div>
                 <div class="form-item">
                     <div class="card">
-                        <p>Não encontrou o evento? <a href="/eventos/adicionar">Cadastrar aqui</a></p>
+                        <p>Não encontrou o evento? <a class="link-standard" href="/eventos/adicionar">Cadastrar aqui</a></p>
                     </div>
                     
                 </div>

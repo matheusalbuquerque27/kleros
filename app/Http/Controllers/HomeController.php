@@ -88,7 +88,7 @@ class HomeController extends Controller
             Se não houver ele envia uma informação vazia, com mensagem sobre a ausencia de visitantes.
         */
 
-        $visitantes = Visitante::whereDate('data_visita', date("Y/m/d"))->get();
+        $visitantes = Visitante::where('congregacao_id', $congregacao->id)->whereDate('data_visita', date("Y/m/d"))->get();
 
         if($visitantes->isEmpty()) {
             $visitantes = '';

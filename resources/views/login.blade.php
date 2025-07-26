@@ -10,9 +10,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Teko" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: {{$congregacao->config->conjunto_cores['primaria'] ?? '#677b96'}};
+            --secondary-color: {{$congregacao->config->conjunto_cores['secundaria'] ?? '#0a1929'}};
+            --terciary-color: {{$congregacao->config->conjunto_cores['terciaria'] ?? '#f44916'}};
+            --background-color: {{$congregacao->config->conjunto_cores['fundo'] ?? 'ffffff'}};
+            --text-color: {{$congregacao->config->conjunto_cores['texto'] ?? '000000'}};
+
+            --text-font: {{$congregacao->config->font_family}};
+        }
+    </style>
 </head>
 
-<body class="body-login" style="background-image: url('{{ asset(optional($congregacao->config)?->banner_caminho) }}')">
+<body id="login" style="background-image: url('{{ asset(optional($congregacao->config)?->banner_caminho) }}')">
     <div class="login-container">
         <img src="{{ asset(optional($congregacao->config)?->logo_caminho) }}" alt="{{$congregacao->denominacao->nome}}" class="logo">
         <h2>Login</h2>

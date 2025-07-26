@@ -34,16 +34,27 @@
     padding: 8px;
     min-width: 150px;
     margin: 5px;
-    background-color: #9acbe7;
+    background-color: var(--primary-color);
+    color: var(--primary-contrast);
     border: 0;
     border-radius: 20px;
 }
 
 .form-control input[type="submit"]:hover, .btn:hover{
     cursor: pointer;
-    background-color: #1060a5;
-    color: #9acbe7;
+    background-color: var(--secondary-color);
+    color: var(--secondary-contrast);
 
+}
+
+.form-control .form-square {
+    border: 1px solid #727272;
+    width: 70%;
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: space-around;
 }
 
 .form-control .form-options {

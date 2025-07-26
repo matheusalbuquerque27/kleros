@@ -46,11 +46,16 @@
             </div>
             <div class="form-item">
                 <label for="geracao_cultos">Geração de cultos: </label>
-                
-                <input type="radio" id="automatica" name="geracao_cultos" value="1" checked>
-                <label for="automatica">Automática</label>
-                <input type="radio" id="manual" name="geracao_cultos" value="0">
-                <label for="manual">Manual</label>
+                <div class="form-square">
+                    <div>
+                        <input type="radio" id="automatica" name="geracao_cultos" value="1" checked>
+                        <label for="automatica">Automática</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="manual" name="geracao_cultos" value="0">
+                        <label for="manual">Manual</label>
+                    </div>
+                </div>
             </div>
             <div class="form-options">
                 <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> Adicionar Evento</button>

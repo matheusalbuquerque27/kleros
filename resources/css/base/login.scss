@@ -1,8 +1,11 @@
-.body-login {
+* {
     margin: 0;
     padding: 0;
-    font-family: var(--text-font);
-    font-size: 20px;
+    font-family: var(--text-font);      
+}
+
+#login {
+    
     /*background-color: #9acbe7;*/
     background-position: center;
     height: 100vh;
@@ -11,7 +14,7 @@
     align-items: center;
 }
 
-.login-container {
+#login .login-container {
     background-color: rgba(255, 255, 255, 0.9);;
     padding: 40px;
     border-radius: 8px;
@@ -20,52 +23,54 @@
     max-width: 400px;
 }
 
-.login-container img {
+#login .login-container img {
     display: block;
     margin: 0 auto 20px;
     width: 150px; /* Adjust as needed */
     height: auto; /* Maintain aspect ratio */
 }
 
-.login-container h2 {
+#login .login-container h2 {
     text-align: center;
     margin-bottom: 24px;
     color: #333;
 }
 
-.login-container label {
+#login .login-container label {
     display: block;
     margin-bottom: 6px;
     color: #555;
 }
 
-.login-container input[type="text"],
-.login-container input[type="password"] {
+#login .login-container input[type="text"],
+#login .login-container input[type="password"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 18px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 1em;
 }
 
-.login-container button {
+#login .login-container button {
     width: 100%;
-    color: black;
+    color: var(--primary-contrast);
     border: none;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-family: Teko, sans-serif;
-    font-size: 20px;
+    font-family: var(--text-font);
+    font-size: 18px;
     padding: 8px;
     min-width: 150px;
     margin: 5px;
-    background-color: #9acbe7;
+    background-color: var(--primary-color);
     border-radius: 20px;
 }
 
-.login-container button:hover {
+#login .login-container button:hover {
     cursor: pointer;
-    background-color: #1060a5;
-    color: white;
+    background-color: var(--secondary-color);
+    color: var(--secondary-contrast);
 }
+

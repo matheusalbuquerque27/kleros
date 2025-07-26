@@ -30,10 +30,10 @@ class EventoController extends Controller
     }
 
     public function create() {
-
+        $congregacao = app('congregacao');
         $grupos = Grupo::all();
 
-        return view('eventos/cadastro', ['grupos' => $grupos]);
+        return view('eventos/cadastro', ['grupos' => $grupos, 'congregacao' => $congregacao]);
     }
 
     public function store(Request $request) {

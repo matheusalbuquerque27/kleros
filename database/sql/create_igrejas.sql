@@ -39,3 +39,6 @@ insert into departamentos (congregacao_id, nome, descricao) values
 
 insert into membros (congregacao_id, nome, data_nascimento, telefone, ativo) values (1, 'Joana da Silva', '1990-01-01', '123456789', true);
 insert into grupos (congregacao_id, nome, descricao, membro_id) values (1, 'Shekinah', 'Grupo de Mulheres', 1);
+
+insert into situacao_visitantes (titulo) values ('Membro de outra denominação'), ('Não congrega no momento'),
+('Não Evangélico'), ('Sem Religião')

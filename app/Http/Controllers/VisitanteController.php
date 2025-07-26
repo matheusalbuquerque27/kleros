@@ -35,6 +35,7 @@ class VisitanteController extends Controller
         $visitante->data_visita = $request->data_visita;
         $visitante->sit_visitante_id = $request->situacao;
         $visitante->observacoes = $request->observacoes;
+        $visitante->congregacao_id = app('congregacao')->id;
         $visitante->created_at = date('Y-m-d H:i:s');
         $visitante->updated_at = date('Y-m-d H:i:s');
 

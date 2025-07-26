@@ -140,6 +140,18 @@
         <button id="ministerios" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
 
+    <div class="info" id="departamentos">
+        <h3>Departamentos</h3>
+        <a href="/departamentos/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo departamento</button></a>
+        <button id="departamentos" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
+    </div>
+
+    <div class="info" id="celulas">
+        <h3>GCA</h3>
+        <a href="/celulas/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo GCA</button></a>
+        <button id="celulas" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir relatório</button>
+    </div>
+
 </div>
 
 @endsection

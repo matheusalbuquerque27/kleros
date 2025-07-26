@@ -21,13 +21,14 @@ class CultoController extends Controller
     }
 
     public function create() {
+        $congregacao = app('congregacao');
 
         $cultos = Culto::whereDate('data_culto', '>', date('Y/m/d'))->limit(4)->orderBy('data_culto', 'asc')->get();
         $cultos = $cultos->isEmpty() ? '' : $cultos;
 
         $eventos = Evento::all();
 
-        return view('cultos/cadastro', ['cultos' => $cultos, 'eventos' => $eventos]);
+        return view('cultos/cadastro', ['cultos' => $cultos, 'eventos' => $eventos, 'congregacao' => $congregacao]);
     }
 
     public function agenda() {

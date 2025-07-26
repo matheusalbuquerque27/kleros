@@ -126,125 +126,6 @@ h1 {
     text-align: center;
 }
 
-/*Cards*/
-.card-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-.card {
-    padding: 15px;
-    min-width: 180px;
-    flex: 1;
-    border: 1px solid #1060a5;
-    box-shadow: 1px 1px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-.card-date{
-    font-weight: 500;
-}
-
-.card-title {
-    font-size: 1.5em;
-}
-
-.card-owner{
-    background-color: #1060a5;
-    color: white;
-    width: fit-content;
-    padding: 5px;
-    margin-bottom: 5px;
-    border-radius: 5px;
-}
-
-/*Buttons*/
-.btn-confirm {
-    width: 100%;
-    padding: 8px;
-    background-color: #1060a5;
-    color: #fff;
-    font-size: 20px;
-    border-radius: 20px;
-    border: 0;
-    margin: 20px 0;
-    cursor: pointer;
-}
-
-.btn-edit{
-    width: fit-content;
-    padding: 5px;
-    background-color: #9acbe7;
-    border-radius: 20px;
-    cursor: pointer;
-}
-
-.btn-options {
-    font-size: 1em;
-    padding: 4px;
-    min-width: 120px;
-    margin: 2px;
-    background-color: #e9f8fd;
-    border: 0;
-    border-radius: 20px;
-}
-
-.btn-options:hover {
-    background-color: #1060a5;
-    color: #9acbe7;
-    cursor: pointer;
-}
-
-.float-btn {
-    font-size: 2.2em;
-    height: 60px;
-    width: 60px;
-    border: 0;
-    position: sticky;
-    bottom: 10px;
-    float: right;
-    background-color: transparent;
-    color: #0a1929;
-    cursor: pointer;
-}
-
-
-/*Div Info*/
-.info {
-    padding: 15px;
-}
-
-.info h3 {
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ffffff;
-}
-
-.info_item {
-    margin-top: 15px;
-    padding: 25px 50px;
-    flex: 0 0 1;
-    background-color:#677b96;
-    box-shadow: 1px 1px;
-    margin: 0 5px;
-}
-
-.info ul {
-    list-style: none;
-    padding: 0;
-}
-
-.info ul li {
-    padding: 5px;
-    margin: 5px;
-    background-color: #495a6f;
-    color: white;
-    font-size: 1.1em;
-    width: fit-content;
-    border-radius: 5px;
-}
-
 /*Listas
 
 Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
@@ -292,45 +173,6 @@ Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
     width: 40%;
 }
 
-/*search-panel*/
-.search-panel {
-    border-radius: 20px;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
-.search-panel-item {
-    padding: 15px;
-}
-
-.search-panel-item input[type='date'],
-.search-panel-item input[type='text'],
-.search-panel-item select{
-    width: 180px;
-    height: 40px;
-    font-size: 18px;
-    padding: 5px;
-    margin: 2px;
-}
-
-.search-panel button {
-    padding: 15px;
-    font-size: 18px;
-    width: 100px;
-    color: #0a1929;
-    background-color: #9acbe7;
-    border-radius: 20px;
-    border: 0;
-    margin-top: 5px;
-}
-
-.search-panel button:hover {
-    cursor: pointer;
-    background-color: #1060a5;
-    color: #9acbe7;
-}
-
 
 /* Footer*/
 footer {
@@ -342,33 +184,6 @@ footer {
     background-color: #677b96;
     color: #9acbe7;
     width: 100%;
-}
-
-/*Flesh Messages*/
-.msg {
-    margin-top: 10px;
-    height: fit-content;
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    width: 100%;
-}
-
-.msg div{
-    color: #ffffff;
-    text-align: center;
-    font-size: 20px;
-    width: 60%;
-    padding: 5px;
-    border-radius: 20px;
-}
-
-.msg .success {
-    background-color: #dcc43d;
-}
-
-.msg .error{
-    background-color: #8B0000;
 }
 
 /* Popup */

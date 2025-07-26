@@ -54,7 +54,7 @@
                 @else
                     <div class="info_item center">
                         <b>Nenhum culto cadastrado. </b>
-                        <p><a href="/cultos/cultos">Registrar culto</a></p>
+                        <p><a class="link-standard" href="/cultos/cultos">Registrar culto</a></p>
                     </div>
                 @endif
             </div>
