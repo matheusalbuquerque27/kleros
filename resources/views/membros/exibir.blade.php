@@ -18,11 +18,11 @@
                     </div>
                     <div class="form-item">
                         <label for="rg">RG: </label>
-                        <div class="card-title">{{$membro->rg}}</div>
+                        <div class="card-title">{{$membro->rg ?? '-'}}</div>
                     </div>
                     <div class="form-item">
                         <label for="cpf">CPF: </label>
-                        <div class="card-title">{{$membro->cpf}}</div>
+                        <div class="card-title">{{$membro->cpf ?? '-'}}</div>
                     </div>
                     <div class="form-item">
                         <label for="data_nascimento">Data de nascimento: </label>
@@ -31,23 +31,23 @@
                                 $timestamp = strtotime($membro->data_nascimento);
                                 $data_nascimento = date('d/m/Y',$timestamp);
                             @endphp
-                            {{$data_nascimento}}</div>
+                            {{$data_nascimento ?? '-'}}</div>
                     </div>
                     <div class="form-item">
                         <label for="telefone">Telefone: </label>
-                        <div class="card-title">{{$membro->telefone}}</div>
+                        <div class="card-title">{{$membro->telefone ?? '-'}}</div>
                     </div>
                     <div class="form-item">
                         <label for="estado_civil">Estado civil: </label>
-                        <div class="card-title">{{$membro->estadoCiv?->titulo}}</div>
+                        <div class="card-title">{{optional($membro->estadoCiv)->titulo  ?? '-'}}</div>
                     </div>
                     <div class="form-item">
                         <label for="escolaridade">Escolaridade: </label>
-                        <div class="card-title">{{$membro->escolaridade?->titulo}}</div>
+                        <div class="card-title">{{optional($membro->escolaridade)->titulo ?? '-'}}</div>
                     </div>
                     <div class="form-item">
                         <label for="profissao">Profissão: </label>
-                        <div class="card-title">{{$membro->profissao}}</div>
+                        <div class="card-title">{{$membro->profissao ?? '-'}}</div>
                     </div>
                 </div>
             </div>{{-- form-control --}}
@@ -57,15 +57,19 @@
                 <div class="form-block">
                     <div class="form-item">
                         <label for="endereco">Endereço: </label>
-                        <div class="card-title">{{$membro->endereco}}</div>
+                        <div class="card-title">{{$membro->endereco ?? '-'}}</div>
                     </div>
                     <div class="form-item">
                         <label for="numero">Número: </label>
-                        <div class="card-title">{{$membro->numero}}</div>
+                        <div class="card-title">{{$membro->numero ?? '-'}}</div>
                     </div>
                     <div class="form-item">
                         <label for="bairro">Bairro: </label>
-                        <div class="card-title">{{$membro->bairro}}</div>
+                        <div class="card-title">{{$membro->bairro ?? '-'}}</div>
+                    </div>
+                    <div class="form-item">
+                        <label for="cep">CEP: </label>
+                        <div class="card-title">{{$membro->cep ?? '-'}}</div>
                     </div>
                 </div>
             </div>{{-- form-control --}}
@@ -80,20 +84,25 @@
                                 $timestamp = strtotime($membro->data_batismo);
                                 $data_batismo = date('d/m/Y',$timestamp);
                             @endphp
-                            {{$data_batismo}}
+                            {{$data_batismo ?? '-'}}
                         </div>
                     </div>
                     <div class="form-item">
                         <label for="denominacao_origem">Denominação de Origem: </label>
-                        <div class="card-title">{{$membro->denominacao_origem}}</div>
+                        <div class="card-title">{{$membro->denominacao_origem  ?? '-'}}</div>
                     </div>
                     <div class="form-item">
                         <label for="ministerio">Ministério: </label>
-                        <div class="card-title">{{$membro->ministerio?->titulo}}</div>
+                        <div class="card-title">{{optional($membro->ministerio)->titulo  ?? '-'}}</div>
                     </div>
                     <div class="form-item">
-                        <label for="ministerio">Data de Consagração: </label>
-                        <div class="card-title">00/00/0000</div>
+                        <label for="data_consagracao">Data de Consagração: </label>
+                        <div class="card-title">
+                            @php
+                                $timestamp = strtotime($membro->data_consagracao);
+                                $data_consagracao = date('d/m/Y',$timestamp);
+                            @endphp
+                            {{$data_consagracao ?? '-'}}</div>
                     </div>
                 </div>
             </div>{{-- form-control --}}
@@ -103,11 +112,11 @@
                 <div class="form-block">
                     <div class="form-item">
                         <label for="nome_paterno">Nome paterno: </label>
-                        <div class="card-title">{{$membro->nome_paterno}}</div>
+                        <div class="card-title">{{$membro->nome_paterno ?? '-'}}</div>
                     </div>
                     <div class="form-item">
                         <label for="nome_materno">Nome materno: </label>
-                        <div class="card-title">{{$membro->nome_materno}}</div>
+                        <div class="card-title">{{$membro->nome_materno ?? '-'}}</div>
                     </div>
                 </div>
             </div>{{-- form-control --}}

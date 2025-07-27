@@ -56,7 +56,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::post('/membros', [MembroController::class, 'store'])->name('membros.store');
     Route::get('/membros/adicionar', [MembroController::class, 'adicionar'])->name('membros.adicionar'); 
     Route::get('/membros/painel', [MembroController::class, 'painel'])->name('membros.painel');
-    Route::post('/membros/search', [MembroController::class, 'search']);
+    Route::post('/membros/search', [MembroController::class, 'search'])->name('membros.search');
     Route::get('/membros/exibir/{id}', [MembroController::class, 'show']);
     Route::get('/membros/editar/{id}', [MembroController::class, 'editar']);
     Route::put('/membros/{id}', [MembroController::class, 'update'])->name('membros.atualizar');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Congregacao;
 use App\Models\Escolaridade;
 use App\Models\EstadoCiv;
 use App\Models\Membro;
@@ -11,8 +12,14 @@ use Illuminate\Http\Request;
 
 class MembroController extends Controller
 {
-    public function adicionar() {
+    private $congregacao;
 
+    public function __construct()
+    {
+        $this->congregacao = app('congregacao');
+    }
+
+    public function adicionar() {
         $escolaridade = Escolaridade::all();
         $ministerios = Ministerio::all();
         $estado_civil = EstadoCiv::all();
@@ -32,6 +39,7 @@ class MembroController extends Controller
             '*.required' => 'Nome, Telefone e Data de nascimento são obrigatórios'
         ]);        
 
+        $membro->congregacao_id = $this->congregacao->id;
         $membro->nome = $request->nome;
         $membro->rg = $request->rg;
         $membro->cpf = $request->cpf;

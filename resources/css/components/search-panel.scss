@@ -1,0 +1,38 @@
+/*search-panel*/
+.search-panel {
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.search-panel-item {
+    padding: 15px;
+}
+
+.search-panel-item input[type='date'],
+.search-panel-item input[type='text'],
+.search-panel-item select{
+    width: 180px;
+    height: 40px;
+    font-size: 18px;
+    padding: 5px;
+    margin: 2px;
+}
+
+.search-panel button {
+    padding: 15px;
+    font-size: 18px;
+    color: var(--primary-contrast);
+    background-color: var(--primary-color);
+    border-radius: 20px;
+    border: 0;
+    margin-top: 10px;
+    white-space: nowrap;
+}
+
+.search-panel button:hover {
+    cursor: pointer;
+    background-color: var(--secondary-color);
+    color: var(--secondary-contrast);
+}

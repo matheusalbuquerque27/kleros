@@ -12,7 +12,7 @@
             <p>{{$item->endereco}}, {{$item->numero}} - {{$item->bairro}}</p>
         </div>
         <div class="item item-1">
-            <p>{{$item->ministerio->titulo}}</p>
+            <p>{{optional($item->ministerio)->titulo}}</p>
         </div>
         
     </div><!--list-item-->

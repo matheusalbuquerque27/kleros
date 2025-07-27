@@ -51,10 +51,10 @@
                     <p>{{$item->titulo}}</p>
                 </div>
                 <div class="item item-1">
-                    <p>{{$item->grupo->nome}}</p>
+                    <p>{{optional($item->grupo)->nome ?? 'Geral'}}</p>
                 </div>
                 <div class="item item-15">
-                    <p>{{$item->descricao}}</p>
+                    <p>{{$item->descricao ?? 'Sem descrição'}}</p>
                 </div>
             </div><!--list-item-->
             @endforeach       

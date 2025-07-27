@@ -51,10 +51,10 @@
                 </div>
                 <div class="nav-menu">
                     <ul>
-                        <a href="/"><li>Controle</li></a>
-                        <a href="/membros/painel"><li>Membros</li></a>
-                        <a href="/cadastros"><li>Cadastros</li></a>
-                        <a href="/visitantes/adicionar"><li>Visitantes</li></a>
+                        <a href="/"><li><i class="bi bi-kanban"></i> Controle</li></a>
+                        <a href="/membros/painel"><li><i class="bi bi-people"></i> Membros</li></a>
+                        <a href="/cadastros"><li><i class="bi bi-journals"></i> Cadastros</li></a>
+                        <a href="/visitantes/adicionar"><li><i class="bi bi-people-fill"></i> Visitantes</li></a>
                     </ul>
                 </div>
             </nav>
@@ -70,6 +70,28 @@
                     <div class="error"> {{ session('msg-error') }}</div>
                 </div>
             @endif
+            <nav class="left-navbar">
+                <div class="menu-btn">
+                    <span title="Tutoriais" id="btn-tutorial"><i class="bi bi-question-octagon"></i></span>
+                    <span title="Configurações" id="btn-config"><i class="bi bi-gear"></i></span>
+                    <span title="Menu Principal" id="btn-menu"><i class="bi bi-list"></i></span>
+                </div>
+                <ul class="menu-content">
+                    <li><span title="Controle"><i class="bi bi-kanban"></i></span><span>Controle Geral</span></li>
+                    <li><span title="Membros"><i class="bi bi-people"></i></span>Membros</span></li>
+                    <li><span title="Eventos"><i class="bi bi-calendar-event"></i></span><span>Eventos</span></li>
+                    <li><span title="Cultos"><i class="bi bi-bell"></i></span><span>Cultos</span></li>
+                    <li><span title="Visitantes"><i class="bi bi-people-fill"></i></span><span>Visitantes</span></li>
+                    <li><span title="Departamentos"><i class="bi bi-intersect"></i></span><span>Departamentos</span></li>
+                    <li><span title="GCA - Células"><i class="bi bi-cup-hot"></i></span><span>GCA - Células</span></li>
+                    <li><span title="Financeiro"><i class="bi bi-currency-exchange"></i></span><span>Financeiro</span></li>
+                    <li><span title="Notícias"><i class="bi bi-newspaper"></i></span><span>Notícias</span></li>
+                    <li><span title="Recados"><i class="bi bi-chat-left-dots"></i></span><span>Recados</span></li>
+                    <li><span title="Tutoriais"><i class="bi bi-question-octagon"></i></span><span>Tutoriais</span></li>
+                    <li><span title="Plugins"><i class="bi bi-nut"></i></span><span>Plugins</span></li>
+                    <li><span title="Configurações"><i class="bi bi-gear"></i></span><span>Configurações</span></li>
+                </ul>
+            </nav>
             @yield('content')
         </main>
         <footer>
@@ -87,9 +109,31 @@
             $(document).ready(function(){
             
                 $('#telefone').mask('(00) 00000-0000');
+                $('#cep').mask('00000-000');
                 
                 $('.msg .close').click(function(){
                     this.closest('.msg').remove();
+                })
+
+                //Variável de controle do menu
+                let menuToggle = false;
+
+                $('#btn-menu').click(function(){
+                    if(menuToggle){
+                        $('.menu-content').hide();
+                        $('.left-navbar').animate({
+                            width: '40px'
+                        },200)
+                    } else {
+                        $('.menu-content').show();
+                        $('.left-navbar').animate({
+                            width: '260px'
+                        },200)
+                    }
+
+                    //Alterar o valor do Toggle
+                    menuToggle = !menuToggle;
+
                 })
             });
 

@@ -8,6 +8,7 @@ use App\Models\EncontroCelula;
 use App\Models\Reuniao;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,12 @@ class AppServiceProvider extends ServiceProvider
             'reuniao' => Reuniao::class,
             'encontro_celula' => EncontroCelula::class,
         ]);
+
+        View::composer('layouts.*', function ($view) {
+            if (app()->bound('congregacao')) {
+                $view->with('congregacao', app('congregacao'));
+            }
+        });
 
         app()->singleton('modo_admin', function () {
             return request()->getHost() === 'kleros.local';

@@ -11,6 +11,14 @@ use DateTime;
 
 class EventoController extends Controller
 {
+    private $congregacao;
+
+    public function __construct()
+    {
+        $this->congregacao = app('congregacao');
+    }
+
+
     public function index() {
 
         $eventos = Evento::all();
@@ -30,16 +38,14 @@ class EventoController extends Controller
     }
 
     public function create() {
-        $congregacao = app('congregacao');
         $grupos = Grupo::all();
 
-        return view('eventos/cadastro', ['grupos' => $grupos, 'congregacao' => $congregacao]);
+        return view('eventos/cadastro', ['grupos' => $grupos]);
     }
 
     public function store(Request $request) {
 
         $evento = new Evento;
-        $congregacao_id = session('congregacao_id');
 
         $request->validate([
             'titulo' => 'required',
@@ -48,7 +54,7 @@ class EventoController extends Controller
             '*.required' => 'Título e Data de início são obrigatórios'
         ]);
 
-        $evento->congregacao_id = $congregacao_id;
+        $evento->congregacao_id = $this->congregacao->id;
         $evento->titulo = $request->titulo;
         $evento->grupo_id = $request->grupo_id;
         $evento->descricao = $request->descricao;
@@ -69,7 +75,7 @@ class EventoController extends Controller
             ?  $request->data_encerramento 
             : $request->data_inicio;
             
-        if($evento->save() && $evento->recorrente) {
+        if($evento->save() && !$evento->recorrente) {
             if($geracao_cultos){
                 $startDate = $evento->data_inicio;                
                 $finalDate = $evento->data_encerramento;
@@ -101,14 +107,14 @@ class EventoController extends Controller
             $data_inicial = $request->data_inicial;
             $data_final = $request->data_final;
 
-            $eventos = Evento::whereDate('data_inicio', '<=', date('Y/m/d'))->whereDate('data_inicio', '>=', $data_inicial)->whereDate('data_inicio', '<=', $data_final)->get();
+            $eventos = Evento::where('recorrente', false)->whereDate('data_inicio', '<=', date('Y/m/d'))->whereDate('data_inicio', '>=', $data_inicial)->whereDate('data_inicio', '<=', $data_final)->get();
             $eventos = $eventos->isEmpty() ? '' : $eventos;
 
         } else if($origin == 'agenda'){
             $titulo = $request->titulo;
             $grupo_id = $request->grupo;
 
-            $eventos = Evento::whereDate('data_inicio', '>=', date('Y/m/d'))->where('titulo', $titulo)->orWhere('grupo_id', $grupo_id)->get();
+            $eventos = Evento::where('recorrente', false)->whereDate('data_inicio', '>=', date('Y/m/d'))->where('titulo', $titulo)->orWhere('grupo_id', $grupo_id)->get();
             $eventos = $eventos->isEmpty() ? '' : $eventos;
         }
 

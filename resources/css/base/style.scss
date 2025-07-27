@@ -9,13 +9,12 @@
 header nav {
     display: flex;
     width: 100%;
-    border-bottom: 4px solid var(--secondary-color);
-    border-radius: 20px;
+    border-bottom: 2px solid var(--secondary-color);
 }
 
 header nav .nav-logo img{
-    width: 135px;
-    padding: 10px;
+    width: 120px;
+    padding: 4px 10px;
 }
 
 header nav .nav-logo img:hover{
@@ -44,23 +43,79 @@ header nav .nav-menu ul a {
 header nav .nav-menu ul li{
     padding: 8px;
     margin: 2px;
-    border-bottom: 4px solid var(--terciary-color);
     font-size: 1.3em;
 }
 
 header nav .nav-menu ul li:hover {
-    border-bottom: 4px solid var(--secondary-color);
     cursor: pointer;
     transform: scale(1.02);
 }
 
 /*Parte do body*/
 
+main {
+    display:flex;
+    flex-direction: row;
+}
+
+.left-navbar {
+    width: 40px;
+    // aberto 260px de width
+    height: 100%;
+    position: relative;
+}
+
+.left-navbar .menu-btn{
+    position: absolute;
+    top: 10px;
+    width: 60px;
+    color: var(--text-color);
+    font-size: 30px;
+    border-radius: 50%;
+    padding-left: 5px;
+}
+
+.left-navbar .menu-btn span {
+    padding: 0 5px;
+}
+
+.left-navbar .menu-btn span:hover {
+    cursor: pointer;
+    color: var(--secondary-color);
+}
+
+.left-navbar ul {
+    margin-top: 140px;
+    background-color: var(--secondary-color);
+    color: var(--secondary-contrast);
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 10px 0;
+    display: none;
+}
+
+.left-navbar ul li {
+    padding: 5px;
+    font-size: 1.3em;
+    text-align: left;
+    padding-left: 35px;
+}
+
+.left-navbar ul li:hover {
+    cursor: pointer;
+    color: var(--primary-color);
+}
+
+.left-navbar ul li span {
+    padding-right: 10px;
+}
+
 .container {
     margin-top: 25px;
     padding: 15px;
     font-size: 1.1em;
     min-height: 400px;
+    width: 100%;
 }
 
 h1 {
@@ -170,46 +225,6 @@ Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
     width: 40%;
 }
 
-/*search-panel*/
-.search-panel {
-    border-radius: 20px;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
-.search-panel-item {
-    padding: 15px;
-}
-
-.search-panel-item input[type='date'],
-.search-panel-item input[type='text'],
-.search-panel-item select{
-    width: 180px;
-    height: 40px;
-    font-size: 18px;
-    padding: 5px;
-    margin: 2px;
-}
-
-.search-panel button {
-    padding: 15px;
-    font-size: 18px;
-    width: 100px;
-    color: var(--primary-contrast);
-    background-color: var(--primary-color);
-    border-radius: 20px;
-    border: 0;
-    margin-top: 5px;
-}
-
-.search-panel button:hover {
-    cursor: pointer;
-    background-color: var(--secondary-color);
-    color: var(--secondary-contrast);
-}
-
-
 /* Footer*/
 footer {
     display: flex;
@@ -223,34 +238,35 @@ footer {
 }
 
 /*Flesh Messages*/
-main .msg {
+.msg {
     position: fixed;
     bottom: 6px;
-    left: 6px;
-    min-height: 100px;
-    width: fit-content;
+    left: 10px;
+    min-height: 150px;
+    min-width: 250px;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: (--terciary-color);
     color: var(--terciary-contrast);
+    font-size: 1.2em;
 }
 
-main .msg .close{
+.msg .close{
     float: right;
     cursor: pointer;
     width: fit-content;
     padding: 4px;
-    font-size: 1.2em;
+    font-size: 1.5em;
 }
 
-main .msg .success {
+.msg .success {
     background-color: var(--terciary-color);
     padding: 15px;
 
 }
 
-main .msg .error{
+.msg .error{
     background-color: #8B0000;
     padding: 15px;
 }

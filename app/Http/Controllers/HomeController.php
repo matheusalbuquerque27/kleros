@@ -14,8 +14,11 @@ use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
+    private $congregacao;
+
     public function __construct() {
         $this->middleware('auth')->except(['login', 'authenticate']);
+        $this->congregacao = app('congregacao');
     }
 
     public function login() {
@@ -25,9 +28,7 @@ class HomeController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        $congregacao = app('congregacao');
-
-        return view('login', ['congregacao' => $congregacao]);
+        return view('login', ['congregacao' => $this->congregacao]);
     }
 
     public function authenticate(Request $request) {
@@ -77,7 +78,7 @@ class HomeController extends Controller
             Se não houver ele envia uma informação vazia, com mensagem sobre a ausencia de eventos.
         */
         
-        $eventos = Evento::whereDate('data_inicio', '>', date('Y/m/d'))->limit(4)->orderBy('data_inicio', 'asc')->get();
+        $eventos = Evento::where('recorrente', false)->whereDate('data_inicio', '>', date('Y/m/d'))->limit(4)->orderBy('data_inicio', 'asc')->get();
         
         if($eventos->isEmpty()) {
             $eventos = '';

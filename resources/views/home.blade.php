@@ -93,7 +93,7 @@
                             {{$data->format('d/m')}}
                         </div>
                         <div class="card-title">{{$item->titulo}}</div>
-                        <div class="card-owner">{{$item->grupo->nome}}</div>
+                        <div class="card-owner">{{optional($item->grupo)->nome ?? 'Geral'}}</div>
                         <div class="card-description">{{$item->descricao}}</div>
                     </div>
                     @endforeach

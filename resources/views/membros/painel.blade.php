@@ -23,8 +23,8 @@
                     <label>Nome/Telefone: </label>
                     <input type="text" name="" placeholder="Nome ou telefone" id="chave">
                 </div>
-                <div class="form-control">
-                    <button class="submit" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
+                <div>
+                    <button id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
                     <a href="/membros/adicionar"><button type="button"><i class="bi bi-plus-circle"></i> Novo</button></a>
                     <button class="imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
                 </div>
@@ -63,9 +63,7 @@
                     <p>{{$item->endereco}}, {{$item->numero}} - {{$item->bairro}}</p>
                 </div>
                 <div class="item item-1">
-                    @isset($item->ministerio->titulo)
-                        <p>{{ $item->ministerio->titulo }}</p>
-                    @endisset
+                    <p>{{ optional($item->ministerio)->titulo ?? 'Não informado'}}</p>
                 </div>
                 
             </div><!--list-item-->
@@ -90,11 +88,11 @@
             let filtro = $('#filtro').val();
             let chave = $('#chave').val();
 
-            //$.post(url, data, success, dataType);
-
             $.post('/membros/search', { _token, filtro, chave }, function(response){
                 
                 var view = response.view
+                alert(response)
+                alert(view)
 
                 $('#content').html(view);
 

@@ -25,12 +25,25 @@
             </div>
             <div class="form-item">
                 <label for="grupo_id">Grupo responsável: </label>
-                <select name="grupo_id" id="grupo_id" required>
+                <select name="grupo_id" id="grupo_id">
                     <option value="">Grupo responsável</option>
                     @foreach ($grupos as $item)
                     <option value="{{$item->id}}">{{$item->nome}}</option>
                     @endforeach
                 </select>
+            </div>
+            <div class="form-item">
+                <label for="evento_recorrente">Natureza do evento: </label>
+                <div class="form-square">
+                    <div>
+                        <input type="radio" id="regular" name="evento_recorrente" value="1" checked>
+                        <label for="regular">Regular (cadastro único)</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="especifico" name="evento_recorrente" value="0">
+                        <label for="especifico">Específico (cadastro individual)</label>
+                    </div>
+                </div>
             </div>
             <div class="form-item">
                 <label for="data_inicio">Data de início: </label>
@@ -43,6 +56,19 @@
             <div class="form-item">
                 <label for="descricao">Descrição: </label>
                 <textarea name="descricao" placeholder="Descrição do evento"></textarea>
+            </div>
+            <div class="form-item">
+                <label for="requer_inscricao">Tipo de Acesso: </label>
+                <div class="form-square">
+                    <div>
+                        <input type="radio" id="automatica" name="requer_inscricao" value="0" checked>
+                        <label for="automatica">Público - Livre</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="manual" name="requer_inscricao" value="1">
+                        <label for="manual">Privado - Requer confirmação</label>
+                    </div>
+                </div>
             </div>
             <div class="form-item">
                 <label for="geracao_cultos">Geração de cultos: </label>

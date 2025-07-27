@@ -77,8 +77,8 @@
                     <input type="text" name="bairro" id="bairro" placeholder="Bairro" value="{{ old('bairro') }}">
                 </div>
                 <div class="form-item">
-                    <label for="cep">Bairro: </label>
-                    <input type="text" name="cep" id="cep" placeholder="Bairro" value="{{ old('bairro') }}">
+                    <label for="cep">CEP: </label>
+                    <input type="text" name="cep" id="cep" placeholder="00000-000" value="{{ old('bairro') }}">
                 </div>
             </div>
             <div class="form-block">
