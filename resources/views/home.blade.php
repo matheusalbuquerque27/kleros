@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Geral - AD Jerusalém')
+@section('title', 'Painel Geral')
 
 @section('content')
     <div class="container">

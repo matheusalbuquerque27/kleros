@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Histórico de Visitantes - AD Jerusalém')
+@section('title', 'Histórico de Visitantes')
 
 @section('content')
 

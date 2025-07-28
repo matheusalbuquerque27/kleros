@@ -73,6 +73,10 @@
                     <input type="text" name="numero" id="numero" placeholder="Número" value="{{ old('numero') }}">
                 </div>
                 <div class="form-item">
+                    <label for="complemento">Complemento: </label>
+                    <input type="text" name="complemento" id="complemento" placeholder="Complemento" value="{{ old('complemento') }}">
+                </div>
+                <div class="form-item">
                     <label for="bairro">Bairro: </label>
                     <input type="text" name="bairro" id="bairro" placeholder="Bairro" value="{{ old('bairro') }}">
                 </div>

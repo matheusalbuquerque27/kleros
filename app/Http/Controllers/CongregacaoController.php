@@ -53,4 +53,12 @@ class CongregacaoController extends Controller
 
         return view('congregacoes.config', ['config' => $config]);
     }
+
+    public function update($id)
+    {
+        $congregacao = app('congregacao');
+        $config = CongregacaoConfig::find($id);
+
+        return view('congregacoes.edicao', ['config' => $config, 'congregacao' => $congregacao]);
+    }
 }

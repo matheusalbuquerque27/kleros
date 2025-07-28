@@ -75,6 +75,10 @@ main {
     padding-left: 5px;
 }
 
+.left-navbar .menu-btn a {
+    color: var(--text-color);
+}
+
 .left-navbar .menu-btn span {
     padding: 0 5px;
 }
@@ -335,6 +339,11 @@ footer {
     box-shadow: 1px 1px;
     border-radius: 5px;
     margin-bottom: 10px;
+}
+
+.image-small{
+    width: 200px;
+    height: auto;
 }
 
 /*Limita uma div a 80%*/

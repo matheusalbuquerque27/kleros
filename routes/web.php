@@ -16,6 +16,7 @@ use App\Http\Controllers\DenominacaoController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\AdminController;
+use App\Models\CongregacaoConfig;
 
 Route::domain('kleros.local')->group(function () {
     
@@ -32,6 +33,7 @@ Route::domain('kleros.local')->group(function () {
     Route::get('/denominacoes/{id}', [DenominacaoController::class, 'show'])->name('denominacoes.show');
     Route::delete('/denominacoes/{id}', [DenominacaoController::class, 'destroy'])->name('denominacoes.destroy');
     
+    //Rotas de cadastro
     Route::get('/congregacoes', [CongregacaoController::class, 'index'])->name('congregacoes.index');
     Route::get('/checkin/denominacao', [DenominacaoController::class, 'create'])->name('denominacoes.create');
     Route::get('/checkin', [CongregacaoController::class, 'create'])->name('congregacoes.cadastro');
@@ -49,6 +51,9 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::post('/recuperar-senha/{token}', [HomeController::class, 'updatePassword'])->name('login.updatePassword');
     Route::post('/login', [HomeController::class, 'authenticate']);
     Route::get('/logout', function () {Auth::logout();return redirect()->route('login');})->name('logout');
+
+    //Rotas para já cadastradas
+    Route::get('/configuracoes/{id}', [CongregacaoController::class, 'update'])->name('configuracoes.atualizar');
     
     Route::get('/', [HomeController::class, 'index'])->name('index');
     Route::get('/cadastros', [CadastroController::class, 'index'])->name('cadastros.index');

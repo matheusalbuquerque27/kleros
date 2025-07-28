@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Cadastros- AD Jerusalém')
+@section('title', 'Cadastros')
 
 @section('content')
 

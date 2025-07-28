@@ -45,6 +45,7 @@ return new class extends Migration
             $table->string('profissao')->nullable();
             $table->string('endereco')->nullable();
             $table->string('numero')->nullable();
+            $table->string('complemento')->nullable();
             $table->string('bairro')->nullable();
             $table->string('cep')->nullable();
             $table->date('data_batismo')->nullable();

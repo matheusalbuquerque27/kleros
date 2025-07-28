@@ -73,7 +73,7 @@
             <nav class="left-navbar">
                 <div class="menu-btn">
                     <span title="Tutoriais" id="btn-tutorial"><i class="bi bi-question-octagon"></i></span>
-                    <span title="Configurações" id="btn-config"><i class="bi bi-gear"></i></span>
+                    <a href="{{route('configuracoes.atualizar', $congregacao->id)}}"><span title="Configurações" id="btn-config"><i class="bi bi-gear"></i></span></a>
                     <span title="Menu Principal" id="btn-menu"><i class="bi bi-list"></i></span>
                 </div>
                 <ul class="menu-content">
