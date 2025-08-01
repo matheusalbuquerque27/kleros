@@ -44,23 +44,25 @@
 
             <div id="content">
                 @foreach ($cultos as $item)
-                <div class="list-item">
-                    <div class="item item-1">
-                        <p>{{$item->data_culto}}</p>
-                    </div>
-                    <div class="item item-15">
-                        <p>{{$item->preletor}}</p>
-                    </div>
-                    <div class="item item-1">
-                        <p>{{$item->quant_visitantes}}</p>
-                    </div>
-                    <div class="item item-1">
-                        <p>@if ($item->evento)
-                                {{$item->evento->titulo}}
-                            @else Nenhum @endif
-                        </p>
-                    </div>
-                </div><!--list-item-->
+                    <a href="{{route('cultos.complete', $item->id)}}">
+                    <div class="list-item">
+                        <div class="item item-1">
+                            <p>{{$item->data_culto}}</p>
+                        </div>
+                        <div class="item item-15">
+                            <p>{{$item->preletor}}</p>
+                        </div>
+                        <div class="item item-1">
+                            <p>{{$item->quant_visitantes}}</p>
+                        </div>
+                        <div class="item item-1">
+                            <p>@if ($item->evento)
+                                    {{$item->evento->titulo}}
+                                @else Nenhum @endif
+                            </p>
+                        </div>
+                    </div><!--list-item-->
+                    </a>
                 @endforeach
             </div>
             

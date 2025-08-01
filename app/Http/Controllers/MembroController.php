@@ -8,6 +8,7 @@ use App\Models\Escolaridade;
 use App\Models\EstadoCiv;
 use App\Models\Membro;
 use App\Models\Ministerio;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MembroController extends Controller
@@ -45,6 +46,7 @@ class MembroController extends Controller
         $membro->cpf = $request->cpf;
         $membro->data_nascimento = $request->data_nascimento;
         $membro->telefone = $request->telefone;
+        $membro->email = $request->email;
         $membro->estado_civ_id = $request->estado_civil;
         $membro->escolaridade_id = $request->escolaridade;
         $membro->profissao = $request->profissao;
@@ -60,14 +62,24 @@ class MembroController extends Controller
         $membro->updated_at = date('Y-m-d H:i:s');
 
         $msg = $request->nome.' se tornou membro da AD Jerusalém.';
-        $membro->save();
+        if($membro->save()){
+            $user = new User;
+
+            $user->name = $request->nome;
+            $user->email = $request->email;
+            $user->password = bcrypt('1q2w3e4r');
+            $user->congregacao_id = $this->congregacao->id;
+            $user->membro_id = $membro->id;
+
+            $user->save();
+        }
 
         return redirect()->route('membros.adicionar')->with('msg', $msg);
     }
 
     public function painel() {
 
-        $membros = Membro::all();
+        $membros = Membro::paginate(10);
         $congregacao = app('congregacao');
         
         return view('/membros/painel', ['membros' => $membros, 'congregacao' => $congregacao]);

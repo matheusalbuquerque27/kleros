@@ -10,23 +10,33 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Teko" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Saira" rel="stylesheet">
 
     <style>
+        /* CSS dinâmico injetado aqui */
         :root {
+            
             --primary-color: {{$congregacao->config->conjunto_cores['primaria'] ?? '#677b96'}};
             --secondary-color: {{$congregacao->config->conjunto_cores['secundaria'] ?? '#0a1929'}};
             --terciary-color: {{$congregacao->config->conjunto_cores['terciaria'] ?? '#f44916'}};
-            --background-color: {{$congregacao->config->conjunto_cores['fundo'] ?? 'ffffff'}};
-            --text-color: {{$congregacao->config->conjunto_cores['texto'] ?? '000000'}};
-
+            --primary-contrast: {{ getContrastTextColor($congregacao->config->conjunto_cores['primaria'])}};
+            --secondary-contrast: {{ getContrastTextColor($congregacao->config->conjunto_cores['secundaria'])}};
+            --terciary-contrast: {{ getContrastTextColor($congregacao->config->conjunto_cores['terciaria'])}};
             --text-font: {{$congregacao->config->font_family}};
+
+            --background-color: {{$congregacao->config->tema->propriedades['cor-fundo']}};
+            --text-color: {{$congregacao->config->tema->propriedades['cor-texto']}};
+            --border-style: {{$congregacao->config->tema->propriedades['borda']}}
         }
-    </style>
+        </style>
 </head>
 
-<body id="login" style="background-image: url('{{ asset(optional($congregacao->config)?->banner_caminho) }}')">
+<body id="login" style="background-image: url({{ asset('storage/'.$congregacao->config->banner_caminho) }})">
     <div class="login-container">
-        <img src="{{ asset(optional($congregacao->config)?->logo_caminho) }}" alt="{{$congregacao->denominacao->nome}}" class="logo">
+        <img src="{{ asset('storage/'.$congregacao->config->logo_caminho) }}" alt="{{$congregacao->denominacao->nome}}" class="logo">
         <h2>Login</h2>
         <div class="login-form">
             <form action="/login" method="POST">

@@ -122,4 +122,9 @@ class EventoController extends Controller
 
         return response()->json(['view' => $view]);
     }
+
+    public function form_criar(){
+        $grupos = Grupo::all();
+        return view('eventos/includes/form_criar', ['grupos' => $grupos]);
+    }
 }

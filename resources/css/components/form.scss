@@ -22,11 +22,26 @@
     width: 30%;
 }
 
-.form-control .form-item input[type="text"], .form-control .form-item input[type="tel"], .form-control .form-item textarea,  .form-control .form-item input[type="date"], .form-control .form-item input[type="email"], .form-control .form-item input[type="url"], .form-control .form-item select {
+.form-control .form-item input[type="text"], .form-control .form-item input[type="tel"], .form-control .form-item textarea,  .form-control .form-item input[type="date"], .form-control .form-item input[type="email"], .form-control .form-item input[type="url"], .form-control .form-item select{
     width: 70%;
     font-size: 1.1em;
-    padding: 4px;
+    padding: 4px 10px;
     box-sizing: border-box;
+    border-radius: var(--border-style);
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.form-control .form-item input[type="number"] {
+    padding: 10px;
+    font-size: 1.3em;
+    border-radius: var(--border-style);
+    max-width: 60px;
+    margin: 0px 5px;
+}
+
+.form-control .form-item textarea {
+    padding: 10px;
 }
 
 .form-control input[type="submit"], .btn{
@@ -38,7 +53,7 @@
     background-color: var(--primary-color);
     color: var(--primary-contrast);
     border: 0;
-    border-radius: 20px;
+    border-radius: var(--border-style);
 }
 
 .form-control input[type="submit"]:hover, .btn:hover{
@@ -56,9 +71,14 @@
     font-size: 1.1em;
     display: flex;
     justify-content: space-around;
+    border-radius: var(--border-style);
 }
 
 .form-control .form-options {
     margin: 40px 0;
     text-align: center;
+}
+
+.input-false{
+    border: 0px;
 }

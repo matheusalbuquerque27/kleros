@@ -35,7 +35,7 @@
     
     <div id="list" class="list">
         <div class="list-title">
-            <div class="item-1">
+            <div class="item-2">
                 <b>Nome</b>
             </div>
             <div class="item-1">
@@ -52,9 +52,8 @@
             @foreach ($membros as $item)
             <a href="/membros/exibir/{{$item->id}}">
             <div class="list-item">
-                
-                <div class="item item-1">
-                    <p>{{$item->nome}}</p>
+                <div class="item item-2">
+                    <p><img src="{{ $item->foto ? asset('storage/' . $item->foto) : asset('storage/images/newuser.png') }}" class="avatar-icon" alt="Avatar">{{$item->nome}}</p>
                 </div>
                 <div class="item item-1">
                     <p>{{$item->telefone}}</p>
@@ -68,8 +67,11 @@
                 
             </div><!--list-item-->
             </a>
-            @endforeach   
-        </div>{{-- content --}}    
+            @endforeach
+        </div>{{-- content --}} 
+    </div>
+    <div class="pagination">
+        {{ $membros->links('pagination::default') }}
     </div>
 </div>
 

@@ -59,7 +59,7 @@ return new class extends Migration
         Schema::create('temas', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->string('css_caminho');
+            $table->json('propriedades');
         });
 
         Schema::create('congregacao_configs', function (Blueprint $table) {

@@ -48,7 +48,7 @@
     padding: 10px;
     margin-bottom: 18px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: var(--border-style);
     font-size: 1em;
 }
 
@@ -65,7 +65,7 @@
     min-width: 150px;
     margin: 5px;
     background-color: var(--primary-color);
-    border-radius: 20px;
+    border-radius: var(--border-style);
 }
 
 #login .login-container button:hover {

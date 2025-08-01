@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Congregacao extends Model
 {
@@ -44,4 +45,14 @@ class Congregacao extends Model
     {
         return $this->hasMany(Visitante::class, 'congregacao_id');
     }
+    public function cidade(){
+        return $this->BelongsTo(Cidade::class, 'cidade_id');
+    }
+    public function estado(){
+        return $this->BelongsTo(Estado::class, 'estado_id');
+    }
+    public function pais(){
+        return $this->BelongsTo(Pais::class, 'pais_id');
+    }
+
 }

@@ -10,7 +10,7 @@
             <h3>Dados Gerais</h3>
             <div class="card-container">
                 <div class="info_item center">
-                    <b>Data de Hoje: </b>
+                    <b><i class="bi bi-calendar-check"></i> Data de Hoje: </b>
                     <p>{{date('d/m/Y')}}</p>
                     <p>@php
                             $diasDaSemana = [
@@ -30,7 +30,7 @@
                 </div>
                 @if ($culto_hoje)
                 <div class="info_item center">
-                    <b>Preletor: </b>
+                    <b><i class="bi bi-mic"></i> Preletor: </b>
                     @if($culto_hoje[0]->preletor)
                         <p>{{$culto_hoje[0]->preletor}}</p>
                         <p>
@@ -54,7 +54,7 @@
                 @else
                     <div class="info_item center">
                         <b>Nenhum culto cadastrado. </b>
-                        <p><a class="link-standard" href="/cultos/cultos">Registrar culto</a></p>
+                        <p><a class="link-standard" href="{{route('cultos.create')}}">Registrar culto</a></p>
                     </div>
                 @endif
             </div>

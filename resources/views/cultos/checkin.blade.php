@@ -15,9 +15,9 @@
 @endif
 
 <div class="container">
-    <h1>Cadastrar Culto</h1>
+    <h1>Agendar Culto</h1>
     <div class="info" id="registrar">
-        <h3>Registrar culto</h3>
+        <h3>Agendamento de Culto</h3>
         <form action="/cultos" method="post">
             @csrf
             <div class="form-control">
@@ -43,9 +43,8 @@
                 </div>
                 <div class="form-item">
                     <div class="card">
-                        <p>Não encontrou o evento? <a class="link-standard" href="/eventos/adicionar">Cadastrar aqui</a></p>
+                        <p>Não encontrou o evento? <a onclick="abrirJanelaModal('{{route('eventos.form_criar')}}')" class="link-standard">Cadastrar aqui</a></p>
                     </div>
-                    
                 </div>
                 <div class="form-options">
                     <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> Registrar Culto</button>

@@ -14,10 +14,12 @@
 .search-panel-item input[type='text'],
 .search-panel-item select{
     width: 180px;
-    height: 40px;
+    height: auto;
     font-size: 18px;
     padding: 5px;
     margin: 2px;
+    border-radius: var(--border-style);
+    background-color: var(--background-color);
 }
 
 .search-panel button {
@@ -25,7 +27,7 @@
     font-size: 18px;
     color: var(--primary-contrast);
     background-color: var(--primary-color);
-    border-radius: 20px;
+    border-radius: var(--border-style);
     border: 0;
     margin-top: 10px;
     white-space: nowrap;

@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Congregacao;
 use App\Models\CongregacaoConfig;
 use App\Models\Denominacao;
+use App\Models\Cidade;
+use App\Models\Estado;
+use App\Models\Pais;
 use Illuminate\Http\Request;
 
 class CongregacaoController extends Controller
@@ -36,9 +39,10 @@ class CongregacaoController extends Controller
             '*.required' => 'Nome, Endereço e Telefone são obrigatórios'
         ]);
 
-        $congregacao->nome = $request->nome;
+        $congregacao->identificacao = $request->nome;
         $congregacao->endereco = $request->endereco;
         $congregacao->telefone = $request->telefone;
+        $congregacao->email = $request->email;
         $congregacao->created_at = now();
         $congregacao->updated_at = now();
 
@@ -54,11 +58,57 @@ class CongregacaoController extends Controller
         return view('congregacoes.config', ['config' => $config]);
     }
 
-    public function update($id)
+    public function editar($id)
     {
         $congregacao = app('congregacao');
         $config = CongregacaoConfig::find($id);
+        $cidades = Cidade::all();
+        $estados = Estado::all();
+        $paises = Pais::all();
 
-        return view('congregacoes.edicao', ['config' => $config, 'congregacao' => $congregacao]);
+        return view('congregacoes.edicao', ['config' => $config, 'congregacao' => $congregacao, 'cidades' => $cidades, 'estados' => $estados, 'paises' => $paises]);
+    }
+
+    public function update(Request $request, $id){
+        
+        $congregacao = Congregacao::findOrFail($id);
+
+        $congregacao->identificacao = $request->identificacao;
+        $congregacao->cnpj = $request->cnpj;
+        $congregacao->email = $request->email;
+        $congregacao->telefone = $request->telefone;
+        $congregacao->cidade_id = $request->cidade;
+        $congregacao->estado_id = $request->estado;
+        $congregacao->pais_id = $request->pais;
+        $congregacao->save();
+
+        if ($request->hasFile('logo')) {
+            // Salva o arquivo e pega o caminho (ex: 'logos/abcd1234.png')
+            $path = $request->file('logo')->store('images', 'public');
+
+            // Atualiza o campo no banco de dados
+            $congregacao->config->update([
+                'logo_caminho' => $path, // salva o caminho completo relativo à pasta storage
+            ]);
+        }
+
+        if ($request->hasFile('banner')) {
+            // Salva o arquivo e pega o caminho (ex: 'logos/abcd1234.png')
+            $path = $request->file('banner')->store('images', 'public');
+
+            // Atualiza o campo no banco de dados
+            $congregacao->config->update([
+                'banner_caminho' => $path, // salva o caminho completo relativo à pasta storage
+            ]);
+        }
+
+        $congregacao->config->update([
+            'conjunto_cores' => $request->conjunto_cores,
+            'font_family' => $request->fonte,
+            'tema_id' => $request->tema,
+        ]);
+
+        return redirect()->back()->with('success', 'Configurações gerais foram alteradas com sucesso.');
+
     }
 }

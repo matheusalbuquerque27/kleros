@@ -13,10 +13,10 @@ use App\Http\Controllers\CongregacaoController;
 use App\Http\Controllers\IgrejaController;
 use App\Http\Controllers\CelulaController;
 use App\Http\Controllers\DenominacaoController;
+use App\Http\Controllers\TutorialController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\AdminController;
-use App\Models\CongregacaoConfig;
 
 Route::domain('kleros.local')->group(function () {
     
@@ -53,11 +53,14 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/logout', function () {Auth::logout();return redirect()->route('login');})->name('logout');
 
     //Rotas para já cadastradas
-    Route::get('/configuracoes/{id}', [CongregacaoController::class, 'update'])->name('configuracoes.atualizar');
+    Route::get('/configuracoes/{id}', [CongregacaoController::class, 'editar'])->name('configuracoes.editar');
+    Route::put('/configuracoes/{id}', [CongregacaoController::class, 'update'])->name('configuracoes.atualizar');
     
     Route::get('/', [HomeController::class, 'index'])->name('index');
     Route::get('/cadastros', [CadastroController::class, 'index'])->name('cadastros.index');
     
+    Route::get('/tutoriais', [TutorialController::class, 'index'])->name('tutoriais.index');
+
     Route::post('/membros', [MembroController::class, 'store'])->name('membros.store');
     Route::get('/membros/adicionar', [MembroController::class, 'adicionar'])->name('membros.adicionar'); 
     Route::get('/membros/painel', [MembroController::class, 'painel'])->name('membros.painel');
@@ -69,7 +72,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     
     Route::post('/visitantes', [VisitanteController::class, 'store']);
     Route::get('/visitantes/adicionar', [VisitanteController::class, 'create'])->name('visitantes.adicionar');
-    Route::get('/visitantes/historico', [VisitanteController::class, 'historico']);
+    Route::get('/visitantes/historico', [VisitanteController::class, 'historico'])->name('visitantes.historico');
     Route::post('/visitantes/search', [VisitanteController::class, 'search']);
     Route::get('/visitantes/{id}', [VisitanteController::class, 'show'])->name('visitantes.show');
     Route::delete('/visitantes/{id}', [VisitanteController::class, 'destroy'])->name('visitantes.destroy');
@@ -91,19 +94,20 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/eventos/agenda', [EventoController::class, 'agenda'])->name('eventos.agenda');
     Route::delete('/eventos/{id}', [EventoController::class, 'destroy'])->name('eventos.destroy');
     Route::put('/eventos/{id}', [EventoController::class, 'update'])->name('eventos.update');
-    Route::get('/eventos/{id}', [EventoController::class, 'show'])->name('eventos.show');
+    Route::get('/eventos/novo', [EventoController::class, 'form_criar'])->name('eventos.form_criar');
     
-    Route::get('/recados', [RecadoController::class, 'index'])->name('recados.index');
+    Route::get('/recados', [RecadoController::class, 'historico'])->name('recados.historico');
     Route::post('/recados', [RecadoController::class, 'store'])->name('recados.store');
     Route::get('/recados/adicionar', [RecadoController::class, 'create'])->name('recados.create');
+    Route::get('/recados/listar/{id}', [RecadoController::class, 'list'])->name('recados.listar');
     Route::delete('/recados/{id}', [RecadoController::class, 'destroy'])->name('recados.excluir');
     
     Route::post('/cultos', [CultoController::class, 'store'])->name('cultos.store');
     Route::get('/cultos/agenda', [CultoController::class, 'agenda'])->name('cultos.agenda');
     Route::get('/cultos/historico', [CultoController::class, 'index'])->name('cultos.historico');
     Route::post('cultos/search', [CultoController::class, 'search'])->name('cultos.search');
-    Route::get('/cultos/cultos', [CultoController::class, 'create'])->name('cultos.create');
-    Route::get('/cultos/{id}', [CultoController::class, 'show'])->name('cultos.show');
+    Route::get('/cultos/agendamento', [CultoController::class, 'create'])->name('cultos.create');
+    Route::get('/cultos/{id}', [CultoController::class, 'complete'])->name('cultos.complete');
     Route::put('/cultos/{id}', [CultoController::class, 'update'])->name('cultos.update');
     Route::delete('/cultos/{id}', [CultoController::class, 'destroy'])->name('cultos.destroy');
     
@@ -114,14 +118,14 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/ministerios/imprimir/{data}', [MinisterioController::class, 'print'])->name('ministerios.print');
     Route::put('/ministerios/{id}', [MinisterioController::class, 'update'])->name('ministerios.update');
     
-    Route::get('/celulas', [CelulaController::class, 'index'])->name('celulas.index');
+    Route::get('/celulas', [CelulaController::class, 'painel'])->name('celulas.painel');
     Route::get('/celulas/adicionar', [CelulaController::class, 'create'])->name('celulas.create');
     Route::post('/celulas', [CelulaController::class, 'store'])->name('celulas.store');
     Route::get('/celulas/{id}', [CelulaController::class, 'show'])->name('celulas.show');
     Route::put('/celulas/{id}', [CelulaController::class, 'update'])->name('celulas.update');
     Route::delete('/celulas/{id}', [CelulaController::class, 'destroy'])->name('celulas.destroy');
     
-    Route::get('/departamentos', [CongregacaoController::class, 'index'])->name('departamentos.index');
+    Route::get('/departamentos', [CongregacaoController::class, 'painel'])->name('departamentos.painel');
     Route::get('/departamentos/adicionar', [CongregacaoController::class, 'create'])->name('departamentos.create');
     Route::post('/departamentos', [CongregacaoController::class, 'store'])->name('departamentos.store');
     Route::get('/departamentos/{id}', [CongregacaoController::class, 'show'])->name('departamentos.show');

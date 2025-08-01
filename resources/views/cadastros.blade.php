@@ -15,13 +15,14 @@
                 @if ($cultos)
                     @foreach ($cultos as $item)
                     <div class="info_item">
-                        <p>@php
+                        <p><i class="bi bi-calendar-event"></i>
+                        @php
                             $data = new DateTime($item->data_culto);
                         @endphp
                         {{$data->format("d/m")}}
                         </p>
-                        <p>Preletor: {{$item->preletor}}</p>
-                        <p>Evento: @if ($item->evento_id)
+                        <p><i class="bi bi-mic"></i> Preletor: {{$item->preletor}}</p>
+                        <p><b>Evento</b>: @if ($item->evento_id)
                             {{$item->evento->titulo}}
                         @else Nenhum @endif
                         </p>
@@ -36,9 +37,10 @@
                 
             </div>
         </div>
-        <a href="/cultos/cultos"><button class="btn"><i class="bi bi-plus-circle"></i> Cadastrar culto</button></a>
-        <a href="/cultos/historico"><button class="btn"><i class="bi bi-card-list"></i> Histórico de cultos</button></a>
+        <a href="{{route('cultos.create')}}"><button class="btn"><i class="bi bi-plus-circle"></i> Agendar culto</button></a>
         <a href="/cultos/agenda"><button class="btn"><i class="bi bi-arrow-right-circle"></i> Próximos cultos</button></a>
+        <a href="{{route('cultos.complete', 'adicionar')}}"><button class="btn"><i class="bi bi-plus-circle-fill"></i> Registrar</button></a>
+        <a href="/cultos/historico"><button class="btn"><i class="bi bi-card-list"></i> Histórico</button></a>
     </div>
     <div class="info" id="eventos">
         <h3>Eventos</h3>

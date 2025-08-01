@@ -8,23 +8,27 @@
     <h1>Informações de Membro</h1>
     <form action="/membros/editar" method="post">
         @csrf
-        <div class="info">
-            <div class="form-control limit-80">
+        <div class="data-view">
+            <div class="section">
                 <h3>Informações básicas</h3>
-                <div class="form-block ">
-                    <div class="form-item">
-                        <label for="nome">Nome completo: </label>
-                        <div class="card-title tx-right">{{$membro->nome}}</div>
+                <div class="section-grid w100">
+                    <div class="field full-width horizontal">
+                        <div class="field-content">
+                            <label for="nome">Nome completo:</label>
+                            <div class="card-title">{{ $membro->nome }}</div>
+                        </div>
+                        <img class="avatar_perfil" src="{{ asset('storage/' . $membro->foto) }}" alt="Foto de perfil">
+
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="rg">RG: </label>
                         <div class="card-title">{{$membro->rg ?? '-'}}</div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="cpf">CPF: </label>
                         <div class="card-title">{{$membro->cpf ?? '-'}}</div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="data_nascimento">Data de nascimento: </label>
                         <div class="card-title">
                             @php
@@ -33,51 +37,55 @@
                             @endphp
                             {{$data_nascimento ?? '-'}}</div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="telefone">Telefone: </label>
                         <div class="card-title">{{$membro->telefone ?? '-'}}</div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="estado_civil">Estado civil: </label>
                         <div class="card-title">{{optional($membro->estadoCiv)->titulo  ?? '-'}}</div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="escolaridade">Escolaridade: </label>
                         <div class="card-title">{{optional($membro->escolaridade)->titulo ?? '-'}}</div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="profissao">Profissão: </label>
                         <div class="card-title">{{$membro->profissao ?? '-'}}</div>
                     </div>
                 </div>
-            </div>{{-- form-control --}}
+            </div>{{-- section --}}
         
-            <div class="form-control limit-80">
+            <div class="section">
                 <h3>Informações de endereço</h3>
-                <div class="form-block">
-                    <div class="form-item">
+                <div class="section-grid">
+                    <div class="field">
                         <label for="endereco">Endereço: </label>
                         <div class="card-title">{{$membro->endereco ?? '-'}}</div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="numero">Número: </label>
                         <div class="card-title">{{$membro->numero ?? '-'}}</div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
+                        <label for="complemento">Complemento: </label>
+                        <div class="card-title">{{$membro->complemento ?? '-'}}</div>
+                    </div>
+                    <div class="field">
                         <label for="bairro">Bairro: </label>
                         <div class="card-title">{{$membro->bairro ?? '-'}}</div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="cep">CEP: </label>
                         <div class="card-title">{{$membro->cep ?? '-'}}</div>
                     </div>
                 </div>
-            </div>{{-- form-control --}}
+            </div>{{-- section --}}
 
-            <div class="form-control limit-80">
-                <div class="form-block">
-                    <h3>Informações específicas</h3>
-                    <div class="form-item">
+            <div class="section">
+                <h3>Informações específicas</h3>
+                <div class="section-grid">
+                    <div class="field">
                         <label for="data_batismo">Data de Batismo: </label>
                         <div class="card-title">
                             @php
@@ -87,15 +95,15 @@
                             {{$data_batismo ?? '-'}}
                         </div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="denominacao_origem">Denominação de Origem: </label>
                         <div class="card-title">{{$membro->denominacao_origem  ?? '-'}}</div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="ministerio">Ministério: </label>
                         <div class="card-title">{{optional($membro->ministerio)->titulo  ?? '-'}}</div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="data_consagracao">Data de Consagração: </label>
                         <div class="card-title">
                             @php
@@ -105,16 +113,16 @@
                             {{$data_consagracao ?? '-'}}</div>
                     </div>
                 </div>
-            </div>{{-- form-control --}}
+            </div>{{-- section --}}
 
-            <div class="form-control limit-80">
+            <div class="section">
                 <h3>Filiação</h3>
-                <div class="form-block">
-                    <div class="form-item">
+                <div class="section-grid">
+                    <div class="field">
                         <label for="nome_paterno">Nome paterno: </label>
                         <div class="card-title">{{$membro->nome_paterno ?? '-'}}</div>
                     </div>
-                    <div class="form-item">
+                    <div class="field">
                         <label for="nome_materno">Nome materno: </label>
                         <div class="card-title">{{$membro->nome_materno ?? '-'}}</div>
                     </div>

@@ -37,6 +37,7 @@ class HomeController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->put('congregacao_id', Auth::user()->congregacao_id);
             $request->session()->put('user_id', Auth::user()->id);
+            $request->session()->put('membro_id', Auth::user()->membro_id);
             $request->session()->regenerate();
             return redirect()->route('index');
         }
@@ -52,6 +53,7 @@ class HomeController extends Controller
         }
         
         $congregacao = app('congregacao');
+        $usuario = Auth::user();
 
         /*Esta parte pega informações do culto e verifica se existe um cadastro realizado para o dia atual
 
@@ -107,6 +109,6 @@ class HomeController extends Controller
         }
 
 
-        return view('home', ['visitantes' => $visitantes, 'culto_hoje' => $culto_hoje, 'recados' => $recados, 'eventos' => $eventos, 'membros' => $membros, 'congregacao' => $congregacao]);
+        return view('home', ['visitantes' => $visitantes, 'culto_hoje' => $culto_hoje, 'recados' => $recados, 'eventos' => $eventos, 'membros' => $membros, 'congregacao' => $congregacao, 'usuario' => $usuario]);
     }
 }

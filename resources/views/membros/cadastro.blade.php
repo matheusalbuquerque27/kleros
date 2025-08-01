@@ -42,6 +42,10 @@
                     <input type="tel" id="telefone" name="telefone" placeholder="(00)00000-0000" value="{{ old('telefone') }}">
                 </div>
                 <div class="form-item">
+                    <label for="email">Email: </label>
+                    <input type="tel" id="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
+                </div>
+                <div class="form-item">
                     <label for="estado_civil">Estado civil: </label>
                     <select name="estado_civil" id="estado_civil">
                         @foreach ($estado_civil as $item)

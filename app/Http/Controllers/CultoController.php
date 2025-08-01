@@ -28,7 +28,7 @@ class CultoController extends Controller
 
         $eventos = Evento::all();
 
-        return view('cultos/cadastro', ['cultos' => $cultos, 'eventos' => $eventos, 'congregacao' => $congregacao]);
+        return view('cultos/checkin', ['cultos' => $cultos, 'eventos' => $eventos, 'congregacao' => $congregacao]);
     }
 
     public function agenda() {
@@ -47,8 +47,12 @@ class CultoController extends Controller
 
         $culto->data_culto = $request->data_culto;
         $culto->preletor = $request->preletor;
-        $culto->quant_visitantes = 0;
+        $culto->quant_visitantes = $request->quantidade_visitantes ?? 0;
         $culto->evento_id = $request->evento_id;
+        $culto->tema_sermao = $request->tema_sermao ?? null;
+        $culto->texto_base = $request->texto_base ?? null;
+        $culto->quant_adultos = $request->quantidade_adultos ?? 0;
+        $culto->quant_criancas = $request->quantidade_criancas ?? 0;
 
         $culto->save();
 
@@ -78,5 +82,40 @@ class CultoController extends Controller
         $view = view('cultos/cultos_search', ['cultos' => $cultos,  'origin' => $origin])->render();
 
         return response()->json(['view' => $view]);
+    }
+
+    public function complete($id) {
+        
+
+        if($id == 'adicionar'){
+            $culto = null;
+        } else {
+            $culto = Culto::findOrFail($id);
+        }
+
+        $congregacao = app('congregacao');
+        $eventos = Evento::all();
+
+        return view('cultos/checkout', ['culto' => $culto, 'eventos' => $eventos, 'congregacao' => $congregacao]);
+    }
+
+    public function update(Request $request, $id){
+
+        $culto = Culto::findOrFail($id);
+        
+        $culto->congregacao_id = app('congregacao')->id;
+        $culto->data_culto = $request->data_culto;
+        $culto->preletor = $request->preletor;
+        $culto->quant_visitantes = $request->quantidade_visitantes ?? 0;
+        $culto->evento_id = $request->evento_id;
+        $culto->tema_sermao = $request->tema_sermao ?? null;
+        $culto->texto_base = $request->texto_base ?? null;
+        $culto->quant_adultos = $request->quantidade_adultos ?? 0;
+        $culto->quant_criancas = $request->quantidade_criancas ?? 0;
+
+        $culto->save();
+
+        return redirect('/cadastros#cultos')->with('msg', 'Registro de culto atualizado com sucesso.');
+
     }
 }

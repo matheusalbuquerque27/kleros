@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class RecadoController extends Controller
 {
+
+    public function historico() {
+        $recados = Recado::all();
+        return view('recados/historico', ['recados' => $recados]);
+    }
     public function create() {
         $congregacao = app('congregacao');
         return view('recados/cadastro', ['congregacao' => $congregacao]);
@@ -34,6 +39,13 @@ class RecadoController extends Controller
 
             return redirect()->route('visitantes.adicionar')->with('msg', 'Um recado foi registrado!');
         }
+    }
+
+    public function list($id) {
+
+        $recados = Recado::where('culto_id', $id)->get();
+
+        return view('/recados/listar', ['recados' => $recados]);
     }
 
     public function destroy($id) {
