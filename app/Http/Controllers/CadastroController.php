@@ -9,6 +9,8 @@ use App\Models\Grupo;
 use App\Models\Ministerio;
 use App\Models\Visitante;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+
 
 class CadastroController extends Controller
 {
@@ -37,6 +39,9 @@ class CadastroController extends Controller
         $grupos = Grupo::all();
         $congregacao = app('congregacao');
 
-        return view('/cadastros', ['eventos' => $eventos, 'grupos' => $grupos, 'ministerios' => $ministerios, 'cultos' => $cultos, 'visitantes_total' => $visitantes_mes, 'congregacao' => $congregacao]);
+        $noticias = Cache::get('noticias_feed') ?? [];
+        $destaques = array_slice($noticias['guiame'] ?? [], 0, 9);
+
+        return view('/cadastros', ['eventos' => $eventos, 'grupos' => $grupos, 'ministerios' => $ministerios, 'cultos' => $cultos, 'visitantes_total' => $visitantes_mes, 'congregacao' => $congregacao, 'destaques' => $destaques]);
     }
 }

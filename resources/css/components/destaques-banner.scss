@@ -1,0 +1,60 @@
+.destaques-banner {
+    width: 100%;
+    background: var(--terciary-color);
+    padding: 0.75rem 1rem;
+    margin-top: 40px;
+    box-sizing: border-box;
+}
+
+.swiper {
+    width: 100%;
+}
+
+.swiper-slide {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: var(--border-style);
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 420px;
+    height: 100px; /* Levemente maior */
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.slide-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.75rem;
+}
+
+.slide-text {
+    flex: 1;
+    overflow: hidden;
+}
+
+.slide-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.2;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
+.slide-date {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.slide-image {
+    width: 80px;  /* Aumentado um pouco */
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}

@@ -4,6 +4,7 @@
 
 @section('content')
 
+
 <div class="container">
    
     <h1>Cadastros</h1>
@@ -153,8 +154,10 @@
         <a href="/celulas/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo GCA</button></a>
         <button id="celulas" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir relatório</button>
     </div>
+@include('noticias.includes.destaques', ['destaques' => $destaques])
+</div>{{--container--}}
 
-</div>
+
 
 @endsection
 

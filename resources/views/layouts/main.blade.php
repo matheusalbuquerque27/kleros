@@ -19,9 +19,12 @@
         
         <!-- Icons -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+        
         <!-- CSS -->
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
+
+        <!-- Swipper para interações -->
+        <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
         <style>
         /* CSS dinâmico injetado aqui */
@@ -65,7 +68,7 @@
                     <div class="login_info">
                         <a href="/logout" title="Sair"><p><i class="bi bi-box-arrow-right"></i></p></a>
                         <a href="/" title="Notificações"><p><i class="bi bi-bell-fill"></i></p></a>
-                        <img class="avatar" src="{{ asset('storage/'.optional(auth()->user()->membro)->foto) }}" title="{{auth()->user()->membro->nome}}" alt="">
+                        <img class="avatar" src="{{ asset('storage/'.optional(auth()->user()->membro)->foto) }}" title="{{optional(auth()->user()->membro)->nome}}" alt="">
                     </div>
                 </nav>
             </header>
@@ -95,7 +98,8 @@
                         <a href="{{route('departamentos.painel')}}"><li><span title="Departamentos"><i class="bi bi-intersect"></i></span><span>Departamentos</span></li></a>
                         <a href="{{route('celulas.painel')}}"><li><span title="GCA - Células"><i class="bi bi-cup-hot"></i></span><span>GCA - Células</span></li></a>
                         <a href=""><li><span title="Financeiro"><i class="bi bi-currency-exchange"></i></span><span>Financeiro</span></li></a>
-                        <a href=""><li><span title="Notícias"><i class="bi bi-newspaper"></i></span><span>Notícias</span></li></a>
+                        <a href="{{route('noticias.painel')}}"><li><span title="Notícias"><i class="bi bi-newspaper"></i></span><span>Notícias</span></li></a>
+                        <a href="{{route('podcasts.painel')}}"><li><span title="Podcasts"><i class="bi bi-mic-fill"></i></span><span>Podcasts</span></li></a>
                         <a href="{{route('recados.historico')}}"><li><span title="Recados"><i class="bi bi-chat-left-dots"></i></span><span>Recados</span></li></a>
                         <a href="{{route('tutoriais.index')}}"><li><span title="Tutoriais"><i class="bi bi-question-octagon"></i></span><span>Tutoriais</span></li></a>
                         <a href=""><li><span title="Extensões"><i class="bi bi-nut"></i></span><span>Extensões</span></li></a>
@@ -130,7 +134,12 @@
 
         <!-- Exemplo de input : <input type="tel" id="telefone" placeholder="(00) 00000-0000"> -->
 
+        <!--Scripts do swipper para interações-->
+        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
         <script>
+
+             console.log('Swiper:', typeof Swiper !== 'undefined' ? 'Loaded' : 'Not loaded');
             $(document).ready(function(){
             
                 $('#telefone').mask('(00) 00000-0000');
@@ -174,10 +183,33 @@
 
             document.getElementById('fecharModal').addEventListener('click', () => {
                 document.getElementById('janelaModal').style.display = 'none';
-            });
+            });        
 
         </script>
-        
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const destaquesLength = document.querySelectorAll('.swiper-slide').length;
+
+                console.log(destaquesLength)
+
+                const swiper = new Swiper(".mySwiper", {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                    loop: destaquesLength > 4, // ativa loop só se houver mais de 4 slides
+                    autoplay: {
+                        delay: 5000,
+                        disableOnInteraction: false,
+                    },
+                    breakpoints: {
+                        640: { slidesPerView: 2 },
+                        768: { slidesPerView: 3 },
+                        1024: { slidesPerView: 4 },
+                    },
+                });
+            });
+        </script>
+
         @stack('scripts')
     </body>
 </html>

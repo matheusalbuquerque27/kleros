@@ -6,6 +6,8 @@ use App\Models\Culto;
 use App\Models\SituacaoVisitante;
 use App\Models\Visitante;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class VisitanteController extends Controller
 {

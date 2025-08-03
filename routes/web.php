@@ -10,13 +10,14 @@ use App\Http\Controllers\MinisterioController;
 use App\Http\Controllers\RecadoController;
 use App\Http\Controllers\VisitanteController;
 use App\Http\Controllers\CongregacaoController;
-use App\Http\Controllers\IgrejaController;
 use App\Http\Controllers\CelulaController;
 use App\Http\Controllers\DenominacaoController;
 use App\Http\Controllers\TutorialController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\FeedController;
+use App\Http\Controllers\AgendaController;
 
 Route::domain('kleros.local')->group(function () {
     
@@ -141,5 +142,13 @@ Route::middleware(['web', 'dominio'])->group(function () {
 
     Route::put('/denominacoes/{id}', [DenominacaoController::class, 'update'])->name('denominacoes.update');
     
+    Route::get('/noticias', [FeedController::class, 'noticias'])->name('noticias.painel');
+    Route::get('/destaques', [FeedController::class, 'destaques'])->name('noticias.destaques');
+    Route::get('/podcasts', [FeedController::class, 'podcasts'])->name('podcasts.painel');
+
+    
+    Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda.index');
+    Route::get('/agenda/eventos', [AgendaController::class, 'eventosJson'])->name('agenda.eventos.json');
+
 });
 
