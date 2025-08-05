@@ -158,7 +158,16 @@ class MembroController extends Controller
         }
     }
     
-    public function destroy() {
-        return redirect()->route('membros.excluir');
+    public function destroy($id) {
+
+       $membro = Membro::find($id);
+
+        if (!$membro) {
+            return redirect()->route('membros.excluir')->with('msg-error', 'Membro não encontrado.');
+        }
+
+        $membro->delete();
+
+        return redirect()->route('membros.painel')->with('msg', 'Membro excluído com sucesso.');
     }
 }

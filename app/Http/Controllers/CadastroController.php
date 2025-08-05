@@ -7,6 +7,7 @@ use App\Models\Culto;
 use App\Models\Evento;
 use App\Models\Grupo;
 use App\Models\Ministerio;
+use App\Models\Reuniao;
 use App\Models\Visitante;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -16,23 +17,17 @@ class CadastroController extends Controller
 {
     public function index() {
 
-        /*Esta parte verifica se há cultos cadastrados para os próximos dias
-
-            Se não houver ele envia uma informação vazia, com mensagem sobre a ausencia de cultos.
-        */
+        //Esta parte verifica se há cultos cadastrados para os próximos dias
         $cultos = Culto::whereDate('data_culto', '>=', date('Y/m/d'))->limit(4)->orderBy('data_culto', 'asc')->get();
-        $cultos = $cultos->isEmpty() ? '' : $cultos;
-
-        /*Esta parte verifica se há eventos cadastrados para os próximos dias
-
-            Se não houver ele envia uma informação vazia, com mensagem sobre a ausencia de eventos.
-        */
+        
+        //Esta parte verifica se há eventos cadastrados para os próximos dias
         $eventos = Evento::where('recorrente', false)->whereDate('data_inicio', '>', date('Y/m/d'))->limit(4)->orderBy('data_inicio', 'asc')->get();
-        $eventos = $eventos->isEmpty() ? '' : $eventos;
+
+        //Reuniões
+        $reunioes = Reuniao::whereDate('data_inicio', '>=', date('Y/m/d H:i'))->limit(4)->orderBy('data_inicio', 'asc')->get();
 
         /*Essa parte verifica o tal de visitantes do mês, se não houver ele receberá uma string vazia*/
         $visitantes_mes = Visitante::whereMonth('data_visita', date('m'))->count();
-        $visitantes_mes = $visitantes_mes ? $visitantes_mes : '';
 
         $ministerios = Ministerio::whereNot('id', 1)->get();
 
@@ -42,6 +37,6 @@ class CadastroController extends Controller
         $noticias = Cache::get('noticias_feed') ?? [];
         $destaques = array_slice($noticias['guiame'] ?? [], 0, 9);
 
-        return view('/cadastros', ['eventos' => $eventos, 'grupos' => $grupos, 'ministerios' => $ministerios, 'cultos' => $cultos, 'visitantes_total' => $visitantes_mes, 'congregacao' => $congregacao, 'destaques' => $destaques]);
+        return view('/cadastros', ['eventos' => $eventos, 'grupos' => $grupos, 'ministerios' => $ministerios, 'cultos' => $cultos, 'visitantes_total' => $visitantes_mes, 'reunioes' => $reunioes, 'congregacao' => $congregacao, 'destaques' => $destaques]);
     }
 }

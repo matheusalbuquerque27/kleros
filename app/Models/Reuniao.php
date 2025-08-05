@@ -16,4 +16,8 @@ class Reuniao extends Model
     {
         return $this->belongsToMany(Membro::class, 'reuniao_membro', 'reuniao_id', 'membro_id');
     }
+    public function grupos()
+    {
+        return $this->morphMany(ReuniaoGrupo::class, 'reuniao');
+    }
 }

@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\LivrariaController;
+use App\Http\Controllers\ReuniaoController;
 
 Route::domain('kleros.local')->group(function () {
     
@@ -69,7 +71,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/membros/exibir/{id}', [MembroController::class, 'show']);
     Route::get('/membros/editar/{id}', [MembroController::class, 'editar']);
     Route::put('/membros/{id}', [MembroController::class, 'update'])->name('membros.atualizar');
-    Route::delete('/membros/{id}', [MembroController::class, 'destroy'])->name('membros.excluir');
+    Route::delete('/membros/{id}', [MembroController::class, 'destroy'])->name('membros.destroy');
     
     Route::post('/visitantes', [VisitanteController::class, 'store']);
     Route::get('/visitantes/adicionar', [VisitanteController::class, 'create'])->name('visitantes.adicionar');
@@ -149,6 +151,11 @@ Route::middleware(['web', 'dominio'])->group(function () {
     
     Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda.index');
     Route::get('/agenda/eventos', [AgendaController::class, 'eventosJson'])->name('agenda.eventos.json');
+
+    Route::get('/livraria', [LivrariaController::class, 'index'])->name('livraria.index');
+    Route::post('/livraria/search', [LivrariaController::class, 'search'])->name('livraria.search');
+
+    Route::get('/reunioes', [ReuniaoController::class, 'create'])->name('reunioes.create');
 
 });
 

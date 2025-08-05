@@ -221,7 +221,7 @@ h1 {
     color: var(--text-color);
     background-color: var(--background-color);
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .data-view .section {
@@ -296,12 +296,12 @@ Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
     border: 1px solid var(--primary-color);
     border-radius: var(--border-style);
     overflow: hidden;
-    font-size: 14px;
+    font-size: 0.9em;
 }
 
 .list-title {
     background-color: var(--primary-color);
-    color: #fff;
+    color: var(--primary-contrast);
     font-weight: 600;
     padding: 12px 16px;
 }
@@ -565,7 +565,7 @@ footer {
     width: 40px;
     height: 40px;
     box-sizing: border-box;
-    border: 1px solid var(--primary-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .avatar:hover {
@@ -690,4 +690,44 @@ footer {
         max-width: 100%;
     }
 
+
+}
+
+
+//Calendário e agenda
+#calendar {
+    max-width: 100%;
+    margin: 40px auto;
+    background-color: var(--background-color);
+    padding: 1rem;
+    border-radius: var(--border-style);
+    box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    font-size: 0.9em;
+}
+
+#calendar button {
+    background-color: var(--primary-color);
+    color: var(--primary-contrast);
+    border: 0;
+    margin: 1px;
+}
+
+.fc .fc-button.fc-button-active {
+    background-color: var(--secondary-color) !important;
+    color: var(--secondary-contrast) !important;
+}
+
+.fc .fc-prev-button.fc-button-active {
+    background-color: var(--secondary-color) !important;
+    color: var(--secondary-contrast) !important;
+}
+
+.fc-day-today {
+    background-color: var(--terciary-color) !important;
+}
+
+.control-btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }

@@ -1,5 +1,5 @@
 @foreach ($membros as $item)
-    <a href="/membros/exibir/{{$item->id}} class="content">
+    <a href="/membros/exibir/{{$item->id}}" class="content">
     <div class="list-item">
         
         <div class="item item-1">

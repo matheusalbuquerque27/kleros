@@ -93,8 +93,6 @@
             $.post('/membros/search', { _token, filtro, chave }, function(response){
                 
                 var view = response.view
-                alert(response)
-                alert(view)
 
                 $('#content').html(view);
 

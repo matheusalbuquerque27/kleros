@@ -6,7 +6,8 @@
 
 <div class="container">
     <h1>Informações de Membro</h1>
-    <form action="/membros/editar" method="post">
+    
+    <form action="{{ route('membros.destroy', $membro->id) }}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir?')">
         @csrf
         <div class="data-view">
             <div class="section">
@@ -17,7 +18,7 @@
                             <label for="nome">Nome completo:</label>
                             <div class="card-title">{{ $membro->nome }}</div>
                         </div>
-                        <img class="avatar_perfil" src="{{ asset('storage/' . $membro->foto) }}" alt="Foto de perfil">
+                        <img class="avatar_perfil" src="{{ asset('storage/' . ($membro->foto ?? 'images/newuser.png')) }}" alt="Foto de perfil">
 
                     </div>
                     <div class="field">
@@ -131,7 +132,8 @@
             <div class="form-options nao-imprimir limit-80">
                 <a href="/membros/editar/{{$membro->id}}"><button class="btn" type="button"><i class="bi bi-pencil-square"></i> Editar</button></a>   
                 <button class="btn imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
-                <button type="button" onclick="window.history.back()" class="btn"><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
+                <button class="btn" type="submit"><i class="bi bi-trash"></i> Remover</button>
+                <button type="button" onclick="window.history.back()" class="btn"><i class="bi bi-arrow-return-left"></i> Voltar</button>
             </div>{{-- form-options --}}
         </div><!--info-->
     </form>

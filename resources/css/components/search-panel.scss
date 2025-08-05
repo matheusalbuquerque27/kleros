@@ -7,7 +7,7 @@
 }
 
 .search-panel-item {
-    padding: 15px;
+    padding: 10px;
 }
 
 .search-panel-item input[type='date'],
@@ -15,7 +15,7 @@
 .search-panel-item select{
     width: 180px;
     height: auto;
-    font-size: 18px;
+    font-size: 1em;
     padding: 5px;
     margin: 2px;
     border-radius: var(--border-style);
@@ -23,8 +23,8 @@
 }
 
 .search-panel button {
-    padding: 15px;
-    font-size: 18px;
+    padding: 10px;
+    font-size: 1em;
     color: var(--primary-contrast);
     background-color: var(--primary-color);
     border-radius: var(--border-style);

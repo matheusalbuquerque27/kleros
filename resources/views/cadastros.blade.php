@@ -13,7 +13,7 @@
         <div class="info">
             <b>Próximos cultos previstos: </b>
             <div class="card-container">
-                @if ($cultos)
+                @if (count($cultos) > 0)
                     @foreach ($cultos as $item)
                     <div class="info_item">
                         <p><i class="bi bi-calendar-event"></i>
@@ -47,7 +47,7 @@
         <h3>Eventos</h3>
         <b>Próximos eventos previstos: </b>
         <div class="card-container">
-            @if ($eventos)
+            @if (count($eventos) > 0)
                     @foreach ($eventos as $item)
                     <div class="card">
                         <div class="card-date"><i class="bi bi-calendar-event"></i>
@@ -72,6 +72,34 @@
         <a href="/eventos/agenda"><button class="btn mg-top-10"><i class="bi bi-arrow-right-circle"></i> Próximos eventos</button></a>
     </div>
 
+    <div class="info" id="reunioes">
+        <h3>Reuniões</h3>
+        <b>Próximas reuniões previstas: </b>
+        <div class="card-container">
+            @if (count($reunioes) > 0)
+                    @foreach ($reunioes as $item)
+                    <div class="card">
+                        <div class="card-date"><i class="bi bi-calendar-event"></i>
+                            @php
+                                $data = new DateTime($item->data_inicio);
+                            @endphp
+                            <p>{{$data->format('d/m')}} - {{$data->format('H:i')}} h</p>
+                        </div>
+                        <div class="card-title">{{$item->titulo}}</div>
+                        <div class="card-description">{{$item->descricao ?? 'Sem descrição'}}</div>
+                    </div>
+                    @endforeach
+                @else
+                    <div class="card">
+                        <p><i class="bi bi-exclamation-triangle"></i> Não há reuniões previstas para os próximos dias.</p>  
+                    </div>
+                @endif
+        </div>
+        <a href="{{route('reunioes.create')}}"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Nova reunião</button></a>
+        <a href="/eventos/historico"><button class="btn mg-top-10"><i class="bi bi-card-list"></i> Histórico</button></a>
+        <a href="/eventos/agenda"><button class="btn mg-top-10"><i class="bi bi-arrow-right-circle"></i> Próximos reuniões</button></a>
+    </div>
+
     <div class="info" id="visitantes">
         <h3>Visitantes</h3>
         <div class="card-container">
@@ -94,50 +122,62 @@
         <h3>Grupos</h3>
 
         <div class="card-container">
-
-            @foreach ($grupos as $item)
-                <div class="list-title">
-                    <div class="item-15">
-                        <div class="card-title">{{$item->nome}}</div>
-                        <div class="card-description">{{$item->descricao}}</div>
+            
+            @if(count($grupos) > 0)
+                @foreach ($grupos as $item)
+                    <div class="list-title">
+                        <div class="item-15">
+                            <div class="card-title">{{$item->nome}}</div>
+                            <div class="card-description">{{$item->descricao}}</div>
+                        </div>
+                        <div class="item-2">
+                            <div class="card-description"><b>Líder: </b>{{$item->membro->nome}}</div>
+                        </div>
+                        <div class="item-15">
+                            <form method="POST">
+                                <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="delete-grupo btn-options" data-action="/grupos/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="item-2">
-                        <div class="card-description"><b>Líder: </b>{{$item->membro->nome}}</div>
-                    </div>
-                    <div class="item-15">
-                        <form method="POST">
-                            <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="delete-grupo btn-options" data-action="/grupos/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
-                        </form>
-                    </div>
+                @endforeach
+            @else
+                <div class="card">
+                    <p><i class="bi bi-exclamation-triangle"></i> Nenhum membro foi incluído até o momento.</p>  
                 </div>
-            @endforeach
+            @endif
         </div>
         <a href="/grupos/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo grupo</button></a>
         <button id="grupos" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
     <div class="info" id="ministerios">
-        <h3>Obreiros</h3>
+        <h3>Ministérios</h3>
         <div class="card-container">
-            @foreach ($ministerios as $item)
-                <div class="list-title">
-                    <div class="item-15">
-                        <div class="card-title">{{$item->titulo}}</div>
+            @if(count($ministerios) > 0)
+                @foreach ($ministerios as $item)
+                    <div class="list-title">
+                        <div class="item-15">
+                            <div class="card-title">{{$item->titulo}}</div>
+                        </div>
+                        <div class="item-2"></div>
+                        <div class="item-15">
+                            <form action="POST">
+                                @csrf
+                                @method('DELETE')
+                                <a href="/ministerios/lista/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
+                                <button class="delete-ministerio btn-options" data-action="/ministerios/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
+                            </form>
+                            
+                        </div>
                     </div>
-                    <div class="item-2"></div>
-                    <div class="item-15">
-                        <form action="POST">
-                            @csrf
-                            @method('DELETE')
-                            <a href="/ministerios/lista/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
-                            <button class="delete-ministerio btn-options" data-action="/ministerios/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
-                        </form>
-                        
-                    </div>
+                @endforeach
+            @else
+                <div class="card">
+                    <p><i class="bi bi-exclamation-triangle"></i> Nenhum membro foi designado a algum ministério.</p>  
                 </div>
-            @endforeach
+            @endif
         </div>
         <a href="/ministerios/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo ministério</button></a>
         <button id="ministerios" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>

@@ -26,6 +26,9 @@
         <!-- Swipper para interações -->
         <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
+        <!-- Link para o calendário -->
+        <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
+
         <style>
         /* CSS dinâmico injetado aqui */
         :root {
@@ -39,6 +42,7 @@
             --text-font: {{$congregacao->config->font_family}};
 
             --background-color: {{$congregacao->config->tema->propriedades['cor-fundo']}};
+            --background-contrast: {{ getContrastTextColor($congregacao->config->tema->propriedades['cor-fundo'])}};
             --text-color: {{$congregacao->config->tema->propriedades['cor-texto']}};
             --border-style: {{$congregacao->config->tema->propriedades['borda']}}
         }
@@ -90,16 +94,20 @@
                         <span title="Menu Principal" id="btn-menu"><i class="bi bi-list"></i></span>
                     </div>
                     <ul class="menu-content">
-                        <a href="{{route('index')}}"><li><span title="Controle"><i class="bi bi-kanban"></i></span><span>Controle Geral</span></li></a>
+                        <a href="{{route('index')}}"><li><span title="Visão Geral"><i class="bi bi-kanban"></i></span><span>Visão Geral</span></li></a>
                         <a href="{{route('membros.painel')}}"><li><span title="Membros"><i class="bi bi-people"></i></span>Membros</span></li></a>
+                        <a href="{{route('agenda.index')}}"><li><span title="Agenda"><i class="bi bi-calendar3"></i></span>Agenda</span></li></a>
                         <a href="{{route('eventos.agenda')}}"><li><span title="Eventos"><i class="bi bi-calendar-event"></i></span><span>Eventos</span></li></a>
                         <a href="{{route('cultos.agenda')}}"><li><span title="Cultos"><i class="bi bi-bell"></i></span><span>Cultos</span></li></a>
+                        <a href="{{route('cultos.agenda')}}"><li><span title="Reuniões"><i class="bi bi-people"></i></span><span>Reuniões</span></li></a>
+                        <a href="{{route('cultos.agenda')}}"><li><span title="Avisos"><i class="bi bi-megaphone"></i></span><span>Avisos</span></li></a>
                         <a href="{{route('visitantes.historico')}}"><li><span title="Visitantes"><i class="bi bi-people-fill"></i></span><span>Visitantes</span></li></a>
                         <a href="{{route('departamentos.painel')}}"><li><span title="Departamentos"><i class="bi bi-intersect"></i></span><span>Departamentos</span></li></a>
                         <a href="{{route('celulas.painel')}}"><li><span title="GCA - Células"><i class="bi bi-cup-hot"></i></span><span>GCA - Células</span></li></a>
                         <a href=""><li><span title="Financeiro"><i class="bi bi-currency-exchange"></i></span><span>Financeiro</span></li></a>
                         <a href="{{route('noticias.painel')}}"><li><span title="Notícias"><i class="bi bi-newspaper"></i></span><span>Notícias</span></li></a>
                         <a href="{{route('podcasts.painel')}}"><li><span title="Podcasts"><i class="bi bi-mic-fill"></i></span><span>Podcasts</span></li></a>
+                        <a href="{{route('livraria.index')}}"><li><span title="Livraria"><i class="bi bi-book"></i></span><span>Livraria</span></li></a>
                         <a href="{{route('recados.historico')}}"><li><span title="Recados"><i class="bi bi-chat-left-dots"></i></span><span>Recados</span></li></a>
                         <a href="{{route('tutoriais.index')}}"><li><span title="Tutoriais"><i class="bi bi-question-octagon"></i></span><span>Tutoriais</span></li></a>
                         <a href=""><li><span title="Extensões"><i class="bi bi-nut"></i></span><span>Extensões</span></li></a>
@@ -119,7 +127,7 @@
         <div id="janelaModal" class="modal-overlay" style="display: none;">
             <div class="modal-box">
                 <div class="scroll-container">
-                    <button id="fecharModal" class="fechar-btn">X</button>
+                    <button id="fecharModal" class="fechar-btn"><i class="bi bi-x-circle-fill"></i></button>
                     <div id="conteudoModal">
                         <!-- Aqui entra o conteúdo dos includes -->
                         @yield('modal-content')
@@ -137,9 +145,13 @@
         <!--Scripts do swipper para interações-->
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
+        <!--Script do fullcalendar para a agenda-->
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+
         <script>
 
-             console.log('Swiper:', typeof Swiper !== 'undefined' ? 'Loaded' : 'Not loaded');
+            console.log('Swiper:', typeof Swiper !== 'undefined' ? 'Loaded' : 'Not loaded');
             $(document).ready(function(){
             
                 $('#telefone').mask('(00) 00000-0000');

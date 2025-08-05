@@ -1,4 +1,4 @@
-@extends('layouts.kleros')
+@extends('layouts.main')
 
 @section('title', 'Agenda Integrada')
 
@@ -9,6 +9,20 @@
     <h1>Agenda Integrada</h1>
     <div class="info">
         <h3>Visão Geral</h3>
+        <div class="control-btn">
+            <div class="control-btn-group">
+                <h4>Alterar visão</h4>
+                <button class="btn" id="btnVisaoAnual">Visão Anual</button>
+                <button class="btn" id="btnVisaoMensal">Visão Mensal</button>
+            </div>
+            
+            <div class="control-btn-group">
+                <h4>Agendar</h4>
+                <button onclick="abrirJanelaModal('{{route('eventos.form_criar')}}')" class="btn" id="evento"><i class="bi bi-calendar-event"></i> Evento</button>
+                <button class="btn" id="culto"><i class="bi bi-bell"></i> Culto</button>
+                <button class="btn" id="reuniao"><i class="bi bi-people"></i> Reunião</button>
+            </div>
+        </div>
         <div id="calendar"></div>
     </div>
     </div>
@@ -16,20 +30,33 @@
 @endsection
 
 @push('scripts')
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const calendarEl = document.getElementById('calendar');
+
+
         const calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
             locale: 'pt-br',
             timeZone: 'local',
+            initialView: 'dayGridMonth',
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+             buttonText: {
+                today: 'Hoje',
+                month: 'Mês',
+                week: 'Semana',
+                day: 'Dia'
+            },
+            views: {
+                multiMonthYear: {
+                    type: 'multiMonth',
+                    duration: { months: 12 },
+                    buttonText: 'Ano'
+                }
             },
             events: "{{ route('agenda.eventos.json') }}",
             eventClick: function(info) {
@@ -38,6 +65,17 @@
         });
 
         calendar.render();
+
+        // Trocar para visão mensal
+        document.getElementById('btnVisaoMensal').addEventListener('click', function () {
+            calendar.changeView('dayGridMonth');
+        });
+
+        // Trocar para visão anual
+        document.getElementById('btnVisaoAnual').addEventListener('click', function () {
+            calendar.changeView('multiMonthYear');
+        });
     });
 </script>
+
 @endpush
