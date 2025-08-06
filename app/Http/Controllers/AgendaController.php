@@ -6,17 +6,26 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Culto;
 use App\Models\Evento;
+use App\Models\Reuniao;
 
 class AgendaController extends Controller
 {
     public function index(){
         $eventos = Evento::orderBy('data_inicio')->get();
         $cultos = Culto::orderBy('data_culto')->get();
-        return view('agenda.index', compact('eventos', 'culto'));
+        $reunioes = Reuniao::orderBy('data_inicio')->get();
+        return view('agenda.index', compact('eventos', 'cultos', 'reunioes'));
     }
 
     public function eventosJson()
     {
+        $reunioes = Reuniao::select([
+            'id',
+            'titulo as title',
+            'data_inicio as start',
+            // pode adicionar 'hora' ou 'data_fim' se houver
+        ])->get();
+
         $cultos = Culto::select([
             'id',
             'data_culto as start',
@@ -30,6 +39,11 @@ class AgendaController extends Controller
             'data_encerramento as end'
         ])->get();
 
+        $reunioes = $reunioes->map(function ($item) {
+            $item->color = '#eb8b1eff'; // laranja para reunioes
+            return $item;
+        });
+
         $cultos = $cultos->map(function ($item) {
             $item->title = "Culto";
             $item->color = '#4caf50'; // verde para cultos
@@ -42,7 +56,7 @@ class AgendaController extends Controller
         });
 
         // Mesclar as duas coleções
-        $todosEventos = $cultos->concat($eventos)->values();
+        $todosEventos = $cultos->concat($eventos)->concat($reunioes)->values();
 
         return response()->json($todosEventos);
     }

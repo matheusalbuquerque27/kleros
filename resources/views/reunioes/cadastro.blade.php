@@ -66,14 +66,14 @@
                 <textarea name="descricao" placeholder="Descrição"></textarea>
             </div>
             <div class="form-item">
-                <label for="requer_inscricao">Tipo de Acesso: </label>
+                <label for="tipo_acesso">Tipo de Acesso: </label>
                 <div class="form-square">
                     <div>
-                        <input type="radio" id="automatica" name="requer_inscricao" value="0" checked>
+                        <input type="radio" id="automatica" name="tipo_acesso" value="0" checked>
                         <label for="automatica">Pública</label>
                     </div>
                     <div>
-                        <input type="radio" id="manual" name="requer_inscricao" value="1">
+                        <input type="radio" id="manual" name="tipo_acesso" value="1">
                         <label for="manual">Privada</label>
                     </div>
                 </div>

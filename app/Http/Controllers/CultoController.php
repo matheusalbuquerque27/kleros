@@ -118,4 +118,9 @@ class CultoController extends Controller
         return redirect('/cadastros#cultos')->with('msg', 'Registro de culto atualizado com sucesso.');
 
     }
+
+    public function form_criar(){
+        $eventos = Evento::all();
+        return view('cultos/includes/form_criar', ['eventos' => $eventos]);
+    }
 }

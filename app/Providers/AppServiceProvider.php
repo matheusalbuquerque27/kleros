@@ -9,6 +9,7 @@ use App\Models\Reuniao;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,6 +37,10 @@ class AppServiceProvider extends ServiceProvider
             if (app()->bound('congregacao')) {
                 $view->with('congregacao', app('congregacao'));
             }
+        });
+
+        app()->singleton('congregacao', function () {
+            return Auth::check() ? Auth::user()->congregacao : null;
         });
 
         app()->singleton('modo_admin', function () {

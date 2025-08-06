@@ -96,8 +96,9 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::post('/eventos/search', [EventoController::class, 'search'])->name('eventos.search');
     Route::get('/eventos/agenda', [EventoController::class, 'agenda'])->name('eventos.agenda');
     Route::delete('/eventos/{id}', [EventoController::class, 'destroy'])->name('eventos.destroy');
-    Route::put('/eventos/{id}', [EventoController::class, 'update'])->name('eventos.update');
     Route::get('/eventos/novo', [EventoController::class, 'form_criar'])->name('eventos.form_criar');
+    Route::put('/eventos/{id}', [EventoController::class, 'update'])->name('eventos.update');
+
     
     Route::get('/recados', [RecadoController::class, 'historico'])->name('recados.historico');
     Route::post('/recados', [RecadoController::class, 'store'])->name('recados.store');
@@ -110,6 +111,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/cultos/historico', [CultoController::class, 'index'])->name('cultos.historico');
     Route::post('cultos/search', [CultoController::class, 'search'])->name('cultos.search');
     Route::get('/cultos/agendamento', [CultoController::class, 'create'])->name('cultos.create');
+    Route::get('/cultos/novo', [CultoController::class, 'form_criar'])->name('cultos.form_criar');
     Route::get('/cultos/{id}', [CultoController::class, 'complete'])->name('cultos.complete');
     Route::put('/cultos/{id}', [CultoController::class, 'update'])->name('cultos.update');
     Route::delete('/cultos/{id}', [CultoController::class, 'destroy'])->name('cultos.destroy');
@@ -156,6 +158,8 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::post('/livraria/search', [LivrariaController::class, 'search'])->name('livraria.search');
 
     Route::get('/reunioes', [ReuniaoController::class, 'create'])->name('reunioes.create');
+    Route::post('/reunioes', [ReuniaoController::class, 'store'])->name('reunioes.store');
+    Route::get('/reunioes/novo', [ReuniaoController::class, 'form_criar'])->name('reunioes.form_criar');
 
 });
 

@@ -19,8 +19,8 @@
             <div class="control-btn-group">
                 <h4>Agendar</h4>
                 <button onclick="abrirJanelaModal('{{route('eventos.form_criar')}}')" class="btn" id="evento"><i class="bi bi-calendar-event"></i> Evento</button>
-                <button class="btn" id="culto"><i class="bi bi-bell"></i> Culto</button>
-                <button class="btn" id="reuniao"><i class="bi bi-people"></i> Reunião</button>
+                <button onclick="abrirJanelaModal('{{route('cultos.form_criar')}}')" class="btn" id="culto"><i class="bi bi-bell"></i> Culto</button>
+                <button onclick="abrirJanelaModal('{{route('reunioes.form_criar')}}')" class="btn" id="reuniao"><i class="bi bi-people"></i> Reunião</button>
             </div>
         </div>
         <div id="calendar"></div>
