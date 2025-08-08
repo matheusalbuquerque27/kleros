@@ -156,6 +156,7 @@ h1 {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    margin-bottom: 20px;
 }
 
 .card {
@@ -175,6 +176,9 @@ h1 {
 
 .card-title {
     font-size: 1.5em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .card-owner{
@@ -194,6 +198,11 @@ h1 {
 .info h3 {
     margin-bottom: 20px;
     border-bottom: 2px solid var(--secondary-color);
+}
+
+.info h4 {
+    margin-bottom: 10px;
+   
 }
 
 .info_item {
@@ -501,7 +510,17 @@ footer {
 
 .image-small{
     width: 200px;
-    height: auto;
+    height: auto; border: 3px solid #ddd;         /* borda suave */
+    border-radius: var(--border-style);            /* cantos arredondados */
+    padding: 5px;                   /* espaço interno para não colar na borda */
+    background-color: transparent;         /* fundo branco */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* sombra suave */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* efeito suave */
+}
+
+.image-small:hover {
+    transform: scale(1.05); /* pequeno zoom ao passar o mouse */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.25);
 }
 
 /*Limita uma div a 80%*/
@@ -516,6 +535,10 @@ footer {
 
 .tx-right {
     text-align: right;
+}
+
+.hidden {
+    display: none;
 }
 
 
@@ -730,4 +753,33 @@ footer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+
+//lista alternatina
+
+.alterlist{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid #9acbe7;
+    padding: 10px 0;
+    justify-content: space-between;
+}
+
+.alterlist .item{
+    border-left: 1px solid #9acbe7;
+    padding-left: 2px;
+}
+
+.alterlist .item-1{
+    width: 20%;
+}
+
+.alterlist .item-15 {
+    width: 30%;
+}
+
+.alterlist .item-2 {
+    width: 40%;
 }

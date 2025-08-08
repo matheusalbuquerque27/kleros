@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('local')->nullable();
             $table->enum('tipo', ['lideranca', 'grupo', 'geral', 'outro'])->default('geral');
             $table->boolean('privado')->default(false); // se só alguns membros podem ver
+            $table->boolean('online')->default(false); // se é uma reunião online
+            $table->string('link_online')->nullable(); // link para reunião online
             $table->timestamps();
         });
 

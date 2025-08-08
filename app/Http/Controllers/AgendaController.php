@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Culto;
@@ -35,23 +35,29 @@ class AgendaController extends Controller
         $eventos = Evento::select([
             'id',
             'titulo as title',
-            'data_inicio as start',
-            'data_encerramento as end'
-        ])->get();
+            'data_inicio',
+            'data_encerramento'
+        ])->get()->map(function ($evento) {
+            return [
+                'id' => $evento->id,
+                'title' => $evento->title,
+                'start' => Carbon::parse($evento->data_inicio)->toDateString(),
+                'end' => $evento->data_encerramento
+                    ? Carbon::parse($evento->data_encerramento)->addDay()->toDateString()
+                    : null,
+                'color' => '#2196f3',
+            ];
+        });
 
         $reunioes = $reunioes->map(function ($item) {
-            $item->color = '#eb8b1eff'; // laranja para reunioes
+            $item->color = '#eb8b1e'; // laranja para reunioes
+            $item->backgroundColor = '#eb8b1e'; // laranja para reunioes
             return $item;
         });
 
         $cultos = $cultos->map(function ($item) {
             $item->title = "Culto";
             $item->color = '#4caf50'; // verde para cultos
-            return $item;
-        });
-
-        $eventos = $eventos->map(function ($item) {
-            $item->color = '#2196f3'; // azul para eventos
             return $item;
         });
 

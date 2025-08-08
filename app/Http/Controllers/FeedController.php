@@ -13,7 +13,7 @@ class FeedController extends Controller
 {
     public function noticias()
     {
-        $noticias = Cache::remember('noticias_feed', 1800, function(){
+        $noticias = Cache::remember('noticias_feed', 5000, function(){
 
             $canais = [
                 'gospel+' => 'https://noticias.gospelmais.com/feed', 
@@ -82,7 +82,7 @@ class FeedController extends Controller
   public function podcasts()
 {
 
-    $podcasts = Cache::remember('podcasts_feed', 1800, function () {
+    $podcasts = Cache::remember('podcasts_feed', 5000, function () {
 
         $canais = [
             'btcast' => 'https://bibotalk.com/feed/', 

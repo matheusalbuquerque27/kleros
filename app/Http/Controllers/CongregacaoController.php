@@ -10,6 +10,7 @@ use App\Models\Cidade;
 use App\Models\Estado;
 use App\Models\Pais;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CongregacaoController extends Controller
 {
@@ -46,7 +47,14 @@ class CongregacaoController extends Controller
         $congregacao->created_at = now();
         $congregacao->updated_at = now();
 
-        $congregacao->save();
+        if($congregacao->save()){
+            // Cria estrutura de diretórios para a congregação
+            $basePath = "congregacoes/{$congregacao->id}";
+
+            Storage::makeDirectory("{$basePath}/uploads");
+            Storage::makeDirectory("{$basePath}/documentos");
+            Storage::makeDirectory("{$basePath}/imagens");
+        }
 
         return redirect()->route('congregacoes.cadastro')->with('msg', 'Congregação cadastrada com sucesso!');
     }
@@ -110,5 +118,23 @@ class CongregacaoController extends Controller
 
         return redirect()->back()->with('success', 'Configurações gerais foram alteradas com sucesso.');
 
+    }
+
+    public function destroy($id)
+    {
+        // $congregacao = Congregacao::findOrFail($id);
+
+        // // Verifica se a congregação existe
+        // if (!$congregacao) {
+        //     return redirect()->back()->with('error', 'Congregação não encontrada.');
+        // }
+
+        // // Deleta os arquivos associados à congregação
+        // Storage::deleteDirectory("congregacoes/{$congregacao->id}");
+
+        // // Deleta a congregação do banco de dados
+        // $congregacao->delete();
+
+        return redirect()->route('congregacoes.index')->with('success', 'Congregação excluída com sucesso.');
     }
 }

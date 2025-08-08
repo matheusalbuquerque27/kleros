@@ -20,6 +20,8 @@ use App\Http\Controllers\FeedController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\LivrariaController;
 use App\Http\Controllers\ReuniaoController;
+use App\Http\Controllers\CursoController;
+use App\Http\Controllers\ArquivoController;
 
 Route::domain('kleros.local')->group(function () {
     
@@ -58,7 +60,8 @@ Route::middleware(['web', 'dominio'])->group(function () {
     //Rotas para já cadastradas
     Route::get('/configuracoes/{id}', [CongregacaoController::class, 'editar'])->name('configuracoes.editar');
     Route::put('/configuracoes/{id}', [CongregacaoController::class, 'update'])->name('configuracoes.atualizar');
-    
+    Route::delete('/configuracoes/{id}', [CongregacaoController::class, 'destroy'])->name('configuracoes.excluir');
+
     Route::get('/', [HomeController::class, 'index'])->name('index');
     Route::get('/cadastros', [CadastroController::class, 'index'])->name('cadastros.index');
     
@@ -150,7 +153,6 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/destaques', [FeedController::class, 'destaques'])->name('noticias.destaques');
     Route::get('/podcasts', [FeedController::class, 'podcasts'])->name('podcasts.painel');
 
-    
     Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda.index');
     Route::get('/agenda/eventos', [AgendaController::class, 'eventosJson'])->name('agenda.eventos.json');
 
@@ -161,5 +163,16 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::post('/reunioes', [ReuniaoController::class, 'store'])->name('reunioes.store');
     Route::get('/reunioes/novo', [ReuniaoController::class, 'form_criar'])->name('reunioes.form_criar');
 
+    Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
+    Route::get('/cursos/adicionar', [CursoController::class, 'create'])->name('cursos.create');
+    Route::post('/cursos', [CursoController::class, 'store'])->name('cursos.store');
+    Route::get('/cursos/{id}', [CursoController::class, 'show'])->name('cursos.show');
+    Route::put('/cursos/{id}', [CursoController::class, 'update'])->name('cursos.update');
+    Route::delete('/cursos/{id}', [CursoController::class, 'destroy'])->name('cursos.destroy');
+
+    Route::get('/arquivos/imagens', [ArquivoController::class, 'form_imagens'])->name('arquivos.imagens');
+    Route::post('/arquivos', [ArquivoController::class, 'store'])->name('arquivos.store');
+    Route::delete('/arquivos/{id}', [ArquivoController::class, 'destroy'])->name('arquivos.destroy');
+    Route::get('/arquivos/lista_imagens', [ArquivoController::class, 'lista_imagens'])->name('arquivos.lista_imagens');
 });
 

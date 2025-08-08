@@ -45,6 +45,10 @@
     padding: 10px;
 }
 
+.form-control .form-item input[type="file"] {
+    display: none;
+}
+
 .form-control input[type="submit"], .btn{
     flex-direction: column;
     padding: 5px;

@@ -16,7 +16,9 @@
 
 <div class="container">
     <h1>Nova Reunião</h1>
-    <form action="/reunioes" method="post">
+    <div class="info">
+        <h3>Registrar informações</h3>
+        <form action="/reunioes" method="post">
         @csrf
         <div class="form-control">
             <div class="form-item">
@@ -78,12 +80,26 @@
                     </div>
                 </div>
             </div>
+            <div class="form-item">
+                <label for="tipo_acesso">Ocorrência: </label>
+                <div class="form-square">
+                    <div>
+                        <input type="radio" id="presencial" name="online" value="0" checked>
+                        <label for="presencial">Presencial</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="online" name="online" value="1">
+                        <label for="online">Online</label>
+                    </div>
+                </div>
+            </div>
             <div class="form-options">
                 <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> Confirmar Reunião</button>
                 <a href="/cadastros#reunioes"><button type="button" class="btn"><i class="bi bi-x-circle"></i> Cancelar</button></a>
             </div>
         </div>
     </form>
+    </div>
 </div>
 
 @endsection

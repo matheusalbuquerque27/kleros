@@ -104,6 +104,7 @@
                         <a href="{{route('visitantes.historico')}}"><li><span title="Visitantes"><i class="bi bi-people-fill"></i></span><span>Visitantes</span></li></a>
                         <a href="{{route('departamentos.painel')}}"><li><span title="Departamentos"><i class="bi bi-intersect"></i></span><span>Departamentos</span></li></a>
                         <a href="{{route('celulas.painel')}}"><li><span title="GCA - Células"><i class="bi bi-cup-hot"></i></span><span>GCA - Células</span></li></a>
+                        <a href="{{route('celulas.painel')}}"><li><span title="Escola Virtual"><i class="bi bi-mortarboard"></i></span><span>Escola Virtual</span></li></a>
                         <a href=""><li><span title="Financeiro"><i class="bi bi-currency-exchange"></i></span><span>Financeiro</span></li></a>
                         <a href="{{route('noticias.painel')}}"><li><span title="Notícias"><i class="bi bi-newspaper"></i></span><span>Notícias</span></li></a>
                         <a href="{{route('podcasts.painel')}}"><li><span title="Podcasts"><i class="bi bi-mic-fill"></i></span><span>Podcasts</span></li></a>
@@ -127,7 +128,7 @@
         <div id="janelaModal" class="modal-overlay" style="display: none;">
             <div class="modal-box">
                 <div class="scroll-container">
-                    <button id="fecharModal" class="fechar-btn"><i class="bi bi-x-circle-fill"></i></button>
+                    <button id="fecharModal" onclick="fecharJanelaModal()" class="fechar-btn" title="Fechar"><i class="bi bi-x-circle-fill"></i></button>
                     <div id="conteudoModal">
                         <!-- Aqui entra o conteúdo dos includes -->
                         @yield('modal-content')
@@ -156,7 +157,7 @@
             
                 $('#telefone').mask('(00) 00000-0000');
                 $('#cep').mask('00000-000');
-                 $('#cnpj').mask('00.000.000/0000-00');
+                $('#cnpj').mask('00.000.000/0000-00');
                 
                 $('.msg .close').click(function(){
                     this.closest('.msg').remove();
@@ -193,9 +194,9 @@
                     });
             }
 
-            document.getElementById('fecharModal').addEventListener('click', () => {
+            function fecharJanelaModal() {
                 document.getElementById('janelaModal').style.display = 'none';
-            });        
+            }      
 
         </script>
 

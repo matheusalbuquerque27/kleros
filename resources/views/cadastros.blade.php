@@ -10,33 +10,31 @@
     <h1>Cadastros</h1>
     <div class="info" id="cultos">
         <h3>Cultos</h3>
-        <div class="info">
-            <b>Próximos cultos previstos: </b>
-            <div class="card-container">
-                @if (count($cultos) > 0)
-                    @foreach ($cultos as $item)
-                    <div class="info_item">
-                        <p><i class="bi bi-calendar-event"></i>
-                        @php
-                            $data = new DateTime($item->data_culto);
-                        @endphp
-                        {{$data->format("d/m")}}
-                        </p>
-                        <p><i class="bi bi-mic"></i> Preletor: {{$item->preletor}}</p>
-                        <p><b>Evento</b>: @if ($item->evento_id)
-                            {{$item->evento->titulo}}
-                        @else Nenhum @endif
-                        </p>
-                    </div>
-                    @endforeach
-                @else
-                    <div class="card">
-                        <p><i class="bi bi-exclamation-triangle"></i> Não há cultos previstos para os próximos dias.</p>  
-                    </div>
-                @endif
-                
-                
-            </div>
+        <b>Próximos cultos previstos: </b>
+        <div class="card-container">
+            @if (count($cultos) > 0)
+                @foreach ($cultos as $item)
+                <div class="info_item">
+                    <p><i class="bi bi-calendar-event"></i>
+                    @php
+                        $data = new DateTime($item->data_culto);
+                    @endphp
+                    {{$data->format("d/m")}}
+                    </p>
+                    <p><i class="bi bi-mic"></i> Preletor: {{$item->preletor}}</p>
+                    <p><b>Evento</b>: @if ($item->evento_id)
+                        {{$item->evento->titulo}}
+                    @else Nenhum @endif
+                    </p>
+                </div>
+                @endforeach
+            @else
+                <div class="card">
+                    <p><i class="bi bi-exclamation-triangle"></i> Não há cultos previstos para os próximos dias.</p>  
+                </div>
+            @endif
+            
+            
         </div>
         <a href="{{route('cultos.create')}}"><button class="btn"><i class="bi bi-plus-circle"></i> Agendar culto</button></a>
         <a href="/cultos/agenda"><button class="btn"><i class="bi bi-arrow-right-circle"></i> Próximos cultos</button></a>
@@ -157,7 +155,7 @@
         <div class="card-container">
             @if(count($ministerios) > 0)
                 @foreach ($ministerios as $item)
-                    <div class="list-title">
+                    <div class="alterlist">
                         <div class="item-15">
                             <div class="card-title">{{$item->titulo}}</div>
                         </div>
@@ -187,6 +185,40 @@
         <h3>Departamentos</h3>
         <a href="/departamentos/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo departamento</button></a>
         <button id="departamentos" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
+    </div>
+
+    <div class="info" id="cursos">
+        <h3>Cursos</h3>
+        <div class="card-container">
+            @if(count($cursos) > 0)
+                @foreach ($cursos as $item)
+                    <div class="alterlist">
+                        <div class="item-15">
+                            <div class="card-title"><img style="width: 2em; border-radius: 10px;" src="{{'storage/'. $item->icone}}" alt=""> {{$item->titulo}}</div>
+                        </div>
+                        <div class="item-2">
+                            <div class="card-description">{{$item->descricao}}</div>
+                        </div>
+                        <div class="item-15">
+                            <form method="POST">
+                                <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Ver</button></a>
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="delete-grupo btn-options" data-action="/grupos/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
+                            </form>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="card">
+                    <p><i class="bi bi-exclamation-triangle"></i> Nenhum membro foi incluído até o momento.</p>  
+                </div>
+            @endif
+        </div>
+
+        <a href="{{route('cursos.create')}}"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo curso</button></a>
+        <button id="cursos" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
+        
     </div>
 
     <div class="info" id="celulas">

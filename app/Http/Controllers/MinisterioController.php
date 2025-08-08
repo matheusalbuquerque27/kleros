@@ -17,6 +17,7 @@ class MinisterioController extends Controller
 
         $ministerio = new Ministerio;
 
+        $ministerio->denominacao_id = app('congregacao')->denominacao_id;
         $ministerio->titulo = $request->titulo;
 
         $ministerio->save();

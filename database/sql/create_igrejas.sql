@@ -2,6 +2,11 @@ insert into bases_doutrinarias (nome) values
 ('Batista'), ('Pentecostal'), ('Luterana'), ('Metodista'), ('Anglicana'), ('Congregacional'), ('Presbiteriana'), 
 ('Carismática'), ('Reformada'), ('Outra');
 
+insert into tema (nome, propriedades) values 
+('Clássico', { "borda": "4px", "cor-fundo": "#ffffff", "cor-texto": "#000000"}),
+('Moderno', {"borda": "10px", "cor-fundo": "#3d3d3d", "cor-texto": "#ffffff"}),
+('Vintage', {"borda": "30px", "cor-fundo": "#F5F5DC", "cor-texto": "#3e3e3e"});
+
 insert into denominacoes (nome, base_doutrinaria, ativa, ministerios_eclesiasticos) values ('Assembleia de Deus Jerusalém', 2, true, '["Pastor", "Evangelista", "Diácono"]');
 insert into congregacoes (denominacao_id, identificacao, ativa) values (1, 'Ilha Solteira', true);
 insert into dominios (congregacao_id, dominio, ativo) values (1, 'adjerusalemilha.local', true);
@@ -16,11 +21,6 @@ insert into congregacao_configs (congregacao_id, logo_caminho, banner_caminho, c
 
 insert into users (name, email, password, email_verified_at, denominacao_id, congregacao_id, membro_id) values 
 ('kleros.admin', 'admin@kleros.com', '$2y$12$vYj8Ljo3wkj9vXg.zePicejHiV6n9kOOib6clWt.gqrwddLrgdPka', null, null, null, null);
-
-insert into tema (nome, propriedades) values 
-('Clássico', { "borda": "4px", "cor-fundo": "#ffffff", "cor-texto": "#000000"}),
-('Moderno', {"borda": "10px", "cor-fundo": "#3d3d3d", "cor-texto": "#ffffff"}),
-('Vintage', {"borda": "30px", "cor-fundo": "#F5F5DC", "cor-texto": "#3e3e3e"});
 
 
 insert into ministerios (nome) values 
