@@ -377,15 +377,15 @@ footer {
 /*Flesh Messages*/
 .msg {
     position: fixed;
-    bottom: 0px;
-    left: 10px;
-    min-height: 200px;
+    bottom: 15px;
+    left: 15px;
     min-width: 300px;
     display: flex;
     justify-content: center;
     align-items: center;
     color: var(--terciary-contrast);
     font-size: 1.2em;
+    z-index: 200000;
 }
 
 .msg .close{
@@ -401,6 +401,7 @@ footer {
     padding: 15px;
     border-radius: var(--border-style);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
 }
 
 .msg .error{
@@ -408,6 +409,7 @@ footer {
     padding: 15px;
     border-radius: var(--border-style);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
 }
 
 .pagination {
@@ -433,27 +435,23 @@ footer {
 /* Popup */
 .popup{
     position: fixed;
-    position: fixed;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     background-color: var(--background-color);
     padding: 25px;
-    border: 10px outset var(--secondary-color);
+    border: 2px outset var(--terciary-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: var(--border-style);
     min-width: 280px;
     text-align: center;
-    opacity: 0;
     transition: opacity 0.3s ease;
-    display: none;
-}
-
-.popup.mostrar {
-    opacity: 1;
-    display: block;
+    z-index: 100000;
+    display: none;;
 }
 
 .popup h2{
-    border-bottom: 1px solid var(--secondary-color);
+    border-bottom: 1px solid var(--terciary-color);
 }
 
 .popup p {
@@ -462,18 +460,17 @@ footer {
 }
 
 .popup button{
-    background-color: var(--primary-color);
-    color: var(--primary-contrast);
-    border: 0;
+    background-color: var(--terciary-color);
+    color: var(--terciary-contrast);
+    border: none;
     padding: 5px 20px;
-    border-radius: 20px;
-    font-size: 1.2em;
+    border-radius: var(--border-style);
+    font-size: 1.1em;
 }
 
 .popup button:hover{
-    background-color: var(--secondary-color);
-    color: var(--secondary-color);
     cursor: pointer;
+    transform: scale(1.02);
 }
 
 /*configurações especiais ou genéricas*/

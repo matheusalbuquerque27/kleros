@@ -223,6 +223,70 @@
             });
         </script>
 
+        <!--Script para o modal de confirmação-->
+        <script>
+
+            function confirmarAcao(message) {
+            return new Promise((resolve) => {
+                const $popup = $('.popup');
+                $('#msg_content').text(message);
+                $popup.show(); // ou removeClass('is-hidden')
+
+                const confirmaBtn = document.getElementById('confirmaBtn');
+                const cancelaBtn = document.getElementById('cancelaBtn');
+
+                const onConfirm = () => { cleanup(); $popup.hide(); resolve(true); };
+                const onCancel  = () => { cleanup(); $popup.hide(); resolve(false); };
+                const onKey     = (e) => {
+                if (e.key === 'Escape') onCancel();
+                if (e.key === 'Enter')  onConfirm();
+                };
+
+                confirmaBtn.addEventListener('click', onConfirm);
+                cancelaBtn.addEventListener('click', onCancel);
+                document.addEventListener('keydown', onKey);
+
+                function cleanup() {
+                confirmaBtn.removeEventListener('click', onConfirm);
+                cancelaBtn.removeEventListener('click', onCancel);
+                document.removeEventListener('keydown', onKey);
+                }
+            });
+            }
+        </script>
+
+        <!--Para controle das flash massages via JS-->
+        <script>
+            function flashMsg(text, type = 'success', opts = {}) {
+                const timeout = Number.isFinite(opts.timeout) ? opts.timeout : 4000;
+
+                // garante o wrapper .msg
+                let $wrap = $('.msg');
+                if (!$wrap.length) {
+                    $wrap = $('<div class="msg" role="alert" aria-live="polite"></div>').appendTo('body');
+                }
+
+                // limpa conteúdo anterior e monta a caixa
+                $wrap.empty();
+                const $box    = $(`<div class="${type}"></div>`);
+                const $close  = $('<span class="close" aria-label="Fechar">&times;</span>');
+                const $content= $('<span class="content"></span>').text(text);
+
+                $box.append($close).append($content);
+                $wrap.append($box).hide().fadeIn(150);
+
+                const close = () => $wrap.fadeOut(150, () => $wrap.empty());
+
+                $close.on('click', close);
+
+                // auto-fecha (pausa ao passar o mouse)
+                if (timeout > 0) {
+                    const t = setTimeout(close, timeout);
+                    $wrap.on('mouseenter', () => clearTimeout(t));
+                }
+            }
+        </script>
+
         @stack('scripts')
     </body>
 </html>

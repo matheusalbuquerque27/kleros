@@ -9,7 +9,6 @@
     <form action="/configuracoes/{{$congregacao->id}}" method="post" enctype="multipart/form-data">
         @csrf
         @method('PUT') {{-- Método PUT para atualização --}}
-        @method('DELETE') {{-- Método DELETE para exclusão --}}
         <div class="info">
             <h3>Perfil Institucional</h3>
             <div class="form-control">
@@ -37,20 +36,22 @@
                     <label for="logo">Logo da congregação</label>
                     <img class="image-small" id="logo-img" src="{{asset('storage/'.$congregacao->config->logo_caminho)}}" alt="">
                     <div class="logo">
-                        <span id="file-name">Nenhum arquivo selecionado</span>
+                        <span id="file-logo">Nenhum arquivo selecionado</span>
                         <label for="logo" class="btn-line"><i class="bi bi-upload"></i> Upload</label>
-                        <input type="file" name="logo" id="logo">
-                        <span class="btn-line"><i class="bi bi-hdd"></i> Drive</span>
+                        <input type="file" name="logo" id="logo" url="">
+                        <input type="hidden" name="logo_acervo" id="logo_acervo">
+                        <span class="btn-line window_files"><i class="bi bi-hdd"></i> Drive</span>
                     </div>
                 </div>
                 <div class="form-item">
                     <label for="banner">Banner de login</label>
                     <img class="image-small" id="banner-img" src="{{asset('storage/'.$congregacao->config->banner_caminho)}}" alt="">
                     <div class="banner">
-                        <span id="file-name">Nenhum arquivo selecionado</span>
+                        <span id="file-banner">Nenhum arquivo selecionado</span>
                         <label for="banner" class="btn-line"><i class="bi bi-upload"></i> Upload</label>
-                        <input type="file" name="banner" id="banner">
-                        <span class="btn-line" id="window_files"><i class="bi bi-hdd"></i> Drive</span>
+                        <input type="file" name="banner" id="banner" url="">
+                        <input type="hidden" name="banner_acervo" id="banner_acervo">
+                        <span class="btn-line window_files"><i class="bi bi-hdd"></i> Drive</span>
                     </div>
                 </div>
             </div>
@@ -160,51 +161,67 @@
 @push('scripts')
 
 <script>
+    $(document).ready(function () {
+        initFileSelector();
+    });
+
     $('#fonte').on('change', function() {
         $('#font-preview').css('font-family', this.value);
     });
 
     $('#logo').on('change', function() {
         const fileName = this.files[0] ? this.files[0].name : 'Nenhum arquivo selecionado';
-        $('#file-name').text(fileName);
+        $('#file-logo').text(fileName);
     });
 
-    $('#window_files').on('click', function() {
-        abrirJanelaModal('{{route('arquivos.imagens')}}');
+    $('#banner').on('change', function() {
+        const fileName = this.files[0] ? this.files[0].name : 'Nenhum arquivo selecionado';
+        $('#file-banner').text(fileName);
+    });
+</script>
+
+<script>
+    function initFileSelector() {
+    let currentRoute = null;
+
+    // Abrir modal e guardar o ID do input
+    $(document).on('click', '.window_files', function () {
+        currentRoute = $(this).closest('div').attr('class');
+        abrirJanelaModal('{{ route("arquivos.imagens") }}');
     });
 
-    $(document).on('click', '.card-arquivo', function() {
-        //const fileId = $(this).data('id');
+    // Selecionar card
+    $(document).on('click', '.card-arquivo', function () {
         $('.card-arquivo').removeClass('selected');
         $(this).addClass('selected');
 
-        const selectedFile = $('.card-arquivo.selected');
-        if(selectedFile.length > 0) {
-            $('#selected').removeClass('inactive');
-        } else {
-            $('#selected').addClass('inactive');
-        }
+        $('#selected').toggleClass('inactive', $('.card-arquivo.selected').length === 0);
     });
 
-    //Verifica clique fora do card para remover a seleção
-    $(document).on('click', function(event) {
-        if (!$(event.target).closest('.card-arquivo').length) {
+    // Clique fora para desmarcar
+    $(document).on('click', function (event) {
+        if (!$(event.target).closest('.card-arquivo, .window_files, #selected').length) {
             $('.card-arquivo').removeClass('selected');
             $('#selected').addClass('inactive');
         }
     });
 
-    $(document).on('click', '#selected', function(){
+    // Confirmar seleção
+    $(document).on('click', '#selected', function () {
         const selectedFile = $('.card-arquivo.selected');
-        const title = selectedFile.find('.titulo').text().trim(); // se existir
-        const imgSrc = selectedFile.find('img').attr('src');    
+        if (selectedFile.length > 0) {
+            const title = selectedFile.find('.titulo').text().trim();
+            const imgSrc = selectedFile.find('img').attr('src');
 
-        if(selectedFile.length > 0) {
-            $('#logo-img').attr('src', imgSrc);
-            $('.logo #file-name').text(title || imgSrc);
+            $('#' + currentRoute + '-img').attr('src', imgSrc);
+            $('.' + currentRoute + ' #file-name').text(title || imgSrc);
+            $('#' + currentRoute + '_acervo').val(imgSrc) // Atualiza o atributo URL do input
+
             fecharJanelaModal();
+            currentRoute = null; // Limpa para evitar reuso incorreto
         }
-    })
+    });
+}
 </script>
 
 <!--Script para manipulação de imagens quando chamar form_imagens-->
@@ -224,7 +241,7 @@
         contentType: false, // IMPEDE que o jQuery defina o cabeçalho (essencial para arquivos)
         success: function(response) {
             console.log(response);
-            alert('Upload realizado com sucesso!');
+            flashMsg('Upload realizado com sucesso!');
             $('.acervo').load('/arquivos/lista_imagens');
         },
         error: function(xhr, status, error) {
@@ -235,50 +252,49 @@
         });
     });
 
-    $(document).on('click', function(e) {
-    // Verifica se o clique foi feito em um elemento com a classe 'deletar-arquivo'
-    // ou em um de seus filhos (como o ícone <i>)
-    const elementoClicado = $(e.target).closest('.delete-img');
-    
-    // Se o elemento clicado não existir, ou seja, o clique foi fora dele
-    if (elementoClicado.length === 0) {
-        return; // Sai da função
+    // Seleção do card
+    $(document).on('click', '.card-arquivo', function (e) {
+    // se o clique foi no botão de exclusão, não selecione
+    if ($(e.target).closest('.delete-img').length) return;
+
+    $('.card-arquivo').removeClass('selected');
+    $(this).addClass('selected');
+    $('#selected').toggleClass('inactive', $('.card-arquivo.selected').length === 0);
+    });
+
+    // Exclusão (apenas quando clicar no botão)
+    $(document).on('click', '.delete-img', async function (e) {
+    e.preventDefault();
+    e.stopPropagation();           // impede outros handlers no mesmo elemento/document
+
+    const $btn = $(this);
+    const card = $btn.closest('.card-arquivo');
+    const arquivoId = $btn.attr('id');
+
+    if (!arquivoId) {
+        console.error('ID do arquivo não encontrado.');
+        alert('Erro: ID do arquivo não encontrado.');
+        return;
     }
 
-    // Impede o comportamento padrão do link e a propagação do evento
-    e.preventDefault(); 
-    e.stopPropagation();
+    const respostaConfirmacao = await confirmarAcao("Tem certeza que deseja excluir este arquivo?");
+    if (!respostaConfirmacao) return;
 
-    // O código a seguir só será executado se o clique for no botão correto
-    if (confirm('Tem certeza que deseja excluir este arquivo?')) {
-        const arquivoId = elementoClicado.attr('id');
-        
-        if (!arquivoId) {
-            console.error('ID do arquivo não encontrado.');
-            alert('Erro: ID do arquivo não encontrado.');
-            return;
+    const deleteUrl = `/arquivos/${arquivoId}`;
+    $.ajax({
+        url: deleteUrl,
+        type: 'DELETE',
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        success: function (response) {
+        card.remove();
+        flashMsg(response.success || 'Arquivo excluído.')
+        },
+        error: function (xhr) {
+        alert('Erro ao excluir o arquivo.');
+        console.error(xhr.responseText);
         }
-
-        const deleteUrl = `/arquivos/${arquivoId}`;
-        console.log('Tentando deletar com a URL:', deleteUrl);
-        
-        $.ajax({
-            url: deleteUrl,
-            type: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                elementoClicado.closest('.card-arquivo').remove();
-                alert(response.success);
-            },
-            error: function(xhr) {
-                alert('Erro ao excluir o arquivo.');
-                console.error(xhr.responseText);
-            }
-        });
-    }
-});
+    });
+    });
 
 </script>
 

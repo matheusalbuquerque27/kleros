@@ -186,51 +186,6 @@ footer {
     width: 100%;
 }
 
-/* Popup */
-.popup{
-    position: fixed;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 25px;
-    border: 10px outset #677b96;
-    min-width: 280px;
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    display: none;
-}
-
-.popup.mostrar {
-    opacity: 1;
-    display: block;
-}
-
-.popup h2{
-    border-bottom: 1px solid #0a1929;
-}
-
-.popup p {
-    margin: 15px 0;
-    font-size: 1.2em;
-}
-
-.popup button{
-    background-color: #9acbe7;
-    border: 0;
-    padding: 5px 20px;
-    border-radius: 20px;
-    font-size: 1.2em;
-}
-
-.popup button:hover{
-    background-color: #1060a5;
-    color: #9acbe7;
-    cursor: pointer;
-}
-
 /*configurações especiais ou genéricas*/
 .mg-top-10{
     margin-top: 10px;

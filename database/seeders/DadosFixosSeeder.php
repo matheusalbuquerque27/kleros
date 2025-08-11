@@ -94,5 +94,12 @@ class DadosFixosSeeder extends Seeder
             'congregacao_id' => null,
             'membro_id' => null,
         ]);
+
+        DB::table('situacao_visitantes')->insert([
+            ['titulo' => 'Membro de outra denominação'],
+            ['titulo' => 'Não congrega no momento'],
+            ['titulo' => 'Não Evangélico'],
+            ['titulo' => 'Sem Religião'],
+        ]);
     }
 }

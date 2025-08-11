@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Arquivo;
 use App\Models\Congregacao;
 use App\Models\CongregacaoConfig;
 use App\Models\Denominacao;
@@ -80,7 +81,6 @@ class CongregacaoController extends Controller
     public function update(Request $request, $id){
         
         $congregacao = Congregacao::findOrFail($id);
-
         $congregacao->identificacao = $request->identificacao;
         $congregacao->cnpj = $request->cnpj;
         $congregacao->email = $request->email;
@@ -92,22 +92,64 @@ class CongregacaoController extends Controller
 
         if ($request->hasFile('logo')) {
             // Salva o arquivo e pega o caminho (ex: 'logos/abcd1234.png')
-            $path = $request->file('logo')->store('images', 'public');
+            $path = $request->file('logo')->store('congregacoes/' . app('congregacao')->id . '/imagens', 'public');
 
             // Atualiza o campo no banco de dados
             $congregacao->config->update([
                 'logo_caminho' => $path, // salva o caminho completo relativo à pasta storage
             ]);
+
+            $arquivo = new Arquivo();
+            $arquivo->nome = $request->file('logo')->getClientOriginalName();
+            $arquivo->caminho = $path;
+            $arquivo->tipo = 'imagem';
+            $arquivo->congregacao_id = app('congregacao')->id;
+            $arquivo->save();
+
+
+        } else if ($request->logo_acervo) {
+            // Se o campo logo não for um arquivo, mas uma string (ex: caminho antigo)
+            $url = $request->logo_acervo;
+
+            $pos = strpos($url, 'congregacoes/');
+            if ($pos !== false) {
+                $url = substr($url, $pos); // pega a partir de "congregacoes/"
+            }
+
+            $congregacao->config->update([
+                'logo_caminho' => $url,
+            ]);
         }
 
         if ($request->hasFile('banner')) {
             // Salva o arquivo e pega o caminho (ex: 'logos/abcd1234.png')
-            $path = $request->file('banner')->store('images', 'public');
+            $path = $request->file('banner')->store('congregacoes/' . app('congregacao')->id . '/imagens', 'public');
 
             // Atualiza o campo no banco de dados
             $congregacao->config->update([
                 'banner_caminho' => $path, // salva o caminho completo relativo à pasta storage
             ]);
+
+            $arquivo = new Arquivo();
+            $arquivo->nome = $request->file('banner')->getClientOriginalName();
+            $arquivo->caminho = $path;
+            $arquivo->tipo = 'imagem';
+            $arquivo->congregacao_id = app('congregacao')->id;
+            $arquivo->save();
+
+        } else if ($request->banner_acervo) {
+            // Se o campo logo não for um arquivo, mas uma string (ex: caminho antigo)
+            $url = $request->banner_acervo;
+
+            $pos = strpos($url, 'congregacoes/');
+            if ($pos !== false) {
+                $url = substr($url, $pos); // pega a partir de "congregacoes/"
+            }
+
+            $congregacao->config->update([
+                'banner_caminho' => $url
+            ]);
+            
         }
 
         $congregacao->config->update([
@@ -116,7 +158,7 @@ class CongregacaoController extends Controller
             'tema_id' => $request->tema,
         ]);
 
-        return redirect()->back()->with('success', 'Configurações gerais foram alteradas com sucesso.');
+        return redirect()->back()->with('msg', 'Configurações gerais foram alteradas com sucesso.');
 
     }
 
@@ -135,6 +177,6 @@ class CongregacaoController extends Controller
         // // Deleta a congregação do banco de dados
         // $congregacao->delete();
 
-        return redirect()->route('congregacoes.index')->with('success', 'Congregação excluída com sucesso.');
+        //return redirect()->route('congregacoes.index')->with('success', 'Congregação excluída com sucesso.');
     }
 }
