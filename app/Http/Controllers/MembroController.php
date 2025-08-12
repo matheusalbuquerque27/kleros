@@ -9,6 +9,7 @@ use App\Models\EstadoCiv;
 use App\Models\Membro;
 use App\Models\Ministerio;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class MembroController extends Controller
@@ -65,7 +66,8 @@ class MembroController extends Controller
         if($membro->save()){
             $user = new User;
 
-            $user->name = $request->nome;
+            $partes = explode(' ', trim($request->nome));
+            $user->name = strtolower($partes[0] . '.' . end($partes)) . $membro->id;            
             $user->email = $request->email;
             $user->password = bcrypt('1q2w3e4r');
             $user->congregacao_id = $this->congregacao->id;
@@ -169,5 +171,48 @@ class MembroController extends Controller
         $membro->delete();
 
         return redirect()->route('membros.painel')->with('msg', 'Membro excluído com sucesso.');
+    }
+
+    public function perfil() {
+        $membro = Auth::user()->membro;
+        return view('/perfil/edicao', ['membro' => $membro]);
+    }
+
+    public function save_perfil($id) {
+        $membro = Membro::findOrFail($id);
+
+        $request = request();
+
+        $request->validate([
+            'nome' => 'required',
+        ], [
+            'nome.required' => 'O nome é obrigatório.',
+        ]);
+
+        $membro->nome = $request->nome;
+        $membro->telefone = $request->telefone;
+        $membro->email = $request->email;
+        $membro->foto = $request->file('foto') ? $request->file('foto')->store('fotos', 'public') : $membro->foto;
+        // $membro->estado_civ_id = $request->estado_civil;
+        // $membro->escolaridade_id = $request->escolaridade;
+        // $membro->profissao = $request->profissao;
+        // $membro->endereco = $request->endereco;
+        // $membro->numero = $request->numero;
+        // $membro->bairro = $request->bairro;
+        // $membro->data_batismo= $request->data_batismo;
+        // $membro->denominacao_origem= $request->denominacao_origem;
+        // $membro->ministerio_id = $request->ministerio;
+        // $membro->nome_paterno = $request->nome_paterno;
+        // $membro->nome_materno = $request->nome_materno;
+
+        // Atualiza os timestamps
+        $membro->updated_at = date('Y-m-d H:i:s');
+
+        // Salva as alterações
+        if ($membro->save()) {
+            return redirect()->route('perfil')->with('msg', 'Perfil atualizado com sucesso!');
+        } else {
+            return redirect()->back()->withErrors(['msg' => 'Erro ao atualizar perfil.']);
+        }
     }
 }

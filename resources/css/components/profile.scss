@@ -1,0 +1,55 @@
+  .profile-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .profile-button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .profile-dropdown {
+    display: none; /* escondido por padrão */
+    position: absolute;
+    top: 54px; /* distancia abaixo do avatar */
+    right: 0;  /* alinha à direita do avatar */
+    min-width: 200px;
+    background-color: var(--background-color);
+    border-bottom: 2px solid var(--primary-color);
+    border-radius: var(--border-style);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    z-index: 100;
+  }
+
+  .profile-dropdown.show {
+    display: block;
+  }
+
+  .profile-dropdown .profile-info {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .profile-dropdown .profile-info small {
+    color: var(--text-color);
+    display: block;
+    font-size: 0.9em;
+  }
+
+  .profile-dropdown .profile-info p {
+    font-size: 1.2em;
+  }
+
+  .profile-dropdown a {
+    display: block;
+    color: var(--secondary-color) !important;
+    padding: 10px;
+    font-size: 1em;
+    text-decoration: none;
+  }
+
+  .profile-dropdown a:hover {
+    background-color: #f5f5f5;
+  }

@@ -75,7 +75,10 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/membros/editar/{id}', [MembroController::class, 'editar']);
     Route::put('/membros/{id}', [MembroController::class, 'update'])->name('membros.atualizar');
     Route::delete('/membros/{id}', [MembroController::class, 'destroy'])->name('membros.destroy');
-    
+
+    Route::get('/perfil', [MembroController::class, 'perfil'])->name('perfil');
+    Route::put('/perfil/{id}', [MembroController::class, 'save_perfil'])->name('perfil.update');
+
     Route::post('/visitantes', [VisitanteController::class, 'store']);
     Route::get('/visitantes/adicionar', [VisitanteController::class, 'create'])->name('visitantes.adicionar');
     Route::get('/visitantes/historico', [VisitanteController::class, 'historico'])->name('visitantes.historico');

@@ -132,7 +132,11 @@
             <div class="form-options nao-imprimir limit-80">
                 <a href="/membros/editar/{{$membro->id}}"><button class="btn" type="button"><i class="bi bi-pencil-square"></i> Editar</button></a>   
                 <button class="btn imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
-                <button class="btn" type="submit"><i class="bi bi-trash"></i> Remover</button>
+                <form action="{{route('membros.destroy', $membro->id)}}" method="post">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn" type="submit"><i class="bi bi-trash"></i> Remover</button>
+                </form>
                 <button type="button" onclick="window.history.back()" class="btn"><i class="bi bi-arrow-return-left"></i> Voltar</button>
             </div>{{-- form-options --}}
         </div><!--info-->

@@ -72,9 +72,20 @@
                     <div class="login_info">
                         <a href="/logout" title="Sair"><p><i class="bi bi-box-arrow-right"></i></p></a>
                         <a href="/" title="Notificações"><p><i class="bi bi-bell-fill"></i></p></a>
-                        <img class="avatar" src="{{ asset('storage/'.optional(auth()->user()->membro)->foto) }}" title="{{optional(auth()->user()->membro)->nome}}" alt="">
+                        <img class="avatar" id="profileBtn" src="{{ asset('storage/'.optional(auth()->user()->membro)->foto) }}" title="{{optional(auth()->user()->membro)->nome}}" alt="">
+                        <div class="profile-container">
+                            <div class="profile-dropdown" id="profileDropdown">
+                                <div class="profile-info">
+                                    <small>Conectado como</small>
+                                    <p>{{optional(auth()->user()->membro)->nome ?? 'Admin'}}</p>
+                                </div>
+                                <a href="/perfil"><i class="bi bi-pencil"></i> Editar perfil</a>
+                                <a href="/logout" title="Sair"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                            </div>
+                        </div>
                     </div>
                 </nav>
+                
             </header>
             <main class="content">
                 @if (session('msg'))
@@ -285,6 +296,23 @@
                     $wrap.on('mouseenter', () => clearTimeout(t));
                 }
             }
+        </script>
+
+        <script>
+            const btn = document.getElementById('profileBtn');
+            const dropdown = document.getElementById('profileDropdown');
+
+            btn.addEventListener('click', function(event) {
+                event.stopPropagation();
+                dropdown.classList.toggle('show');
+            });
+
+            // fecha ao clicar fora
+            document.addEventListener('click', function(event) {
+                if (!dropdown.contains(event.target) && !btn.contains(event.target)) {
+                dropdown.classList.remove('show');
+                }
+            });
         </script>
 
         @stack('scripts')

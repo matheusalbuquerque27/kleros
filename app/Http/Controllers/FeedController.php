@@ -13,11 +13,12 @@ class FeedController extends Controller
 {
     public function noticias()
     {
-        $noticias = Cache::remember('noticias_feed', 5000, function(){
+        $noticias = Cache::remember('noticias_feed', 10000, function(){
 
             $canais = [
                 'gospel+' => 'https://noticias.gospelmais.com/feed', 
-                'guiame' => 'https://feeds.feedburner.com/guiame'
+                'guiame' => 'https://feeds.feedburner.com/guiame',
+                'missoesnacionais' => 'https://missoesnacionais.org.br/noticias/feed/',
             ];
 
             foreach ($canais as $name => $feed) {
@@ -43,7 +44,7 @@ class FeedController extends Controller
                     }
                 }
 
-                $limit = 20;
+                $limit = 12;
                 $count = 0;
 
                 foreach ($result->getFeed() as $item) {
@@ -82,7 +83,7 @@ class FeedController extends Controller
   public function podcasts()
 {
 
-    $podcasts = Cache::remember('podcasts_feed', 5000, function () {
+    $podcasts = Cache::remember('podcasts_feed', 10000, function () {
 
         $canais = [
             'btcast' => 'https://bibotalk.com/feed/', 

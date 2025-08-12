@@ -55,6 +55,30 @@
                 @endforeach
             </div>
         </div>
+        <h3>Missões Nacionais</h3>
+        <div class="noticias-container">
+            <div class="noticias-grid">
+                @foreach ($noticias['missoesnacionais'] as $noticia)
+                    <div class="noticia-card">
+                        @if (!empty($noticia['image']))
+                            <img src="{{ $noticia['image'] }}" alt="" class="noticia-img">
+                        @endif
+                        <a href="{{ $noticia['link'] }}" target="_blank" class="noticia-title">
+                            {{ $noticia['title'] }}
+                        </a>
+                        <div class="noticia-date">
+                            {{ $noticia['date'] }}
+                        </div>
+                        <div class="noticia-desc">
+                            {!! substr(strip_tags($noticia['description'] ?? ''), 0, 200) !!}...
+                        </div>
+                        <a href="{{ $noticia['link'] }}" target="_blank" class="noticia-link">
+                            Ler mais
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
     </div>
 </div>
 
