@@ -12,6 +12,11 @@ use Illuminate\Http\Request;
 
 class ReuniaoController extends Controller
 {
+    public function index() {
+        $reunioes = Reuniao::where('congregacao_id', app('congregacao')->id)->paginate(10);
+        return view('reunioes.painel', ['reunioes' => $reunioes]);
+    }
+
     public function create(){
 
         $grupos = Grupo::all();

@@ -101,5 +101,25 @@ class DadosFixosSeeder extends Seeder
             ['titulo' => 'Não Evangélico'],
             ['titulo' => 'Sem Religião'],
         ]);
+
+        DB::table('escolaridades')->insert([
+            ['titulo' => 'Não frequentou a escola'],
+            ['titulo' => 'Ensino Básico'],
+            ['titulo' => 'Ensino Fundamental'],
+            ['titulo' => 'Ensino Médio'],
+            ['titulo' => 'Ensino Técnico'],
+            ['titulo' => 'Ensino Superior'],
+            ['titulo' => 'Pós-Graduação'],
+            ['titulo' => 'Mestrado'],
+            ['titulo' => 'Doutorado'],
+        ]);
+
+        DB::table('estado_civs')->insert([
+            ['titulo' => 'Solteiro'],
+            ['titulo' => 'Casado'],
+            ['titulo' => 'Divorciado'],
+            ['titulo' => 'Viúvo'],
+            ['titulo' => 'Separado'],
+        ]);
     }
 }

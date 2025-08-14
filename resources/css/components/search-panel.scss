@@ -1,6 +1,6 @@
 /*search-panel*/
 .search-panel {
-    border-radius: 20px;
+    border-radius: var(--border-style);
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;

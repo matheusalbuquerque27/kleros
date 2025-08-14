@@ -95,7 +95,7 @@ class MembroController extends Controller
         $membros = Membro::where($filtro, 'LIKE', $chave)->get();
 
         // Renderiza a view com os resultados
-        $view = view('membros/painel_search', ['membros' => $membros])->render();
+        $view = view('membros/includes/painel_search', ['membros' => $membros])->render();
 
         // Retorna a view renderizada como parte da resposta JSON
         return response()->json(['view' => $view]);

@@ -22,6 +22,7 @@ use App\Http\Controllers\LivrariaController;
 use App\Http\Controllers\ReuniaoController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\ArquivoController;
+use App\Http\Controllers\RelatorioController;
 
 Route::domain('kleros.local')->group(function () {
     
@@ -163,6 +164,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::post('/livraria/search', [LivrariaController::class, 'search'])->name('livraria.search');
 
     Route::get('/reunioes', [ReuniaoController::class, 'create'])->name('reunioes.create');
+    Route::get('/reunioes/painel', [ReuniaoController::class, 'index'])->name('reunioes.painel');
     Route::post('/reunioes', [ReuniaoController::class, 'store'])->name('reunioes.store');
     Route::get('/reunioes/novo', [ReuniaoController::class, 'form_criar'])->name('reunioes.form_criar');
 
@@ -177,5 +179,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::post('/arquivos', [ArquivoController::class, 'store'])->name('arquivos.store');
     Route::delete('/arquivos/{id}', [ArquivoController::class, 'destroy'])->name('arquivos.destroy');
     Route::get('/arquivos/lista_imagens', [ArquivoController::class, 'lista_imagens'])->name('arquivos.lista_imagens');
+
+    Route::get('/relatorios', [RelatorioController::class, 'painel'])->name('relatorios.painel');
 });
 

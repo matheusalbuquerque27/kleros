@@ -48,7 +48,7 @@ class VisitanteController extends Controller
 
     public function historico() {
 
-        $visitantes = Visitante::all();
+        $visitantes = Visitante::paginate(10);
 
         return view('visitantes/historico', ['visitantes' => $visitantes]);
     }
@@ -61,7 +61,7 @@ class VisitanteController extends Controller
         $visitantes = Visitante::whereDate('data_visita', $data_visita)->orWhere('nome','LIKE', $nome)->get();
         $visitantes = $visitantes->isEmpty() ? '' : $visitantes;
 
-        $view = view('visitantes/visitantes_search', ['visitantes' => $visitantes])->render();
+        $view = view('visitantes/includes/visitantes_search', ['visitantes' => $visitantes])->render();
 
         return response()->json(['view' => $view]);
 

@@ -7,21 +7,6 @@
 <div class="container">
     <h1>Histórico de Visitantes</h1>
     <div class="info nao-imprimir">
-        <h3>Últimos Visitantes</h3>
-
-        <div class="form-control">
-            <div class="card-container">
-                    <div class="card">
-                        <p class="card-title">Adalberto</p>
-                        <p class="card-date">24/12</p>
-                    </div>
-                </div>
-            <div class="form-item">
-                <div class="form-options">
-                    <button class="btn" id="btn_filtrar"><i class="bi bi-plus-circle"></i> Cadastrar</button>
-                </div>
-            </div>
-        </div>
         <h3>Filtrar por período</h3>
         <div class="search-panel">
             <div class="search-panel-item">
@@ -80,7 +65,27 @@
             </div><!--list-item-->
             @endforeach       
         </div>
+        <div class="pagination">
+        {{ $visitantes->links('pagination::default') }}
     </div>
+    </div>
+    
+    <h3>Últimos Visitantes</h3>
+
+        <div class="form-control">
+            <div class="card-container">
+                    <div class="card">
+                        <p class="card-title">Adalberto</p>
+                        <p class="card-date">24/12</p>
+                    </div>
+                </div>
+            <div class="form-item">
+                <div class="form-options">
+                    <button class="btn" id="btn_cadastrar"><i class="bi bi-plus-circle"></i> Cadastrar</button>
+                </div>
+            </div>
+        </div>
+    
 </div>
 
 @endsection

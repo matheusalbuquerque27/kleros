@@ -1,0 +1,89 @@
+.left-navbar{
+  height: 100%;
+  position: relative;
+  overflow: hidden;                  /* esconde texto quando fechar */
+  width: 50px;                       /* estado inicial fechado */
+  transition: width .2s ease;        /* animação suave */
+}
+
+/* estados */
+.left-navbar.expanded { width: 250px; }
+.left-navbar.collapsed { width: 50px; }
+
+/* botão superior */
+.left-navbar .menu-btn{
+    position: absolute;
+    top: 10px;
+    width: 60px;
+    font-size: 1.6em;
+    border-radius: 50%;
+    padding-left: 5px;
+}
+
+.left-navbar .menu-btn a {
+    display: contents;
+}
+
+.left-navbar .menu-btn span {
+    padding: 0 5px;
+    color: var(--text-color);
+}
+
+.left-navbar .menu-btn span:hover {
+    cursor: pointer;
+    color: var(--secondary-color);
+}
+
+/* lista sempre visível (ícones ficam visíveis quando fechado) */
+.left-navbar .menu-content{
+  margin-top: 130px;
+  background-color: var(--secondary-color);
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding: 10px 0;
+  display: block;
+  white-space: nowrap;               /* evita quebra de linha do texto */
+}
+
+/* cada item como linha com ícone + texto */
+.left-navbar .menu-content li{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 1.2em;
+  color: var(--secondary-contrast);
+}
+
+/* Ícone sempre visível */
+.left-navbar .menu-content li > span:first-child{
+  display: inline-flex;
+  width: 28px;                       /* largura fixa pro ícone */
+  justify-content: center;
+}
+
+/* Texto (o 2º span) some quando colapsado */
+.left-navbar.collapsed .menu-content li > span:last-child{
+  display: none;
+}
+
+/* Centraliza o ícone quando fechado */
+.left-navbar.collapsed .menu-content li{
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Hover */
+.left-navbar .menu-content li:hover{
+  cursor: pointer;
+  color: var(--primary-color);
+}
+
+/* Links não quebram o layout */
+.left-navbar .menu-btn a,
+.left-navbar .menu-content a{
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
