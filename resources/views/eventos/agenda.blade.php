@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Agenda de Eventos - AD Jerusalém')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 
@@ -33,8 +33,9 @@
                     @endif
                 </select>
             </div>
-            <div class="form-control">
+            <div class="search-panel-item">
                 <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
+                <a onclick="abrirJanelaModal('{{route('eventos.form_criar')}}')"><button><i class="bi bi-plus-circle"></i> Adicionar</button></a>
                 <button class="imprimir"><i class="bi bi-printer"></i> Imprimir</button>
                 <a href="/cadastros#eventos"><button class=""><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
             </div>
@@ -72,15 +73,19 @@
                     <p>{{$item->descricao}}</p>
                 </div>
             </div><!--list-item-->
-            @endforeach       
+            @endforeach
+            @if($eventos->total() > 10)
+                <div class="pagination">
+                    {{ $eventos->links('pagination::default') }}
+                </div>
+            @endif       
         </div>                   
-        @else
-            <div class="card">
-                <p><i class="bi bi-exclamation-triangle"></i> Ainda não há eventos previstos para exibição.</p>
-            </div>
-        @endif
     </div> 
-    
+    @else
+        <div class="card">
+            <p><i class="bi bi-exclamation-triangle"></i> Ainda não há eventos previstos para exibição.</p>
+        </div>
+    @endif
 </div>
 
 @endsection

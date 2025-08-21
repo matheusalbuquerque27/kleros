@@ -11,7 +11,7 @@ class CultoController extends Controller
 {
     public function index() {
 
-        $cultos = Culto::whereDate('data_culto', '<', date('Y/m/d'))->get();
+        $cultos = Culto::whereDate('data_culto', '<', date('Y-m-d'))->paginate(10);
         
         if($cultos->isEmpty()){
             $cultos = '';
@@ -33,7 +33,7 @@ class CultoController extends Controller
 
     public function agenda() {
 
-        $cultos = Culto::whereDate('data_culto', '>=', date('Y/m/d'))->get();
+        $cultos = Culto::whereDate('data_culto', '>=', date('Y-m-d'))->paginate(10);
         $cultos = $cultos->isEmpty() ? '' : $cultos;
 
         $eventos = Evento::whereDate('data_inicio', '>=', date('Y/m/d'))->distinct('titulo')->pluck('titulo');
@@ -45,7 +45,7 @@ class CultoController extends Controller
 
         $culto = new Culto;
 
-        $culto->data_culto = $request->data_culto;
+        $culto->data_culto = $request->data_culto . ' ' . $request->horario_inicio;
         $culto->preletor = $request->preletor;
         $culto->quant_visitantes = $request->quantidade_visitantes ?? 0;
         $culto->evento_id = $request->evento_id;
@@ -104,7 +104,7 @@ class CultoController extends Controller
         $culto = Culto::findOrFail($id);
         
         $culto->congregacao_id = app('congregacao')->id;
-        $culto->data_culto = $request->data_culto;
+        $culto->data_culto = $request->data_culto . ' ' . $request->horario_inicio;
         $culto->preletor = $request->preletor;
         $culto->quant_visitantes = $request->quantidade_visitantes ?? 0;
         $culto->evento_id = $request->evento_id;
@@ -122,5 +122,11 @@ class CultoController extends Controller
     public function form_criar(){
         $eventos = Evento::all();
         return view('cultos/includes/form_criar', ['eventos' => $eventos]);
+    }
+
+    public function form_editar($id){
+        $culto = Culto::findOrFail($id);
+        $eventos = Evento::all();
+        return view('cultos/includes/form_editar', ['culto' => $culto, 'eventos' => $eventos]);
     }
 }

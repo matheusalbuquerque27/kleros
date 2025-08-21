@@ -68,7 +68,7 @@
         </div>
         <div class="form-options">
             <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> Adicionar Evento</button>
-            <a href="/cadastros#eventos"><button type="button" class="btn"><i class="bi bi-x-circle"></i> Cancelar</button></a>
+            <button onclick="fecharJanelaModal()" type="button" class="btn"><i class="bi bi-x-circle"></i> Cancelar</button>
         </div>
     </div>
 </form>

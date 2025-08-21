@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Agenda de Cultos - AD Jerusalém')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 
@@ -70,8 +70,12 @@
                         </div>
                     </div><!--list-item-->
                 @endforeach
-            </div>
-                   
+                @if($cultos->total() > 10)
+                    <div class="pagination">
+                        {{ $cultos->links('pagination::default') }}
+                    </div>
+                @endif
+            </div><!--content-->
         @else
             <div class="card">
                 <p><i class="bi bi-exclamation-triangle"></i> Ainda não há cultos previstos para exibição.</p>

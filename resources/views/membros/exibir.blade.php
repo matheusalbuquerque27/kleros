@@ -1,13 +1,13 @@
 @extends('layouts.main')
 
-@section('title', 'Informações de Membro - AD Jerusalém')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 
 <div class="container">
     <h1>Informações de Membro</h1>
     
-    <form action="{{ route('membros.destroy', $membro->id) }}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir?')">
+    <form action="{{ route('membros.destroy', $membro->id) }}" method="post" onsubmit="return handleSubmit(event, this, 'Tem certeza que deseja excluir?')">
         @csrf
         <div class="data-view">
             <div class="section">
@@ -130,7 +130,7 @@
                 </div>
             </div>{{-- form-control --}}
             <div class="form-options nao-imprimir limit-80">
-                <a href="/membros/editar/{{$membro->id}}"><button class="btn" type="button"><i class="bi bi-pencil-square"></i> Editar</button></a>   
+                <a onclick="abrirJanelaModal('{{route('membros.editar', $membro->id)}}')"><button class="btn" type="button"><i class="bi bi-pencil-square"></i> Editar</button></a>   
                 <button class="btn imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
                 <form action="{{route('membros.destroy', $membro->id)}}" method="post">
                     @csrf
@@ -154,7 +154,6 @@
                 event.preventDefault();
                 window.print();
             });
-       
         });
         
     </script>

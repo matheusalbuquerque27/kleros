@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Livraria')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 

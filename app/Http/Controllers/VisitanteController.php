@@ -67,4 +67,50 @@ class VisitanteController extends Controller
 
     }
 
+    public function exibir($id) {
+
+        $visitante = Visitante::findOrFail($id);
+
+        return view('visitantes/exibir', ['visitante' => $visitante]);
+    }
+
+    public function editar($id) {
+
+        $visitante = Visitante::findOrFail($id);
+        $situacao_visitante = SituacaoVisitante::all();
+
+        return view('visitantes/edicao', ['visitante' => $visitante, 'situacao_visitante' => $situacao_visitante]);
+    }
+
+    public function update(Request $request, $id) {
+
+        $visitante = Visitante::findOrFail($id);
+        $msg = $visitante->nome.' foi atualizado(a) com sucesso!';
+
+        $request->validate([
+            'nome' => 'required',
+            'telefone' => 'required',
+            'data_visita' => 'required'
+        ], [
+            '*.required' => 'Nome, Telefone e Data de visita são obrigatórios',
+        ]);    
+
+        $visitante->nome = $request->nome;
+        $visitante->telefone = $request->telefone;
+        $visitante->data_visita = $request->data_visita;
+        $visitante->sit_visitante_id = $request->situacao;
+        $visitante->observacoes = $request->observacoes;
+        $visitante->updated_at = date('Y-m-d H:i:s');
+
+        $visitante->save();
+
+        return redirect()->route('visitantes.historico')->with('msg', $msg);
+    }
+
+    public function destroy($id) {
+        $visitante = Visitante::findOrFail($id);
+        $visitante->delete();
+        return redirect()->route('visitantes.historico')->with('msg', 'Visitante excluído com sucesso.');
+    }
+
 }

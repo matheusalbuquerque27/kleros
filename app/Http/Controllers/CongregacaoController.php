@@ -71,11 +71,9 @@ class CongregacaoController extends Controller
     {
         $congregacao = app('congregacao');
         $config = CongregacaoConfig::find($id);
-        $cidades = Cidade::all();
-        $estados = Estado::all();
         $paises = Pais::all();
 
-        return view('congregacoes.edicao', ['config' => $config, 'congregacao' => $congregacao, 'cidades' => $cidades, 'estados' => $estados, 'paises' => $paises]);
+        return view('congregacoes.edicao', ['config' => $config, 'congregacao' => $congregacao, 'paises' => $paises]);
     }
 
     public function update(Request $request, $id){

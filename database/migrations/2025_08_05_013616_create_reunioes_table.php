@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reunioes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('congregacao_id')->constrained('congregacoes')->onDelete('cascade');
-            $table->string('titulo');
+            $table->string('assunto');
             $table->text('descricao')->nullable();
             $table->dateTime('data_inicio');
             $table->dateTime('data_fim')->nullable();
@@ -41,15 +41,16 @@ return new class extends Migration
             $table->unique(['reuniao_id', 'membro_id']); // evitar duplicidade
         });
 
-        Schema::create('reuniao_grupos', function (Blueprint $table) {
+        Schema::create('reuniao_agrupamentos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('reuniao_id');
             // Campos morphs
-            $table->morphs('notificavel'); // Cria: notificavel_id + notificavel_type
-
+            $table->unsignedBigInteger('agrupamento_id');
             $table->timestamps();
 
             $table->foreign('reuniao_id')->references('id')->on('reunioes')->onDelete('cascade');
+            $table->foreign('agrupamento_id')->references('id')->on('agrupamentos')->onDelete('cascade');
+
         });
     }
 

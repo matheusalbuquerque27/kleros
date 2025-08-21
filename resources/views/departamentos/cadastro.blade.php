@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
+
 @section('content')
 
 @if($errors->any())

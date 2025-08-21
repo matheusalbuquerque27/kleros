@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Agenda Integrada')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 

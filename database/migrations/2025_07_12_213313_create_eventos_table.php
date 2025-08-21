@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('grupos', function (Blueprint $table) {
+        Schema::create('agrupamentos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('congregacao_id')->constrained('congregacoes')->onDelete('cascade');
+            $table->enum('tipo', ['grupo', 'departamento', 'setor']);
             $table->string('nome');
-            $table->string('descricao');
-            $table->foreignId('membro_id')->nullable()->constrained('membros');
+            $table->string('descricao')->nullable();
+            $table->foreignId('agrupamento_pai_id')->nullable()->constrained('agrupamentos')->onDelete('set null');
+            $table->foreignId('lider_id')->nullable()->constrained('membros')->onDelete('set null');
+            $table->foreignId('colider_id')->nullable()->constrained('membros')->onDelete('set null');
             $table->timestamps();
         });
 
@@ -24,7 +27,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('congregacao_id')->constrained('congregacoes')->onDelete('cascade');
             $table->string('titulo');
-            $table->foreignId('grupo_id')->nullable()->constrained('grupos');
+            $table->foreignId('agrupamento_id')->nullable()->constrained('agrupamentos');
             $table->text('descricao')->nullable();
             $table->boolean('recorrente')->default(false);
             $table->date('data_inicio')->nullable();

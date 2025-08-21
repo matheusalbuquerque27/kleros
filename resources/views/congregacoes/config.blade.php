@@ -1,6 +1,6 @@
 @extends('layout.main')
 
-@extends('name')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 <h1>Configurações Gerais</h1>

@@ -12,7 +12,7 @@ class Evento extends Model
     }
     public function grupo()
     {
-        return $this->belongsTo(Grupo::class);
+        return $this->belongsTo(Agrupamento::class, 'agrupamento_id');
     }
     public function congregacao()
     {

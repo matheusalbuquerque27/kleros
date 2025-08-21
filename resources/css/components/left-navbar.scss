@@ -55,6 +55,13 @@
   color: var(--secondary-contrast);
 }
 
+.svg {
+    width: 1.1em;
+    height: 1.1em;
+    fill: currentColor;
+    padding: 5px 0;
+}
+
 /* Ícone sempre visível */
 .left-navbar .menu-content li > span:first-child{
   display: inline-flex;

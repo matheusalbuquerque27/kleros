@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Notícias Cristãs')
+@section('title', 'Notícias | ' . $appName)
 
 @section('content')
 

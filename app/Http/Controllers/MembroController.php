@@ -115,7 +115,7 @@ class MembroController extends Controller
         $escolaridade = Escolaridade::all();
         $ministerio = Ministerio::all();
 
-        return view('/membros/edicao', ['membro' => $membro, 'estado_civil' => $estado_civil, 'escolaridade' => $escolaridade, 'ministerios' => $ministerio]);
+        return view('/membros/includes/editar', ['membro' => $membro, 'estado_civil' => $estado_civil, 'escolaridade' => $escolaridade, 'ministerios' => $ministerio]);
     }
 
     public function update(Request $request, $id) {

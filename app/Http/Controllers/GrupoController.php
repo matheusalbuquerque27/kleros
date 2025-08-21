@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Grupo;
+use App\Models\Agrupamento;
 use App\Models\GrupoIntegrante;
 use App\Models\Membro;
 use Illuminate\Http\Request;
@@ -19,7 +19,7 @@ class GrupoController extends Controller
 
     public function store(Request $request){
 
-        $grupo = new Grupo;
+        $grupo = new Agrupamento;
 
         $msg = "O grupo ".$request->nome." foi adicionado.";
 
@@ -27,7 +27,25 @@ class GrupoController extends Controller
         $grupo->created_at = date('Y/m/d');
         $grupo->updated_at = date('Y/m/d');
         $grupo->descricao = $request->descricao;
-        $grupo->membro_id = $request->membro_id;
+        $grupo->lider_id = $request->lider_id;
+        $grupo->colider_id = $request->colider_id;
+        $grupo->congregacao_id = app('congregacao')->id;
+
+        $grupo->save();
+
+        return redirect('/cadastros#grupos')->with('msg', $msg);
+    }
+
+    public function update(Request $request, $id) {
+        $grupo = Agrupamento::findOrFail($id);
+
+        $msg = "O grupo ".$request->nome." foi atualizado.";
+
+        $grupo->nome = $request->nome;
+        $grupo->descricao = $request->descricao;
+        $grupo->lider_id = $request->lider_id;
+        $grupo->colider_id = $request->colider_id;
+        $grupo->updated_at = now();
 
         $grupo->save();
 
@@ -36,11 +54,11 @@ class GrupoController extends Controller
 
     public function show($id){
 
-        $grupo = Grupo::find($id);
+        $grupo = Agrupamento::find($id);
         $integrantes = $grupo->integrantes;
 
         $membros = Membro::whereDoesntHave('gruposMembro', function ($query) use ($grupo) {
-            $query->where('grupo_id', $grupo->id);
+            $query->where('agrupamento_id', $grupo->id);
         })->get(); //Não pertencem ainda ao grupo;
 
         return view('/grupos/integrantes', ['grupo' => $grupo, 'integrantes' => $integrantes, 'membros' => $membros]);
@@ -49,15 +67,17 @@ class GrupoController extends Controller
     public function addMember(Request $request){
 
         $membro = Membro::find($request->membro);
-        $grupo = Grupo::find($request->grupo);
+        $grupo = Agrupamento::find($request->grupo);
 
-        $membro->gruposMembro()->attach($grupo);
+        $membro->gruposMembro()->attach($grupo, [
+            'congregacao_id' => $grupo->congregacao_id
+        ]);
 
         return redirect()->route('grupos.integrantes', ['id' => $grupo->id])->with("Novo membro adicionado ao grupo.");
     }
 
     public function destroy($id){
-        $grupo = Grupo::find($id);
+        $grupo = Agrupamento::find($id);
 
         $grupo->delete();        
 
@@ -66,7 +86,7 @@ class GrupoController extends Controller
 
     public function print($data) {
         
-        $grupos = Grupo::all();
+        $grupos = Agrupamento::all();
         
         //Cria um objeto para armazenar os membros por ministério
         $membrosByGrupo = new \stdClass();
@@ -79,5 +99,11 @@ class GrupoController extends Controller
         
 
         return view('impressoes/print-grupos', compact('membrosByGrupo'));
+    }
+
+    public function form_editar($id) {
+        $grupo = Agrupamento::findOrFail($id);
+        $membros = Membro::all();
+        return view('grupos/includes/form_editar', compact('grupo', 'membros'));
     }
 }

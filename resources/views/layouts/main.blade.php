@@ -51,7 +51,7 @@
     <body>
         <div class="layout-wrapper">
             <div class="popup">
-                <h2>Aviso</h2>
+                <h2><i class="bi bi-exclamation-triangle"></i> Aviso</h2>
                 <p id="msg_content"></p>
                 <button id="confirmaBtn"><i class="bi bi-check"></i> Confirmar</button>
                 <button id="cancelaBtn"><i class="bi bi-x"></i> Cancelar</button> 
@@ -148,12 +148,12 @@
             <main class="content">
                 @if (session('msg'))
                     <div class="msg">
-                        <div class="success"><div class="close"><i class="bi bi-x"></i></div> {{ session('msg') }}</div>
+                        <div class="success"><div class="close"><i class="bi bi-x"></i></div><i class="bi bi-check-circle"></i> {{ session('msg') }}</div>
                     </div>
                 @endif
                 @if (session('msg-error'))
                     <div class="msg">
-                        <div class="error"> {{ session('msg-error') }}</div>
+                        <div class="error"><i class="bi bi-exclamation-diamond"></i> {{ session('msg-error') }}</div>
                     </div>
                 @endif
                 <nav class="left-navbar nao-imprimir">
@@ -181,6 +181,7 @@
                         <a href="{{route('relatorios.painel')}}"><li><span title="Relatórios"><i class="bi bi-pie-chart"></i></span><span>Relatórios</span></li></a>
                         <a href="{{route('livraria.index')}}"><li><span title="Ação Social"><i class="bi bi-box2-heart"></i></span><span>Ação Social</span></li></a>
                         <a href="{{route('livraria.index')}}"><li><span title="Pesquisas"><i class="bi bi-bar-chart"></i></span><span>Pesquisas</span></li></a>
+                        <a href="{{route('biblia.index')}}"><li><span title="Bíblia"><x-icon title="Bíblia Sagrada" name="biblia" class="svg"/> </span><span>Bíblia Sagrada</span></li></a>
                         <a href="{{route('recados.historico')}}"><li><span title="Recados"><i class="bi bi-chat-left-dots"></i></span><span>Recados</span></li></a>
                         <a href="{{route('tutoriais.index')}}"><li><span title="Tutoriais"><i class="bi bi-question-octagon"></i></span><span>Tutoriais</span></li></a>
                         <a href=""><li><span title="Extensões"><i class="bi bi-nut"></i></span><span>Extensões</span></li></a>
@@ -229,9 +230,10 @@
                 $('#cep').mask('00000-000');
                 $('#cnpj').mask('00.000.000/0000-00');
                 
-                // $('.msg .close').click(function(){
-                //     this.closest('.msg').remove();
-                // })
+                // Fechar mensagens de aviso
+                $('.msg .close').click(function(){
+                    this.closest('.msg').remove();
+                })
                 
             });
         </script>
@@ -300,6 +302,20 @@
 
         <!--Script para o modal de confirmação-->
         <script>
+
+            //Função usada para formulários que precisam de modal de confirmação, prevenindo o submit imediato
+            function handleSubmit(event, form, message) {
+                event.preventDefault(); // impede envio imediato
+
+                confirmarAcao(message).then((confirmed) => {
+                    if (confirmed) {
+                        form.submit(); // só envia se o usuário confirmar
+                    }
+                });
+
+                return false; // impede comportamento padrão
+            }
+
             function confirmarAcao(message) {
             return new Promise((resolve) => {
                 const $popup = $('.popup');

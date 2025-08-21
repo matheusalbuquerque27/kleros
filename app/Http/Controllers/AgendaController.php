@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
+use App\Models\Congregacao;
 use Illuminate\Http\Request;
 use App\Models\Culto;
 use App\Models\Evento;
@@ -11,17 +12,15 @@ use App\Models\Reuniao;
 class AgendaController extends Controller
 {
     public function index(){
-        $eventos = Evento::orderBy('data_inicio')->get();
-        $cultos = Culto::orderBy('data_culto')->get();
-        $reunioes = Reuniao::orderBy('data_inicio')->get();
-        return view('agenda.index', compact('eventos', 'cultos', 'reunioes'));
+        $congregacao = app('congregacao');
+        return view('agenda.index', compact('congregacao'));
     }
 
     public function eventosJson()
     {
         $reunioes = Reuniao::select([
             'id',
-            'titulo as title',
+            'assunto as title',
             'data_inicio as start',
             // pode adicionar 'hora' ou 'data_fim' se houver
         ])->get();

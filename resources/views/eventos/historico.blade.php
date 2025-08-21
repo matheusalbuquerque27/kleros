@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Histórico de Eventos - AD Jerusalém')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 
@@ -57,7 +57,12 @@
                     <p>{{$item->descricao ?? 'Sem descrição'}}</p>
                 </div>
             </div><!--list-item-->
-            @endforeach       
+            @endforeach 
+            @if($eventos->total() > 10)
+                <div class="pagination">
+                    {{ $eventos->links('pagination::default') }}
+                </div>
+            @endif      
         </div>
         @else
             <div class="card">

@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Eventos - AD Jerusalém')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 

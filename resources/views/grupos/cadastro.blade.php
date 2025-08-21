@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Grupos - AD Jerusalém')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 
@@ -18,8 +18,17 @@
                 <input type="text" name="descricao" placeholder="Descrição do grupo">
             </div>
             <div class="form-item">
-                <label for="descricao">Liderança: </label>
-                <select name="membro_id" id="" required>
+                <label for="descricao">Líder: </label>
+                <select name="lider_id" id="" required>
+                    <option value="">Selecione um membro: </option>
+                    @foreach ($membros as $item)
+                        <option value="{{$item->id}}">{{$item->nome}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-item">
+                <label for="descricao">Co-líder: </label>
+                <select name="colider_id" id="" required>
                     <option value="">Selecione um membro: </option>
                     @foreach ($membros as $item)
                         <option value="{{$item->id}}">{{$item->nome}}</option>

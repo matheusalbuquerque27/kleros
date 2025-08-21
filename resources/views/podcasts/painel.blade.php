@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Podcasts')
+@section('title', 'Podcasts | ' . $appName)
 
 @section('content')
 

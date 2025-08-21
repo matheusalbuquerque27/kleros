@@ -1,5 +1,6 @@
 @extends('layouts.kleros')
-@section('title', 'Kleros - Administração Geral')
+
+@section('title', $appName. ' - Admin' )
 
 @section('content')
 <body>

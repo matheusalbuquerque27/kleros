@@ -24,7 +24,7 @@
 
 .form-control .form-item input[type="text"], .form-control .form-item input[type="tel"], .form-control .form-item textarea,  .form-control .form-item input[type="date"], .form-control .form-item input[type="email"], .form-control .form-item input[type="url"], .form-control .form-item select, .form-control .form-item input[type="time"]{
     width: 70%;
-    border: 1px solid #727272;
+    border: 1px solid rgba(0, 0, 0, 0.4);
     font-size: 1em;
     padding: 4px 10px;
     box-sizing: border-box;
@@ -51,12 +51,13 @@
 
 .form-control input[type="submit"], .btn{
     flex-direction: column;
-    padding: 5px;
+    padding: 6px;
     min-width: 100px;
     margin: 2px;
     background-color: var(--primary-color);
     color: var(--primary-contrast);
     border: 0;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.15);
     border-radius: var(--border-style);
     font-size: 1em;
 }
@@ -80,7 +81,7 @@
 }
 
 .form-control .form-options {
-    margin: 40px 0;
+    margin: 25px 0;
     text-align: center;
 }
 

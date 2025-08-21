@@ -30,11 +30,12 @@ class Membro extends Model
     public function celula() {
         return $this->belongsTo(Celula::class);
     }
-    public function grupo(){
-        return $this->hasMany(Grupo::class);
+    public function agrupamentos() {
+        return $this->belongsToMany(Agrupamento::class, 'agrupamentos_membros', 'membro_id', 'agrupamento_id');
     }
-    public function gruposMembro(){
-        return $this->belongsToMany(Grupo::class, 'grupo_integrantes');
+    public function gruposMembro()
+    {
+        return $this->belongsToMany(Agrupamento::class, 'agrupamentos_membros', 'membro_id', 'agrupamento_id');
     }
     public function eventos()
     {

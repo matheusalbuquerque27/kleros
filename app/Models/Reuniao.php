@@ -8,6 +8,12 @@ class Reuniao extends Model
 {
     protected $table = 'reunioes';
 
+    protected $casts = [
+        'data_inicio' => 'datetime',
+        'data_fim' => 'datetime',
+        'privado' => 'boolean'
+    ];
+
     public function congregacao()
     {
         return $this->belongsTo(Congregacao::class);

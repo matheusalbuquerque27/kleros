@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Culto;
 use App\Models\Evento;
-use App\Models\Grupo;
+use App\Models\Agrupamento;
 use Illuminate\Http\Request;
 use DateTime;
 
@@ -21,24 +21,24 @@ class EventoController extends Controller
 
     public function index() {
 
-        $eventos = Evento::all();
+        $eventos = Evento::whereDate('data_inicio', '<', date('Y-m-d'))->paginate(10);
 
         return view('eventos/historico', ['eventos' => $eventos]);
     }
 
     public function agenda() {
 
-        $eventos = Evento::whereDate('data_inicio', '>=', date('Y/m/d'))->get();
+        $eventos = Evento::whereDate('data_inicio', '>=', date('Y-m-d'))->paginate(10);
         
         $eventos = $eventos->isEmpty() ? '' : $eventos;
 
-        $grupos = Grupo::all();
+        $grupos = Agrupamento::where('tipo', 'grupo')->get();
 
         return view('eventos/agenda', ['eventos' => $eventos, 'grupos' => $grupos]);
     }
 
     public function create() {
-        $grupos = Grupo::all();
+        $grupos = Agrupamento::where('tipo', 'grupo')->get();
 
         return view('eventos/cadastro', ['grupos' => $grupos]);
     }
@@ -56,7 +56,7 @@ class EventoController extends Controller
 
         $evento->congregacao_id = $this->congregacao->id;
         $evento->titulo = $request->titulo;
-        $evento->grupo_id = $request->grupo_id;
+        $evento->agrupamento_id = $request->grupo_id;
         $evento->descricao = $request->descricao;
         $evento->recorrente = $request->recorrente == "1" ? true : false;
         $geracao_cultos = $request->geracao_cultos == "1" ? true : false;
@@ -124,7 +124,13 @@ class EventoController extends Controller
     }
 
     public function form_criar(){
-        $grupos = Grupo::all();
+        $grupos = Agrupamento::where('tipo', 'grupo')->get();
         return view('eventos/includes/form_criar', ['grupos' => $grupos]);
+    }
+
+    public function form_editar($id){
+        $evento = Evento::findOrFail($id);
+        $grupos = Agrupamento::where('tipo', 'grupo')->get();
+        return view('eventos/includes/form_editar', ['evento' => $evento, 'grupos' => $grupos]);
     }
 }

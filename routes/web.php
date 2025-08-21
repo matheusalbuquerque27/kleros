@@ -23,6 +23,8 @@ use App\Http\Controllers\ReuniaoController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\ArquivoController;
 use App\Http\Controllers\RelatorioController;
+use App\Http\Controllers\BibliaController;
+use App\Http\Controllers\LocalizacaoController;
 
 Route::domain('kleros.local')->group(function () {
     
@@ -73,7 +75,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/membros/painel', [MembroController::class, 'painel'])->name('membros.painel');
     Route::post('/membros/search', [MembroController::class, 'search'])->name('membros.search');
     Route::get('/membros/exibir/{id}', [MembroController::class, 'show']);
-    Route::get('/membros/editar/{id}', [MembroController::class, 'editar']);
+    Route::get('/membros/editar/{id}', [MembroController::class, 'editar'])->name('membros.editar');
     Route::put('/membros/{id}', [MembroController::class, 'update'])->name('membros.atualizar');
     Route::delete('/membros/{id}', [MembroController::class, 'destroy'])->name('membros.destroy');
 
@@ -84,7 +86,8 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/visitantes/adicionar', [VisitanteController::class, 'create'])->name('visitantes.adicionar');
     Route::get('/visitantes/historico', [VisitanteController::class, 'historico'])->name('visitantes.historico');
     Route::post('/visitantes/search', [VisitanteController::class, 'search']);
-    Route::get('/visitantes/{id}', [VisitanteController::class, 'show'])->name('visitantes.show');
+    Route::get('/visitantes/{id}', [VisitanteController::class, 'exibir'])->name('visitantes.exibir');
+    Route::get('/visitantes/editar/{id}', [VisitanteController::class, 'editar'])->name('visitantes.editar');
     Route::delete('/visitantes/{id}', [VisitanteController::class, 'destroy'])->name('visitantes.destroy');
     Route::put('/visitantes/{id}', [VisitanteController::class, 'update'])->name('visitantes.update');
     
@@ -94,6 +97,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/grupos/integrantes/{id}', [GrupoController::class, 'show'])->name('grupos.integrantes');
     Route::post('/grupos/integrantes', [GrupoController::class, 'addMember']);
     Route::get('/grupos/imprimir/{data}', [GrupoController::class, 'print']);
+    Route::get('/grupos/editar/{id}', [GrupoController::class, 'form_editar'])->name('grupos.form_editar');
     Route::put('/grupos/{id}', [GrupoController::class, 'update'])->name('grupos.update');
     Route::get('/grupos/lista', [GrupoController::class, 'lista'])->name('grupos.lista');
     
@@ -104,6 +108,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/eventos/agenda', [EventoController::class, 'agenda'])->name('eventos.agenda');
     Route::delete('/eventos/{id}', [EventoController::class, 'destroy'])->name('eventos.destroy');
     Route::get('/eventos/novo', [EventoController::class, 'form_criar'])->name('eventos.form_criar');
+    Route::get('/eventos/editar/{id}', [EventoController::class, 'form_editar'])->name('eventos.form_editar');
     Route::put('/eventos/{id}', [EventoController::class, 'update'])->name('eventos.update');
 
     
@@ -120,6 +125,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/cultos/agendamento', [CultoController::class, 'create'])->name('cultos.create');
     Route::get('/cultos/novo', [CultoController::class, 'form_criar'])->name('cultos.form_criar');
     Route::get('/cultos/{id}', [CultoController::class, 'complete'])->name('cultos.complete');
+    Route::get('/cultos/editar/{id}', [CultoController::class, 'form_editar'])->name('cultos.form_editar');
     Route::put('/cultos/{id}', [CultoController::class, 'update'])->name('cultos.update');
     Route::delete('/cultos/{id}', [CultoController::class, 'destroy'])->name('cultos.destroy');
     
@@ -167,6 +173,8 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/reunioes/painel', [ReuniaoController::class, 'index'])->name('reunioes.painel');
     Route::post('/reunioes', [ReuniaoController::class, 'store'])->name('reunioes.store');
     Route::get('/reunioes/novo', [ReuniaoController::class, 'form_criar'])->name('reunioes.form_criar');
+    Route::get('/reunioes/editar/{id}', [ReuniaoController::class, 'form_editar'])->name('reunioes.form_editar');
+    Route::put('/reunioes/{id}', [ReuniaoController::class, 'update'])->name('reunioes.update');
 
     Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
     Route::get('/cursos/adicionar', [CursoController::class, 'create'])->name('cursos.create');
@@ -181,5 +189,16 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/arquivos/lista_imagens', [ArquivoController::class, 'lista_imagens'])->name('arquivos.lista_imagens');
 
     Route::get('/relatorios', [RelatorioController::class, 'painel'])->name('relatorios.painel');
+
+    Route::prefix('biblia')->group(function () {
+        Route::get('/', [BibliaController::class, 'index'])->name('biblia.index');
+        Route::get('/livro/{bookId}', [BibliaController::class, 'chapters'])->name('biblia.chapters');
+        Route::get('/livro/{bookId}/capitulo/{chapter}', [BibliaController::class, 'verses'])->name('biblia.verses');
+        Route::get('/buscar', [BibliaController::class, 'search'])->name('biblia.search');
+    });
+
+    //Rotas para buscas dinâmicas de localização
+    Route::get('/estados/{pais_id}', [LocalizacaoController::class, 'getEstados'])->name('localizacao.estados');
+    Route::get('/cidades/{uf}', [LocalizacaoController::class, 'getCidades'])->name('localizacao.cidades');
 });
 

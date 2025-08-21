@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Membros - AD Jerusalém')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 
@@ -23,7 +23,7 @@
                     <label>Nome/Telefone: </label>
                     <input type="text" name="" placeholder="Nome ou telefone" id="chave">
                 </div>
-                <div>
+                <div class="search-panel-item">
                     <button id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
                     <a href="/membros/adicionar"><button type="button"><i class="bi bi-plus-circle"></i> Novo</button></a>
                     <button class="imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
@@ -68,13 +68,13 @@
             </div><!--list-item-->
             </a>
             @endforeach
+            @if($membros->total() > 10)
+                <div class="pagination">
+                    {{ $membros->links('pagination::default') }}
+                </div>
+            @endif
         </div>{{-- content --}} 
     </div>
-    @if($membros->count() > 10)
-    <div class="pagination">
-        {{ $membros->links('pagination::default') }}
-    </div>
-    @endif
 </div>
 
 @endsection

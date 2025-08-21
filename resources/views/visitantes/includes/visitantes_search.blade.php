@@ -1,6 +1,6 @@
 @if ($visitantes)
     @foreach ($visitantes as $item)
-        <div class="list-item">
+        <a href="{{route('visitantes.exibir', $item->id)}}"><div class="list-item">
             <div class="item item-1">
                 <p>{{$item->data_visita}}</p>
             </div>
@@ -13,10 +13,7 @@
             <div class="item item-1">
                 <p>{{$item->sit_visitante->titulo}}</p>
             </div>
-            <div class="item item-1">
-                <p>{{$item->observacoes}}</p>
-            </div>
-        </div><!--list-item-->
+        </div></a><!--list-item-->
     @endforeach       
 @else
     <div class="card">

@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Painel Geral')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
     <div class="container">

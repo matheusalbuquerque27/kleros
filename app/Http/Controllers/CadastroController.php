@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Agrupamento;
 use App\Models\Culto;
 use App\Models\Evento;
 use App\Models\Grupo;
@@ -18,13 +19,13 @@ class CadastroController extends Controller
     public function index() {
 
         //Esta parte verifica se há cultos cadastrados para os próximos dias
-        $cultos = Culto::whereDate('data_culto', '>=', date('Y/m/d'))->limit(4)->orderBy('data_culto', 'asc')->get();
+        $cultos = Culto::whereDate('data_culto', '>=', date('Y/m/d'))->limit(3)->orderBy('data_culto', 'asc')->get();
         
         //Esta parte verifica se há eventos cadastrados para os próximos dias
         $eventos = Evento::where('recorrente', false)->whereDate('data_inicio', '>', date('Y/m/d'))->limit(4)->orderBy('data_inicio', 'asc')->get();
 
         //Reuniões
-        $reunioes = Reuniao::whereDate('data_inicio', '>=', date('Y/m/d H:i'))->limit(4)->orderBy('data_inicio', 'asc')->get();
+        $reunioes = Reuniao::whereDate('data_inicio', '>=', date('Y/m/d H:i'))->limit(3)->orderBy('data_inicio', 'asc')->get();
 
         $cursos = Curso::where('ativo', true)->where('congregacao_id', app('congregacao')->id)->orderBy('titulo')->get();
 
@@ -33,7 +34,7 @@ class CadastroController extends Controller
 
         $ministerios = Ministerio::where('denominacao_id', app('congregacao')->denominacao_id)->orderBy('titulo')->get();
 
-        $grupos = Grupo::all();
+        $grupos = Agrupamento::where('tipo', 'grupo')->get();
         $congregacao = app('congregacao');
 
         $noticias = Cache::get('noticias_feed') ?? [];

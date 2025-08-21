@@ -1,6 +1,6 @@
 @extends('layouts.kleros')
 
-@section('title', 'Check-In - Cadastre sua denominação')
+@section('title', 'Check-In - {{$appName}}')
 
 @section('content')
 
@@ -22,6 +22,10 @@
             <div class="form-item">
                 <label for="nome">Nome: </label>
                 <input type="text" name="nome" id="nome" placeholder="Nome da igreja" required>
+            </div>
+            <div class="form-item">
+                <label for="nome">Nome reduzido: </label>
+                <input type="text" name="nome_curto" id="nome_curto" placeholder="Nome reduzido para navegadores" required>
             </div>
             <div class="form-item">
                 <label for="base_doutrinaria">Base doutrinária: </label>

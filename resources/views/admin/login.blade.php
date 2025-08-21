@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Admin - Login</title>
+    <title>Login - {{$appName}}</title>
     @vite(['resources/css/app.scss', 'resources/js/app.js'])
 </head>
 <body class="body-login">

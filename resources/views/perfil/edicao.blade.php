@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Perfil da conta');
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 

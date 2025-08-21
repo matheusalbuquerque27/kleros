@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Histórico de Visitantes')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 
@@ -17,7 +17,7 @@
                 <label>Data: </label>
                 <input type="date" name="" id="data_visita">
             </div>
-            <div class="form-control">
+            <div class="search-panel-item">
                 <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
                 <button class="imprimir"><i class="bi bi-printer"></i> Imprimir</button>
                 <button class="" onclick="window.history.back()"><i class="bi bi-arrow-return-left"></i> Voltar</button>
@@ -46,7 +46,7 @@
 
         <div id="content">
             @foreach ($visitantes as $item)
-            <div class="list-item">
+            <a href="{{route('visitantes.exibir', $item->id)}}"><div class="list-item">
                 <div class="item item-1">
                     <p>{{$item->data_visita}}</p>
                 </div>
@@ -59,15 +59,14 @@
                 <div class="item item-1">
                     <p>{{$item->sit_visitante->titulo}}</p>
                 </div>
-                <div class="item item-1">
-                    <p>{{$item->observacoes}}</p>
-                </div>
-            </div><!--list-item-->
+            </div></a><!--list-item-->
             @endforeach       
         </div>
-        <div class="pagination">
-        {{ $visitantes->links('pagination::default') }}
-    </div>
+        @if ($visitantes->total() > 10)
+            <div class="pagination">
+                {{ $visitantes->links('pagination::default') }}
+            </div>
+        @endif
     </div>
     
     <h3>Últimos Visitantes</h3>
@@ -94,17 +93,9 @@
 
 <script>
     $(document).ready(function(){
-        $('#btn_filtrar').click(function(){
 
-            const _token = $('meta[name="csrf-token"]').attr('content');
-            let data_visita = $('#data_visita').val();
-            let nome = $('#nome').val();
-
-            $.post('/visitantes/search', { _token, data_visita, nome }, function(response){
-                var view = response.view
-
-                $('#content').html(view)
-            }).catch((err) => {console.log(err)})
+        $('#nome').keydown(function(){
+            pesquisarVisitantes();
         });
 
         $('.imprimir').click(function(event) {
@@ -112,6 +103,20 @@
             window.print();
         });
     })
+</script>
+    
+<script>
+    function pesquisarVisitantes(){
+        const _token = $('meta[name="csrf-token"]').attr('content');
+        let data_visita = $('#data_visita').val();
+        let nome = $('#nome').val();
+
+        $.post('/visitantes/search', { _token, data_visita, nome }, function(response){
+            var view = response.view
+
+            $('#content').html(view)
+        }).catch((err) => {console.log(err)})
+    };
 </script>
     
 @endpush

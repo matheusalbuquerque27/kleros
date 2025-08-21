@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'AD Jerusalém')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 @if($errors->all())
@@ -64,9 +64,26 @@
     <div class="info">
         <h3>Gráficos e Estatísticas</h3>
 
-        <p>Visitantes por Mês ({{ $inicio }} a {{ $fim }})</p>
-        {!! $chart->container() !!}
-        {{-- Removido: {{ $chart->script() }} --}}
+        <div class="search-panel">
+            <form method="POST" action="{{ route('relatorios.painel') }}" class="nao-imprimir" style="margin-bottom:1rem">
+                <div class="search-panel-item">
+                    <label>De:</label>
+                    <input type="month" name="inicio_mes" value="" required>
+                    <label>Até:</label>
+                    <input type="month" name="fim_mes" value="" required>
+                    <button type="button" class="btn-filter" id="visitante_mes"><i class="bi bi-search"></i> Filtrar</button>
+                    <button type="button"><i class="bi bi-eraser"></i> Limpar</button>
+                </div>
+            </form>
+        </div>
+
+        {{-- Gráfico de Visitantes por Mês --}}
+        <div class="chart-visitanteMes">
+            <p>Visitantes por Mês ({{ $inicio }} a {{ $fim }})</p>
+            {!! $chart->container() !!}
+        </div>
+        
+
     </div>
 </div>
 

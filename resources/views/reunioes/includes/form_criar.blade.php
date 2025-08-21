@@ -3,8 +3,8 @@
     @csrf
     <div class="form-control">
         <div class="form-item">
-            <label for="titulo">Título: </label>
-            <input type="text" name="titulo" id="titulo" placeholder="Título da reunião">
+            <label for="titulo">Assunto: </label>
+            <input type="text" name="assunto" id="assunto" placeholder="Assunto principal">
         </div>
         <div class="form-item">
             <label for="grupo_id">Participantes: </label>

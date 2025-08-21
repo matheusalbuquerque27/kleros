@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Cadastrar Culto - AD Jerusalém')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 
@@ -24,6 +24,10 @@
                 <div class="form-item">
                     <label for="data_culto">Data do culto: </label>
                     <input type="date" name="data_culto" id="" required>
+                </div>
+                <div class="form-item">
+                    <label for="horario">Horário previsto: </label>
+                    <input type="time" name="horario" id="">
                 </div>
                 <div class="form-item">
                     <label for="preletor">Preletor: </label>

@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Configurações')
+@section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
 
@@ -120,11 +120,11 @@
                     <input type="text" name="bairro" value="{{$congregacao->bairro}}">
                 </div>
                 <div class="form-item">
-                    <label for="cidade">Cidade</label>
-                    <select name="cidade" id="cidade">
-                        <option value="">Selecione uma cidade</option>
-                        @foreach($cidades as $item)
-                            <option value="{{$item->id}}" @selected($congregacao->cidade_id == $item->id)>{{$item->nome}}</option>   
+                    <label for="pais">País</label>
+                    <select name="pais" id="pais">
+                        <option value="">Selecione um país</option>
+                        @foreach($paises as $item)
+                            <option value="{{$item->id}}" @selected($congregacao->pais_id == $item->id)>{{$item->nome}}</option>   
                         @endforeach
                     </select>
                 </div>
@@ -132,18 +132,12 @@
                     <label for="bairro">Estado</label>
                     <select name="estado" id="estado">
                         <option value="">Selecione um estado/região</option>
-                        @foreach($estados as $item)
-                            <option value="{{$item->id}}" @selected($congregacao->estado_id == $item->id)>{{$item->nome}}</option>   
-                        @endforeach
                     </select>
                 </div>
                 <div class="form-item">
-                    <label for="bairro">Bairro</label>
-                    <select name="pais" id="pais">
-                        <option value="">Selecione um país</option>
-                        @foreach($paises as $item)
-                            <option value="{{$item->id}}" @selected($congregacao->pais_id == $item->id)>{{$item->nome}}</option>   
-                        @endforeach
+                    <label for="cidade">Cidade</label>
+                    <select name="cidade" id="cidade">
+                        <option value="">Selecione uma cidade</option>
                     </select>
                 </div>
                 <div class="form-options">
@@ -296,6 +290,80 @@
     });
     });
 
+</script>
+
+<!--Script para seleção dinâmica de estado e cidade-->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let paisSelect   = document.getElementById('pais');
+    let estadoSelect = document.getElementById('estado');
+    let cidadeSelect = document.getElementById('cidade');
+
+    // valores já salvos
+    let selectedPais   = "{{ $congregacao->pais_id ?? '' }}";
+    let selectedEstado = "{{ $congregacao->estado_id ?? '' }}";
+    let selectedCidade = "{{ $congregacao->cidade_id ?? '' }}";
+
+    // carrega estados quando muda o país
+    paisSelect.addEventListener('change', function () {
+        carregarEstados(this.value, null);
+    });
+
+    // carrega cidades quando muda o estado
+    estadoSelect.addEventListener('change', function () {
+        carregarCidades(this.value, null);
+    });
+
+    // 🔹 Se já existe país salvo, carregar estados e cidades automaticamente
+    if (selectedPais) {
+        carregarEstados(selectedPais, selectedEstado, () => {
+            if (selectedEstado) {
+                carregarCidades(selectedEstado, selectedCidade);
+            }
+        });
+    }
+
+    // funções auxiliares
+    function carregarEstados(paisId, estadoId = null, callback = null) {
+        estadoSelect.innerHTML = '<option value="">Carregando...</option>';
+        cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
+
+        if (!paisId) {
+            estadoSelect.innerHTML = '<option value="">Selecione um estado</option>';
+            return;
+        }
+
+        fetch(`/estados/${paisId}`)
+            .then(res => res.json())
+            .then(estados => {
+                estadoSelect.innerHTML = '<option value="">Selecione um estado</option>';
+                estados.forEach(estado => {
+                    let selected = (estadoId && estado.id == estadoId) ? 'selected' : '';
+                    estadoSelect.innerHTML += `<option value="${estado.id}" ${selected}>${estado.nome}</option>`;
+                });
+                if (callback) callback();
+            });
+    }
+
+    function carregarCidades(estadoId, cidadeId = null) {
+        cidadeSelect.innerHTML = '<option value="">Carregando...</option>';
+
+        if (!estadoId) {
+            cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
+            return;
+        }
+
+        fetch(`/cidades/${estadoId}`)
+            .then(res => res.json())
+            .then(cidades => {
+                cidadeSelect.innerHTML = '<option value="">Selecione uma cidade</option>';
+                cidades.forEach(cidade => {
+                    let selected = (cidadeId && cidade.id == cidadeId) ? 'selected' : '';
+                    cidadeSelect.innerHTML += `<option value="${cidade.id}" ${selected}>${cidade.nome}</option>`;
+                });
+            });
+    }
+});
 </script>
 
 @endpush

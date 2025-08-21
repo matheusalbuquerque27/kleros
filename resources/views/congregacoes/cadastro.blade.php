@@ -1,6 +1,6 @@
 @extends('layouts.kleros')
 
-@section('title', 'Check-In Institucional')
+@section('title', 'Check-In - {{$appName}}')
 
 @section('content')
 @if($errors->any())

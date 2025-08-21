@@ -33,11 +33,9 @@ class AppServiceProvider extends ServiceProvider
             'encontro_celula' => EncontroCelula::class,
         ]);
 
-        View::composer('layouts.*', function ($view) {
-            if (app()->bound('congregacao')) {
-                $view->with('congregacao', app('congregacao'));
-            }
-        });
+        View::share('appName', config('app.name', 'Kleros'));
+
+        View::share('congregacao', app()->bound('congregacao') ? app('congregacao') : null);
 
         app()->singleton('congregacao', function () {
             return Auth::check() ? Auth::user()->congregacao : null;

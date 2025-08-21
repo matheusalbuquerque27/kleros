@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Cadastros')
+@section('title', $congregacao->nome_curto . ' |' . $appName)
 
 @section('content')
 
@@ -15,6 +15,7 @@
             @if (count($cultos) > 0)
                 @foreach ($cultos as $item)
                 <div class="info_item">
+                    <div class="info-edit" onclick="abrirJanelaModal('{{route('cultos.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i></div>
                     <p><i class="bi bi-calendar-event"></i>
                     @php
                         $data = new DateTime($item->data_culto);
@@ -48,6 +49,7 @@
             @if (count($eventos) > 0)
                     @foreach ($eventos as $item)
                     <div class="card">
+                        <div class="card-edit" onclick="abrirJanelaModal('{{route('eventos.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i></div>
                         <div class="card-date"><i class="bi bi-calendar-event"></i>
                             @php
                                 $data = new DateTime($item->data_inicio);
@@ -77,13 +79,14 @@
             @if (count($reunioes) > 0)
                     @foreach ($reunioes as $item)
                     <div class="card">
+                        <div class="card-edit" onclick="abrirJanelaModal('{{route('reunioes.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i></div>
                         <div class="card-date"><i class="bi bi-calendar-event"></i>
                             @php
                                 $data = new DateTime($item->data_inicio);
                             @endphp
-                            <p>{{$data->format('d/m')}} - {{$data->format('H:i')}} h</p>
+                            {{$data->format('d/m')}} - {{$data->format('H:i')}} h
                         </div>
-                        <div class="card-title">{{$item->titulo}}</div>
+                        <div class="card-title">{{$item->assunto}}</div>
                         <div class="card-description">{{$item->descricao ?? 'Sem descrição'}}</div>
                     </div>
                     @endforeach
@@ -123,17 +126,18 @@
             
             @if(count($grupos) > 0)
                 @foreach ($grupos as $item)
-                    <div class="list-title">
+                    <div class="list-item">
                         <div class="item-15">
                             <div class="card-title">{{$item->nome}}</div>
                             <div class="card-description">{{$item->descricao}}</div>
                         </div>
                         <div class="item-2">
-                            <div class="card-description"><b>Líder: </b>{{$item->membro->nome}}</div>
+                            <div class="card-description"><b>Liderança: </b>{{optional($item->lider)->nome}} @if($item->colider) | @endif {{optional($item->colider)->nome}}</div>
                         </div>
                         <div class="item-15">
                             <form method="POST">
                                 <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
+                                <button type="button" class="btn-options" onclick="abrirJanelaModal('{{route('grupos.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i> Editar</button>
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="delete-grupo btn-options" data-action="/grupos/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
@@ -155,7 +159,7 @@
         <div class="card-container">
             @if(count($ministerios) > 0)
                 @foreach ($ministerios as $item)
-                    <div class="alterlist">
+                    <div class="list-item">
                         <div class="item-15">
                             <div class="card-title">{{$item->titulo}}</div>
                         </div>
@@ -165,6 +169,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <a href="/ministerios/lista/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
+                                <a href="/ministerios/lista/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-pencil-square"></i> Editar</button></a>
                                 <button class="delete-ministerio btn-options" data-action="/ministerios/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
                             </form>
                             
