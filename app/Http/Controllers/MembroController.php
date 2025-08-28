@@ -9,6 +9,7 @@ use App\Models\EstadoCiv;
 use App\Models\Membro;
 use App\Models\Ministerio;
 use App\Models\User;
+use App\Models\Feed;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -104,8 +105,9 @@ class MembroController extends Controller
     public function show($id) {
 
         $membro = Membro::findOrFail($id);
+        $congregacao = app('congregacao');
         
-        return view('/membros/exibir', ['membro' => $membro]);
+        return view('/membros/exibir', ['membro' => $membro, 'congregacao' => $congregacao]);
     }
 
     public function editar($id) {
@@ -175,7 +177,11 @@ class MembroController extends Controller
 
     public function perfil() {
         $membro = Auth::user()->membro;
-        return view('/perfil/edicao', ['membro' => $membro]);
+        $noticias = Feed::where('categoria', 'noticia')
+            ->where('fonte', 'guiame')
+            ->limit(9)->get();
+
+        return view('/perfil/edicao', ['membro' => $membro, 'destaques' => $noticias]);
     }
 
     public function save_perfil($id) {

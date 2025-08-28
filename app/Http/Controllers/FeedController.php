@@ -8,141 +8,48 @@ use GuzzleHttp\Client as GuzzleClient;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Psr\Log\NullLogger;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Feed;
 
 class FeedController extends Controller
 {
+    // Lista todas as notícias
     public function noticias()
     {
-        $noticias = Cache::remember('noticias_feed', 10000, function(){
+        $noticias = Feed::where('categoria', 'noticia')
+            ->orderBy('publicado_em', 'desc')
+            ->get() // pega todos
+            ->groupBy('fonte')
+            ->map(function ($grupo) {
+                return $grupo->take(9); // pega só 10 de cada
+            });
 
-            $canais = [
-                'gospel+' => 'https://noticias.gospelmais.com/feed', 
-                'guiame' => 'https://feeds.feedburner.com/guiame',
-                'missoesnacionais' => 'https://missoesnacionais.org.br/noticias/feed/',
-            ];
+        return view('noticias.painel', compact('noticias'));
+    }
 
-            foreach ($canais as $name => $feed) {
-                $httpClient = new Client(new GuzzleAdapter(new GuzzleClient()));
-                $logger = new NullLogger();
-                $feedIo = new FeedIo($httpClient, $logger);
-
-                $url = $feed;
-                $result = $feedIo->read($url);
-
-                $rssRaw = file_get_contents($url);
-                $rssXml = simplexml_load_string($rssRaw);
-
-                //As imagens e mídias
-                $enclosures = [];
-
-                foreach ($rssXml->channel->item as $rssItem) {
-                    $link = (string) $rssItem->link;
-                    $enclosure = $rssItem->enclosure ? (string) $rssItem->enclosure['url'] : null;
-
-                    if ($link && $enclosure) {
-                        $enclosures[$link] = $enclosure;
-                    }
-                }
-
-                $limit = 12;
-                $count = 0;
-
-                foreach ($result->getFeed() as $item) {
-                    if($count++ >= $limit) break;
-
-                    $link = $item->getLink();
-                    $image = $enclosures[$link] ?? null;
-
-                    $noticias[$name][] = [
-                        'title' => $item->getTitle(),
-                        'link' => $link,
-                        'date' => $item->getLastModified()?->format('d/m/Y H:i'),
-                        'description' => $item->getContent(),
-                        'image' => $image,
-                    ];
-                }
-            }
-
-            return $noticias;
+    public function podcasts()
+    {
+        $podcasts = Feed::where('categoria', 'podcast')
+        ->orderBy('publicado_em', 'desc')
+        ->get() // pega todos
+        ->groupBy('fonte')
+        ->map(function ($grupo) {
+            return $grupo->take(9); // pega só 10 de cada
         });
 
-
-        return view('/noticias/painel', ['noticias' => $noticias]);
+        return view('podcasts.painel', compact('podcasts'));
     }
 
-    public function destaques() {
-        $noticias = Cache::get('noticias_feed', []);
-        $destaques = array_slice($noticias['guiame'] ?? [], 0, 9);
+    // Destaques (ex: só fonte "guiame")
+    public function destaques()
+    {
+        $destaques = Feed::where('categoria', 'noticia')
+            ->where('fonte', 'guiame')
+            ->orderBy('publicado_em', 'desc')
+            ->limit(9)
+            ->get();
 
-        dd($destaques);
-
-        return view('/noticias/includes/destaques', compact('destaques'));
+        return view('noticias.includes.destaques', compact('destaques'));
     }
-    
-    
-  public function podcasts()
-{
-
-    $podcasts = Cache::remember('podcasts_feed', 10000, function () {
-
-        $canais = [
-            'btcast' => 'https://bibotalk.com/feed/', 
-            'cafecf' => 'https://feeds.libsyn.com/466317/rss',
-        ];
-
-        $podcasts = [];
-
-        foreach ($canais as $name => $feed) {
-            $httpClient = new Client(new GuzzleAdapter(new GuzzleClient()));
-            $logger = new NullLogger();
-            $feedIo = new FeedIo($httpClient, $logger);
-
-            $url = $feed;
-            $rssRaw = @file_get_contents($url);
-            $rssXml = $rssRaw ? @simplexml_load_string($rssRaw) : null;
-
-            $enclosures = [];
-
-            if ($rssXml && $rssXml->channel && $rssXml->channel->item) {
-                foreach ($rssXml->channel->item as $rssItem) {
-                    $link = (string) $rssItem->link;
-                    $enclosure = $rssItem->enclosure ? (string) $rssItem->enclosure['url'] : null;
-                    if ($link && $enclosure) {
-                        $enclosures[$link] = $enclosure;
-                    }
-                }
-            }
-
-            try {
-                $result = $feedIo->read($url);
-            } catch (\Exception $e) {
-                return [];
-            }
-
-            $limit = 6;
-            $count = 0;
-
-            foreach ($result->getFeed() as $item) {
-                if ($count++ >= $limit) break;
-
-                $link = $item->getLink();
-                $audio = $enclosures[$link] ?? null;
-
-                $podcasts[$name][] = [
-                    'title' => $item->getTitle(),
-                    'link' => $link,
-                    'date' => $item->getLastModified()?->format('d/m/Y H:i'),
-                    'description' => $item->getContent(),
-                    'audio' => $audio,
-                ];
-            }
-        }
-
-        return $podcasts;
-    });
-
-    return view('/podcasts/painel', ['podcasts' => $podcasts]);
-}
     
 }
 ?>

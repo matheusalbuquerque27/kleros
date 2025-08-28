@@ -116,7 +116,7 @@ h1 {
 }
 
 .card-title {
-    font-size: 1.5em;
+    font-size: 1.4em;
     display: flex;
     align-items: center;
     gap: 5px;
@@ -260,8 +260,8 @@ h1 {
 Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
 */
 .list {
-    width: 100%;
-    margin: 25px 0;
+    width: 96%;
+    margin: 25px auto;
     display: flex;
     flex-direction: column;
     border: 1px solid var(--primary-color);

@@ -220,17 +220,6 @@ footer {
     text-align: right;
 }
 
-
-/*Estilo de elementos específicos*/
-.tag {
-    display: inline-block;
-    background: #1060a5;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 12px;
-    cursor: pointer;
-}
-
 /*Estilo para impressão*/
 @media print {
     body {

@@ -5,8 +5,32 @@
 @section('content')
 
 <div class="container">
-    <h2>Membros com ministério de: </h2>
-    <h1>{{$ministerio->titulo}}</h1>
+    <h1>Ministério de: {{$ministerio->titulo}}</h1>
+    <div class="info">
+        <h3>Membros</h3>
+        <div class="search-panel">
+            <div class="search-panel-item">
+                    <label>Buscar: </label>
+                    <input type="text" name="" placeholder="Nome" id="chave">
+                    <a href="/ministerios/adicionar"><button><i class="bi bi-search"></i> Procurar</button></a>
+                </div>
+            <div class="search-panel-item">
+                <label>Outros membros: </label>
+                <select name="membro" id="nome" placeholder="Outros membros">
+                    @if ($membros != null)
+                        @foreach ($membros as $item)
+                            <option value="{{$item->id}}">{{$item->nome}}</option>
+                        @endforeach
+                    @endif                        
+                </select>
+            </div>
+            <div class="search-panel-item">
+                <a href="/ministerios/adicionar"><button><i class="bi bi-plus-circle"></i> Incluir</button></a>
+                <button><i class="bi bi-printer"></i> Imprimir</button>
+                <a href="/cadastros#ministerios"><button><i class="bi bi-arrow-return-left"></i> Voltar</button></a>    
+            </div>
+        </div>
+    </div>
     <div class="list">
         <div class="list-title">
             <div class="item-1">
@@ -38,13 +62,11 @@
             </div>
         </div><!--list-item-->
         @endforeach
-        <div class="form-control">
-            <div class="form-options">
-                <a href="/ministerios/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo ministério</button></a>
-                <button class="btn mg-top-10"><i class="bi bi-printer"></i> Imprimir lista</button>
-                <a href="/cadastros#ministerios"><button class="btn mg-top-10"><i class="bi bi-arrow-return-left"></i> Voltar</button></a>    
+        @if($membros->total() > 10)
+            <div class="pagination">
+                {{ $membros->links('pagination::default') }}
             </div>
-        </div>
+        @endif
 </div>
 
 @endsection

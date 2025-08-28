@@ -12,7 +12,7 @@
             @csrf
             <div class="search-panel">
                 <div class="search-panel-item">
-                    <label>Nome do membro: </label>
+                    <label>Outros membros: </label>
                     <select name="membro" id="nome" placeholder="Nome do membro">
                         @if ($membros != null)
                             @foreach ($membros as $item)
@@ -23,9 +23,9 @@
                     <input type="hidden" name="grupo" value="{{$grupo->id}}">
                 </div>
                 <div class="search-panel-item">
-                    <button type="submit" id="btn_filtrar"><i class="bi bi-search"></i> Incluir</button>
-                    <a href="/cadastros#visitantes"><button type="button" class="" id="btn_filtrar"><i class="bi bi-printer"></i> Imprimir</button></a>
-                    <button type="button" class="" onclick="window.history.back()" id="btn_filtrar"><i class="bi bi-arrow-return-left"></i> Voltar</button>
+                    <button type="submit" id="btn_filtrar"><i class="bi bi-plus-circle"></i> Incluir</button>
+                    <button type="button" id="btn_filtrar"><i class="bi bi-printer"></i> Imprimir</button>
+                    <a href="/cadastros#grupos"><button type="button" id="btn_filtrar"><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
                 </div>
             </div>
         </form>
@@ -45,8 +45,7 @@
                 <b>Ministério</b>
             </div>
         </div><!--list-item-->
-        @if($membros != null)
-            @foreach ($integrantes as $item)
+        @foreach ($integrantes as $item)
             <div class="list-item">
                 <div class="item item-1">
                     <p>{{$item->nome}}</p>
@@ -61,8 +60,12 @@
                     <p>{{$item->ministerio?->titulo}}</p>
                 </div>
             </div><!--list-item-->
-            @endforeach  
-        @endif
+        @endforeach
+        @if($integrantes->total() > 10)
+            <div class="pagination">
+                {{ $integrantes->links('pagination::default') }}
+            </div>
+        @endif  
     </div>
 </div>
 

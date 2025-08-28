@@ -44,7 +44,7 @@
             </div>{{-- section --}}
         
             <div class="form-options nao-imprimir limit-80">
-                <a href="/visitantes/editar/{{$visitante->id}}"><button class="btn" type="button"><i class="bi bi-pencil-square"></i> Editar</button></a>   
+                <button class="btn" onclick="abrirJanelaModal('{{route('visitantes.form_editar', $visitante->id)}}')" type="button"><i class="bi bi-pencil-square"></i> Editar</button> 
                 <button class="btn imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
                 <form action="{{route('visitantes.destroy', $visitante->id)}}" method="post">
                     @csrf

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
 
 class LivrariaController extends Controller
 {
@@ -12,10 +11,8 @@ class LivrariaController extends Controller
 
         $livros = $this->livrosGoogle();
         //Para o banner de noticias
-        $noticias = Cache::get('noticias_feed') ?? [];
-        $destaques = array_slice($noticias['guiame'] ?? [], 0, 9);
         
-        return view('livraria.index', ['livros' => $livros, 'destaques' => $destaques]);
+        return view('livraria.index', ['livros' => $livros]);
     }
 
     public function livrosJson() {

@@ -50,7 +50,7 @@
                 @endforeach
             </div>
         </section>
-        @include('noticias.includes.destaques', ['destaques' => $destaques])
+        @include('noticias.includes.destaques')
     </div>
 </div>
 

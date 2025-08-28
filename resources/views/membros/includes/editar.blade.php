@@ -96,7 +96,7 @@
                     <label for="ministerio">Ministério: </label>
                     <select name="ministerio" id="">
                         @foreach ($ministerios as $item)
-                            <option value="{{$item->id}}" {{ old('ministerio', $membro->ministerio_id) == $item->id ? 'selected' : '' }}>
+                            <option value="{{$item->id}}" {{ old('ministerio_id', $membro->ministerio_id) == $item->id ? 'selected' : '' }}>
                                 {{$item->titulo}}
                             </option>
                         @endforeach

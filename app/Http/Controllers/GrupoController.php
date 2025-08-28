@@ -54,14 +54,15 @@ class GrupoController extends Controller
 
     public function show($id){
 
+        $congregacao = app('congregacao');
         $grupo = Agrupamento::find($id);
-        $integrantes = $grupo->integrantes;
+        $integrantes = $grupo->integrantes()->paginate(10);
 
         $membros = Membro::whereDoesntHave('gruposMembro', function ($query) use ($grupo) {
             $query->where('agrupamento_id', $grupo->id);
         })->get(); //Não pertencem ainda ao grupo;
 
-        return view('/grupos/integrantes', ['grupo' => $grupo, 'integrantes' => $integrantes, 'membros' => $membros]);
+        return view('/grupos/integrantes', ['congregacao' => $congregacao, 'grupo' => $grupo, 'integrantes' => $integrantes, 'membros' => $membros]);
     }
 
     public function addMember(Request $request){

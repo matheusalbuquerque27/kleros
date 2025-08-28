@@ -29,6 +29,9 @@
         <!-- Link para o calendário -->
         <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
 
+        <!-- Plyr.js para áudios -->
+        <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+
         <style>
         /* CSS dinâmico injetado aqui */
         :root {
@@ -169,7 +172,7 @@
                         <a href="{{route('eventos.agenda')}}"><li><span title="Eventos"><i class="bi bi-calendar-event"></i></span><span>Eventos</span></li></a>
                         <a href="{{route('cultos.agenda')}}"><li><span title="Cultos"><i class="bi bi-bell"></i></span><span>Cultos</span></li></a>
                         <a href="{{route('reunioes.painel')}}"><li><span title="Reuniões"><i class="bi bi-people-fill"></i></span><span>Reuniões</span></li></a>
-                        <a href="{{route('cultos.agenda')}}"><li><span title="Avisos"><i class="bi bi-megaphone"></i></span><span>Avisos</span></li></a>
+                        <a href="{{route('avisos.painel')}}"><li><span title="Avisos"><i class="bi bi-megaphone"></i></span><span>Avisos</span></li></a>
                         <a href="{{route('visitantes.historico')}}"><li><span title="Visitantes"><i class="bi bi-person-raised-hand"></i></span><span>Visitantes</span></li></a>
                         <a href="{{route('departamentos.painel')}}"><li><span title="Departamentos"><i class="bi bi-intersect"></i></span><span>Departamentos</span></li></a>
                         <a href="{{route('celulas.painel')}}"><li><span title="GCA - Células"><i class="bi bi-cup-hot"></i></span><span>GCA - Células</span></li></a>
@@ -219,6 +222,9 @@
 
         <!--CDN do fullcalendar para a agenda-->
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+        <!-- CDN do Plyr.js para áudio -->
+        <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
 
         <!--Scripts gerais-->
         <script>

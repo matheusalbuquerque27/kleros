@@ -33,12 +33,13 @@ class CultoController extends Controller
 
     public function agenda() {
 
+        $congregacao = app('congregacao');
         $cultos = Culto::whereDate('data_culto', '>=', date('Y-m-d'))->paginate(10);
         $cultos = $cultos->isEmpty() ? '' : $cultos;
 
         $eventos = Evento::whereDate('data_inicio', '>=', date('Y/m/d'))->distinct('titulo')->pluck('titulo');
 
-        return view('cultos/agenda', ['cultos' => $cultos, 'eventos' => $eventos]);
+        return view('cultos/agenda', ['cultos' => $cultos, 'eventos' => $eventos, 'congregacao' => $congregacao]);
     }
 
     public function store(Request $request) {
@@ -56,7 +57,7 @@ class CultoController extends Controller
 
         $culto->save();
 
-        return redirect('/cadastros#cultos')->with('msg', 'Um novo culto foi agendado.');
+        return redirect()->to(url()->previous())->with('msg', 'Um novo culto foi agendado.');
 
     }
 
@@ -115,7 +116,7 @@ class CultoController extends Controller
 
         $culto->save();
 
-        return redirect('/cadastros#cultos')->with('msg', 'Registro de culto atualizado com sucesso.');
+        return redirect()->to(url()->previous())->with('msg', 'Registro de culto atualizado com sucesso.');
 
     }
 

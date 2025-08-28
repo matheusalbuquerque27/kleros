@@ -69,6 +69,11 @@
 
 }
 
+.form-control input[type="color"] {
+    width: 200px;
+    border-radius: var(--border-style);
+}
+
 .form-control .form-square {
     border: 1px solid #727272;
     width: 70%;

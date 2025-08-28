@@ -33,7 +33,7 @@
                     @endif
                 </select>
             </div>
-            <div class="form-control">
+            <div class="search-panel-item">
                 <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
                 <button class="imprimir"><i class="bi bi-printer"></i> Imprimir</button>
                 <a href="/cadastros#cultos"><button class=""><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
@@ -55,7 +55,7 @@
             </div><!--list-item-->
             <div id="content">
                 @foreach ($cultos as $item)
-                    <div class="list-item">
+                    <div onclick="abrirJanelaModal('{{route('cultos.form_editar', $item->id)}}')" class="list-item">
                         <div class="item item-15">
                             <p>{{$item->data_culto}}</p>
                         </div>

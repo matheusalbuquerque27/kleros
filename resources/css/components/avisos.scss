@@ -1,0 +1,54 @@
+.avisos {
+    display: grid;
+    width: 96%;
+    justify-content: center;
+    margin: 0 auto;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.aviso-card {
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.aviso-card:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.aviso-urgente { border-color: #e3342f; }
+.aviso-importante { border-color: #ff9800; }
+.aviso-normal { border-color: #4caf50; }
+
+.badge {
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge.urgente { background: #e3342f; color: #fff; }
+.badge.importante { background: #ff9800; color: #000; }
+.badge.normal { background: #4caf50; color: #fff; }
+
+.aviso-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .3rem;
+}
+
+.aviso-footer {
+    font-size: 0.75rem;
+    margin-top: .4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    color: #666;
+}

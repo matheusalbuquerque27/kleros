@@ -9,6 +9,7 @@ return new class extends Migration {
     {
         Schema::create('avisos', function (Blueprint $table) {
             $table->id();
+            $table->integer('congregacao_id');
             $table->string('titulo');
             $table->text('mensagem');
             $table->boolean('para_todos')->default(false); // toda a igreja
@@ -16,6 +17,7 @@ return new class extends Migration {
             $table->timestamp('data_inicio')->nullable(); // início da exibição
             $table->timestamp('data_fim')->nullable();     // fim da exibição
             $table->enum('status', ['ativo', 'arquivado'])->default('ativo');
+            $table->enum('prioridade', ['urgente', 'importante', 'normal'])->default('ativo');
             $table->unsignedBigInteger('criado_por'); // pastor/líder que criou
             $table->timestamps();
 

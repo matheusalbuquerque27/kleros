@@ -29,5 +29,18 @@ function pegarDiasDeIntervaloDatas(string $startDate, string $endDate): array
     return $dates;
 }
 
+function primeiroEUltimoNome(string $nomeCompleto): string {
+    // quebra o nome em partes, removendo espaços extras
+    $partes = explode(' ', trim($nomeCompleto));
+
+    // se só tem um nome, retorna ele mesmo
+    if (count($partes) === 1) {
+        return $partes[0];
+    }
+
+    // monta a string com primeiro e último
+    return $partes[0] . ' ' . $partes[count($partes) - 1];
+}
+
 
 ?>

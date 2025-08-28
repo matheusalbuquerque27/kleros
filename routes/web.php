@@ -22,9 +22,12 @@ use App\Http\Controllers\LivrariaController;
 use App\Http\Controllers\ReuniaoController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\ArquivoController;
+use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\BibliaController;
 use App\Http\Controllers\LocalizacaoController;
+use App\Jobs\TesteJob;
+use Illuminate\Support\Facades\DB;
 
 Route::domain('kleros.local')->group(function () {
     
@@ -87,9 +90,9 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/visitantes/historico', [VisitanteController::class, 'historico'])->name('visitantes.historico');
     Route::post('/visitantes/search', [VisitanteController::class, 'search']);
     Route::get('/visitantes/{id}', [VisitanteController::class, 'exibir'])->name('visitantes.exibir');
-    Route::get('/visitantes/editar/{id}', [VisitanteController::class, 'editar'])->name('visitantes.editar');
-    Route::delete('/visitantes/{id}', [VisitanteController::class, 'destroy'])->name('visitantes.destroy');
+    Route::get('/visitantes/editar/{id}', [VisitanteController::class, 'form_editar'])->name('visitantes.form_editar');
     Route::put('/visitantes/{id}', [VisitanteController::class, 'update'])->name('visitantes.update');
+    Route::delete('/visitantes/{id}', [VisitanteController::class, 'destroy'])->name('visitantes.destroy');
     
     Route::post('/grupos', [GrupoController::class, 'store']);
     Route::get('/grupos/adicionar', [GrupoController::class, 'create']);
@@ -162,6 +165,8 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/noticias', [FeedController::class, 'noticias'])->name('noticias.painel');
     Route::get('/destaques', [FeedController::class, 'destaques'])->name('noticias.destaques');
     Route::get('/podcasts', [FeedController::class, 'podcasts'])->name('podcasts.painel');
+    Route::get('/feeds', [FeedController::class, 'index'])->name('feeds.index');
+    Route::get('/feeds/{slug}', [FeedController::class, 'show'])->name('feeds.show');
 
     Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda.index');
     Route::get('/agenda/eventos', [AgendaController::class, 'eventosJson'])->name('agenda.eventos.json');
@@ -175,6 +180,8 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/reunioes/novo', [ReuniaoController::class, 'form_criar'])->name('reunioes.form_criar');
     Route::get('/reunioes/editar/{id}', [ReuniaoController::class, 'form_editar'])->name('reunioes.form_editar');
     Route::put('/reunioes/{id}', [ReuniaoController::class, 'update'])->name('reunioes.update');
+
+    Route::get('/avisos', [AvisoController::class, 'index'])->name('avisos.painel');
 
     Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
     Route::get('/cursos/adicionar', [CursoController::class, 'create'])->name('cursos.create');
@@ -200,5 +207,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     //Rotas para buscas dinâmicas de localização
     Route::get('/estados/{pais_id}', [LocalizacaoController::class, 'getEstados'])->name('localizacao.estados');
     Route::get('/cidades/{uf}', [LocalizacaoController::class, 'getCidades'])->name('localizacao.cidades');
+
+
 });
 

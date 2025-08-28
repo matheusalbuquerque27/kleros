@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - {{$congregacao->nome_curto}}</title>
+    <link rel="shortcut icon" href="{{asset('storage/'.$congregacao->config->logo_caminho)}}" type="image/x-icon">
     <!-- SCSS managed by Vite -->
     @vite(['resources/css/app.scss'])
     <!-- Fonts -->

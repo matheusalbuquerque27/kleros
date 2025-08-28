@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('ministerios', function (Blueprint $table) {
             $table->id();
             $table->string('titulo');
+            $table->string('sigla')->nullable();
             $table->foreignId('denominacao_id')->constrained('denominacoes')->onDelete('cascade');
             $table->timestamps();
         });

@@ -69,3 +69,18 @@
     background-color: var(--secondary-color);
     color: var(--secondary-contrast);
 }
+
+.btn-large {
+    background: var(--primary-color);
+    color: var(--primary-contrast);
+    padding: 12px 20px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: var(--border-style);
+    cursor: pointer;
+    transition: background .3s;
+}
+.btn-large:hover {
+    background: var(--secondary-color);
+    color: var(--secondary-contrast);
+}

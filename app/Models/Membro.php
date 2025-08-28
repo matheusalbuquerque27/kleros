@@ -49,5 +49,8 @@ class Membro extends Model
     {
         return $this->belongsToMany(Reuniao::class, 'reuniao_membro', 'membro_id', 'reuniao_id');
     }
+    public function avisos(){
+        return $this->hasMany(Aviso::class);
+    }
 
 }

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('feed', function (Blueprint $table) {
+        Schema::create('feeds', function (Blueprint $table) {
             $table->id(); // BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
             $table->string('titulo');
             $table->string('link', 512)->nullable(); // link da notícia (se externo)
@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('imagem_capa', 512)->nullable(); // imagem principal (path ou URL)
             $table->string('fonte')->nullable();     // fonte ou portal
             $table->enum('tipo', ['manual', 'rss', 'outro'])->default('manual'); // origem
+            $table->enum('categoria', ['noticia', 'podcast'])->default('noticia');
+            $table->string('media_url')->nullable();
             $table->dateTime('publicado_em')->nullable(); // data da publicação original
 
             $table->timestamps();

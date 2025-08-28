@@ -33,8 +33,9 @@ class EventoController extends Controller
         $eventos = $eventos->isEmpty() ? '' : $eventos;
 
         $grupos = Agrupamento::where('tipo', 'grupo')->get();
+        $congregacao = app('congregacao');
 
-        return view('eventos/agenda', ['eventos' => $eventos, 'grupos' => $grupos]);
+        return view('eventos/agenda', ['eventos' => $eventos, 'grupos' => $grupos, 'congregacao' => $congregacao]);
     }
 
     public function create() {

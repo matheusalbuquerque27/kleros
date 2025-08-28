@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Culto;
+use App\Models\Evento;
 use App\Models\SituacaoVisitante;
 use App\Models\Visitante;
 use Illuminate\Http\Request;
@@ -74,12 +75,12 @@ class VisitanteController extends Controller
         return view('visitantes/exibir', ['visitante' => $visitante]);
     }
 
-    public function editar($id) {
+    public function form_editar($id) {
 
         $visitante = Visitante::findOrFail($id);
         $situacao_visitante = SituacaoVisitante::all();
 
-        return view('visitantes/edicao', ['visitante' => $visitante, 'situacao_visitante' => $situacao_visitante]);
+        return view('visitantes/includes/form_editar', ['visitante' => $visitante, 'situacao_visitante' => $situacao_visitante]);
     }
 
     public function update(Request $request, $id) {

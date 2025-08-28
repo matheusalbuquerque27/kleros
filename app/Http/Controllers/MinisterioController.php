@@ -27,13 +27,19 @@ class MinisterioController extends Controller
 
     public function lista($id){
 
+        $congregacao = app('congregacao');
+
         //Pesquisa no banco os membros desse ministério pelo id
-        $membros = Membro::where('ministerio_id', $id)->get();
+        $membros = Membro::where('ministerio_id', $id)->paginate(10);
+        $naoInclusos = Membro::where(function($query) use ($id) {
+            $query->whereNull('ministerio_id')
+                ->orWhere('ministerio_id', '<>', $id);
+        })->get(); //Não pertencem ainda ao grupo;
 
         //Informa dados sobre o ministério
         $ministerio = Ministerio::find($id);
        
-        return view('ministerios/lista', ['membros' => $membros, 'ministerio' => $ministerio]);
+        return view('ministerios/lista', ['membros' => $membros, 'ministerio' => $ministerio, 'naoInclusos' => $naoInclusos, 'congregacao' => $congregacao]);
     }
 
     public function destroy($id){
