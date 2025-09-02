@@ -12,8 +12,8 @@
             <div class="noticias-grid">
                 @foreach ($noticias['guiame'] ?? [] as $noticia)
                     <div class="noticia-card">
-                        @if (!empty($noticia['audio_url']))
-                            <img src="{{ $noticia['audio_url'] }}" alt="" class="noticia-img">
+                        @if (!empty($noticia['media_url']))
+                            <img src="{{ $noticia['media_url'] }}" alt="" class="noticia-img">
                         @endif
                         <a href="{{ $noticia['link'] }}" target="_blank" class="noticia-title">
                             {{ $noticia['titulo'] }}
@@ -36,8 +36,8 @@
             <div class="noticias-grid">
                 @foreach ($noticias['gospel+'] ?? [] as $noticia)
                     <div class="noticia-card">
-                        @if (!empty($noticia['audio_url']))
-                            <img src="{{ $noticia['audio_url'] }}" alt="" class="noticia-img">
+                        @if (!empty($noticia['media_url']))
+                            <img src="{{ $noticia['media_url'] }}" alt="" class="noticia-img">
                         @endif
                         <a href="{{ $noticia['link'] }}" target="_blank" class="noticia-title">
                             {{ $noticia['titulo'] }}
@@ -60,7 +60,7 @@
             <div class="noticias-grid">
                 @foreach ($noticias['missoesnacionais'] ?? [] as $noticia)
                     <div class="noticia-card">
-                        @if (!empty($noticia['audio_url']))
+                        @if (!empty($noticia['media_url']))
                             <img src="{{ $noticia['audio_url'] }}" alt="" class="noticia-img">
                         @endif
                         <a href="{{ $noticia['link'] }}" target="_blank" class="noticia-title">

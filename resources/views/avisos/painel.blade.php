@@ -23,7 +23,7 @@
             </div>
             <div class="search-panel-item">
                 <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
-                <button class="imprimir"><i class="bi bi-printer"></i> Imprimir</button>
+                <button class="" onclick="abrirJanelaModal('{{ route('avisos.form_criar') }}')"><i class="bi bi-plus-circle"></i> Criar Aviso</button>
                 <a href="/cadastros#cultos"><button class=""><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
             </div>
         </div>
@@ -73,8 +73,8 @@
             event.preventDefault();
             window.print();
         });
+        
     })
 </script>
-
     
 @endpush

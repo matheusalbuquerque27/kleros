@@ -20,10 +20,7 @@ class AtualizarFeedsJob implements ShouldQueue
     {
         $feeds = [
             'btcast' => 'https://bibotalk.com/feed/',
-            'cafecf' => 'https://feeds.libsyn.com/466317/rss',
-            'gospel+' => 'https://noticias.gospelmais.com/feed',
-            'guiame' => 'https://feeds.feedburner.com/guiame',
-            'missoesnacionais' => 'https://missoesnacionais.org.br/noticias/feed/',
+            'guiame' => 'https://guiame.com.br/rss',
         ];
 
         foreach ($feeds as $nome => $url) {
@@ -44,9 +41,29 @@ class AtualizarFeedsJob implements ShouldQueue
 
                     // 🔑 áudio
                     $audio = null;
+
+                    // enclosure padrão (geral)
                     if (isset($item->enclosure) && $item->enclosure['url']) {
                         $audioPull = (string) $item->enclosure['url'];
                         $audio = strtok($audioPull, '?');
+                    }
+
+                    // media:content (alguns feeds usam isso)
+                    if (!$audio) {
+                        $media = $item->children('http://search.yahoo.com/mrss/');
+                        if ($media && $media->content && $media->content->attributes()->url) {
+                            $audioPull = (string) $media->content->attributes()->url;
+                            $audio = strtok($audioPull, '?');
+                        }
+                    }
+
+                    // itunes: (alguns usam dentro do namespace itunes como <enclosure>)
+                    if (!$audio) {
+                        $itunes = $item->children('http://www.itunes.com/dtds/podcast-1.0.dtd');
+                        if ($itunes && $itunes->attributes()->href) {
+                            $audioPull = (string) $itunes->attributes()->href;
+                            $audio = strtok($audioPull, '?');
+                        }
                     }
 
                     // 🔑 imagem
@@ -62,17 +79,8 @@ class AtualizarFeedsJob implements ShouldQueue
                         $imagem = (string) $xml->channel->image->url;
                     }
 
-                    // 🔍 log pra depuração
-                    Log::info("Feed processado", [
-                        'fonte'  => $nome,
-                        'titulo' => $titulo,
-                        'audio'  => $audio,
-                        'imagem' => $imagem,
-                    ]);
-
-                    Feed::updateOrCreate(
-                        ['slug' => $slug],
-                        array_filter([
+                    // monta os dados principais
+                    $dados = [
                         'titulo'       => $titulo,
                         'link'         => $link,
                         'descricao'    => strip_tags($descricao),
@@ -82,8 +90,16 @@ class AtualizarFeedsJob implements ShouldQueue
                         'tipo'         => 'rss',
                         'categoria'    => $categoria,
                         'publicado_em' => $pubDate,
-                        'audio_url'    => $audio,
-                    ], fn($v) => !is_null($v))
+                    ];
+
+                    // só atualiza media_url se tiver um áudio válido
+                    if (!empty($audio)) {
+                        $dados['media_url'] = $audio;
+                    }
+
+                    $feed = Feed::updateOrCreate(
+                        ['slug' => $slug],
+                        $dados
                     );
                 }
             } catch (\Exception $e) {

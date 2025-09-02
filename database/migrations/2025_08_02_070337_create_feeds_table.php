@@ -23,7 +23,7 @@ return new class extends Migration
             $table->enum('tipo', ['manual', 'rss', 'outro'])->default('manual'); // origem
             $table->enum('categoria', ['noticia', 'podcast'])->default('noticia');
             $table->string('media_url')->nullable();
-            $table->dateTime('publicado_em')->nullable(); // data da publicação original
+            $table->timestamp('publicado_em')->nullable(); // data da publicação original
 
             $table->timestamps();
         });

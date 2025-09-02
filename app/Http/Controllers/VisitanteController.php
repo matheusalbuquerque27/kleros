@@ -99,7 +99,7 @@ class VisitanteController extends Controller
         $visitante->nome = $request->nome;
         $visitante->telefone = $request->telefone;
         $visitante->data_visita = $request->data_visita;
-        $visitante->sit_visitante_id = $request->situacao;
+        $visitante->sit_visitante_id = $request->sit_visitante;
         $visitante->observacoes = $request->observacoes;
         $visitante->updated_at = date('Y-m-d H:i:s');
 

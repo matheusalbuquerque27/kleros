@@ -20,8 +20,11 @@
         <!-- Icons -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         
-        <!-- CSS -->
+        <!-- CSS Estilo Geral-->
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
+
+        <!-- CSS do Select2 -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
         <!-- Swipper para interações -->
         <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -138,7 +141,7 @@
                                     <div class="profile-header">
                                         <small>Conectado como</small>
                                     </div>
-                                    <p>{{optional(auth()->user()->membro)->nome ?? 'Admin'}}</p>
+                                    <p><i class="bi bi-person"></i> {{optional(auth()->user()->membro)->nome ?? 'Admin'}}</p>
                                 </div>
                                 <a href="/perfil"><i class="bi bi-pencil"></i> Editar perfil</a>
                                 <a href="/logout" title="Sair"><i class="bi bi-box-arrow-right"></i> Logout</a>
@@ -196,27 +199,20 @@
                 
             </main>
             <footer>
-                <p>Sistema de Gestão Interna | {{$congregacao->denominacao->nome}} - {{optional($congregacao->cidade)->nome}}/{{optional($congregacao->estado)->uf}}</p>
+                <p>Sistema de Gestão Interna | {{$congregacao->nome_curto}} - {{optional($congregacao->cidade)->nome}}/{{optional($congregacao->estado)->uf}}</p>
                 @if($congregacao->cnpj) <h4>CNPJ {{$congregacao->cnpj}}</h4> @endif
             </footer>
         </div>
         <!-- Modal Flutuante Reutilizável -->
-        <div id="janelaModal" class="modal-overlay" style="display: none;">
-            <div class="modal-box">
-                <div class="scroll-container">
-                    <button id="fecharModal" onclick="fecharJanelaModal()" class="fechar-btn" title="Fechar"><i class="bi bi-x-circle-fill"></i></button>
-                    <div id="conteudoModal">
-                        <!-- Aqui entra o conteúdo dos includes -->
-                        @yield('modal-content')
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('partials/janela-modal')
 
         <!--CDNs do Jquery-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
+        <!-- JS do Select2 -->
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        
         <!--CDN do swipper para interações-->
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
@@ -271,9 +267,12 @@
                 fetch(url)
                     .then(response => response.text())
                     .then(html => {
-                        document.getElementById('conteudoModal').innerHTML = html;
+                        const container = document.getElementById('conteudoModal');
+                        container.innerHTML = html;
                         document.getElementById('janelaModal').style.display = 'flex';
-                    });
+
+                        initModalScripts(container);
+                    });                
             }
 
             function fecharJanelaModal() {

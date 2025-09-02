@@ -22,7 +22,15 @@
     width: 30%;
 }
 
-.form-control .form-item input[type="text"], .form-control .form-item input[type="tel"], .form-control .form-item textarea,  .form-control .form-item input[type="date"], .form-control .form-item input[type="email"], .form-control .form-item input[type="url"], .form-control .form-item select, .form-control .form-item input[type="time"]{
+.form-control .form-item input[type="text"], 
+.form-control .form-item input[type="tel"], 
+.form-control .form-item textarea,  
+.form-control .form-item input[type="date"], 
+.form-control .form-item input[type="email"], 
+.form-control .form-item input[type="url"], 
+.form-control .form-item input[type="password"], 
+.form-control .form-item select, 
+.form-control .form-item input[type="time"] {
     width: 70%;
     border: 1px solid rgba(0, 0, 0, 0.4);
     font-size: 1em;

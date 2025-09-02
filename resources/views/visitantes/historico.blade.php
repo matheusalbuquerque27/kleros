@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', $congregacao->nome_curto . ' | ' . $appName)
+@section('title', $congregacao->nome_reduzido . ' | ' . $appName)
 
 @section('content')
 
@@ -34,13 +34,10 @@
                 <b>Nome</b>
             </div>
             <div class="item-1">
-                <b>Situação</b>
+                <b>Telefone</b>
             </div>
             <div class="item-1">
                 <b>Situação</b>
-            </div>
-            <div class="item-1">
-                <b>Observações</b>
             </div>
         </div><!--list-item-->
 
@@ -54,7 +51,13 @@
                     <p>{{$item->nome}}</p>
                 </div>
                 <div class="item item-1">
-                    <p>{{$item->telefone}}</p>
+                    <p>{{ $item->telefone }}
+                        <span onclick="copiarTexto(event, '{{ $item->telefone }}')" 
+                            style="cursor:pointer; position:relative; padding-left: .2em;">
+                            <i class="bi bi-copy"></i>
+                            <span class="tooltip-copiar">Copiado!</span>
+                        </span>
+                    </p>
                 </div>
                 <div class="item item-1">
                     <p>{{$item->sit_visitante->titulo}}</p>
@@ -87,6 +90,25 @@
     
 </div>
 
+<style>
+.tooltip-copiar {
+    position: absolute;
+    top: -25px;
+    left: 0;
+    background: #333;
+    color: #fff;
+    font-size: 0.8em;
+    padding: 3px 6px;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.tooltip-copiar.show {
+    opacity: 1;
+}
+</style>
+
 @endsection
 
 @push('scripts')
@@ -117,6 +139,46 @@
             $('#content').html(view)
         }).catch((err) => {console.log(err)})
     };
+</script>
+
+<script>
+    function copiarTexto(event, texto) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(texto).then(() => {
+                mostrarTooltip(event);
+            }).catch(err => {
+                console.error("Erro ao copiar:", err);
+            });
+        } else {
+            // fallback
+            let textArea = document.createElement("textarea");
+            textArea.value = texto;
+            textArea.style.position = "fixed";
+            textArea.style.opacity = 0;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                document.execCommand('copy');
+                mostrarTooltip(event);
+            } catch (err) {
+                console.error("Erro no fallback de cópia:", err);
+            }
+            document.body.removeChild(textArea);
+        }
+    }
+
+    function mostrarTooltip(event) {
+        const tooltip = event.currentTarget.querySelector(".tooltip-copiar");
+        tooltip.classList.add("show");
+        setTimeout(() => {
+            tooltip.classList.remove("show");
+        }, 1500);
+    }
 </script>
     
 @endpush

@@ -11,9 +11,9 @@
             <!-- Menu de abas -->
             <ul class="tab-menu">
                 <li class="active" data-tab="pessoais"><i class="bi bi-person"></i> Dados Pessoais</li>
-                <li data-tab="contato"><i class="bi bi-telephone"></i> Contato</li>
                 <li data-tab="bio"><i class="bi bi-journal-text"></i> Biografia</li>
                 <li data-tab="tab-foto"><i class="bi bi-image"></i> Foto</li>
+                <li data-tab="seguranca"><i class="bi bi-shield-lock"></i> Segurança</li>
             </ul>
 
             <form action="{{route('perfil.update', $membro->id)}}" method="POST" enctype="multipart/form-data">
@@ -30,10 +30,6 @@
                             <input type="text" id="nome" name="nome" 
                                 value="{{ old('nome', optional($membro)->nome) }}" required>
                         </div>
-                    </div>
-
-                    <!-- Aba 2 -->
-                    <div id="contato" class="tab-pane form-control">
                         <div class="form-item">
                             <label for="email">Email</label>
                             <input type="email" id="email" name="email" 
@@ -43,6 +39,21 @@
                             <label for="telefone">Telefone</label>
                             <input type="tel" id="telefone" name="telefone" 
                                 value="{{ old('telefone', optional($membro)->telefone) }}" required>
+                        </div>
+                    </div>
+
+                    <!-- Aba 2 -->
+                    <div id="seguranca" class="tab-pane form-control">
+                        <h4>Modificar senha</h4>
+                        <div class="form-item">
+                            <label for="senha_atual">Senha atual</label>
+                            <input type="password" id="senha_atual" name="senha_atual" 
+                                placeholder="Senha atual">
+                        </div>
+                        <div class="form-item">
+                            <label for="nova_senha">Nova senha</label>
+                            <input type="password" id="nova_senha" name="nova_senha" 
+                                placeholder="Nova senha">
                         </div>
                     </div>
 

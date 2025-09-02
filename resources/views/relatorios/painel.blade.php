@@ -16,55 +16,76 @@
 <div class="container">
 
     {{-- Estilos da toolbar/menu de download --}}
-    <script src="{{ $chart->cdn() }}"></script>
-
-    {{-- Estilos da toolbar/menu de download --}}
     <style>
-        /* barra: fundo suave, cantos e espaçamento */
-        .apexcharts-toolbar{
+    /* === Estilos da toolbar que você já tinha === */
+    .apexcharts-toolbar {
         background: rgba(15,23,42,.06);
         border-radius: 8px;
         padding: 4px;
         gap: 6px;
-        }
+    }
 
-        /* tamanho dos ícones */
-        .apexcharts-toolbar svg {
+    .apexcharts-toolbar svg {
         width: 18px;
         height: 18px;
-        }
+    }
 
-        /* cores específicas por ícone */
-        .apexcharts-download-icon svg { fill: #2563eb; } /* azul p/ download */
-        .apexcharts-zoom-icon svg,
-        .apexcharts-zoomin-icon svg,
-        .apexcharts-zoomout-icon svg,
-        .apexcharts-pan-icon svg,
-        .apexcharts-reset-icon svg,
-        .apexcharts-menu-icon svg { fill: #334155; }
+    .apexcharts-download-icon svg { fill: #2563eb; }
+    .apexcharts-zoom-icon svg,
+    .apexcharts-zoomin-icon svg,
+    .apexcharts-zoomout-icon svg,
+    .apexcharts-pan-icon svg,
+    .apexcharts-reset-icon svg,
+    .apexcharts-menu-icon svg { fill: #334155; }
 
-        /* dropdown do download (PNG/SVG/CSV) */
-        .apexcharts-menu {
+    .apexcharts-menu {
         border-radius: 8px !important;
         border: 1px solid #e2e8f0 !important;
         box-shadow: 0 10px 20px rgba(2,6,23,.12) !important;
         overflow: hidden;
-        }
-        .apexcharts-menu-item {
+    }
+    .apexcharts-menu-item {
         font-size: 14px !important;
         padding: 8px 12px !important;
         color: #0f172a !important;
-        }
-        .apexcharts-menu-item:hover {
+    }
+    .apexcharts-menu-item:hover {
         background: #f1f5f9 !important;
+    }
+
+    /* === Layout para os gráficos lado a lado === */
+    .charts-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .charts-container {
+            grid-template-columns: 1fr; /* empilha no mobile */
         }
+    }
+
+    .chart-box {
+        background: #fff;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .chart-box h2 {
+        font-size: 1.25rem;
+        margin-bottom: 12px;
+        color: #1e293b;
+    }
     </style>
 
     <h1>Painel de Relatórios</h1>
     <div class="info">
         <h3>Gráficos e Estatísticas</h3>
 
-        <div class="search-panel">
+        {{-- <div class="search-panel">
             <form method="POST" action="{{ route('relatorios.painel') }}" class="nao-imprimir" style="margin-bottom:1rem">
                 <div class="search-panel-item">
                     <label>De:</label>
@@ -75,15 +96,25 @@
                     <button type="button"><i class="bi bi-eraser"></i> Limpar</button>
                 </div>
             </form>
-        </div>
+        </div> --}}
 
         {{-- Gráfico de Visitantes por Mês --}}
-        <div class="chart-visitanteMes">
-            <p>Visitantes por Mês ({{ $inicio }} a {{ $fim }})</p>
-            {!! $chart->container() !!}
-        </div>
-        
+        <div class="charts-container">
+            <div class="chart-box">
+                <h2>Visitantes por Mês</h2>
+                {!! $chartVisitantes->container() !!}
+            </div>
 
+            <div class="chart-box">
+                <h2>Membros por Sexo</h2>
+                {!! $chartMembros->container() !!}
+            </div>
+
+            <div class="chart-box">
+                <h2>Membros por Faixa Etária</h2>
+                {!! $chartFaixaEtaria->container() !!}
+            </div>
+        </div>
     </div>
 </div>
 
@@ -91,9 +122,9 @@
 @endsection
 
 @push('scripts')
-  {{-- 1) Carrega ApexCharts --}}
-  <script src="{{ $chart->cdn() }}"></script>
-  {{-- 2) Executa o JS do gráfico (depende do ApexCharts acima) --}}
-  {{ $chart->script() }}
+<script src="{{ $chartVisitantes->cdn() }}"></script>
+{{ $chartVisitantes->script() }}
+{{ $chartMembros->script() }}
+{{ $chartFaixaEtaria->script() }}
 @endpush
 

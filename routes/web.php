@@ -182,6 +182,8 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::put('/reunioes/{id}', [ReuniaoController::class, 'update'])->name('reunioes.update');
 
     Route::get('/avisos', [AvisoController::class, 'index'])->name('avisos.painel');
+    Route::post('/avisos', [AvisoController::class, 'store'])->name('avisos.store');
+    Route::get('/avisos/novo', [AvisoController::class, 'form_criar'])->name('avisos.form_criar');
 
     Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
     Route::get('/cursos/adicionar', [CursoController::class, 'create'])->name('cursos.create');

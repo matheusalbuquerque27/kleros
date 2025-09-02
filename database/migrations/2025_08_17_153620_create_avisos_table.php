@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->timestamp('data_inicio')->nullable(); // início da exibição
             $table->timestamp('data_fim')->nullable();     // fim da exibição
             $table->enum('status', ['ativo', 'arquivado'])->default('ativo');
-            $table->enum('prioridade', ['urgente', 'importante', 'normal'])->default('ativo');
+            $table->enum('prioridade', ['urgente', 'importante', 'normal'])->default('normal');
             $table->unsignedBigInteger('criado_por'); // pastor/líder que criou
             $table->timestamps();
 

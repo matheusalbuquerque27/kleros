@@ -1,0 +1,36 @@
+#calendar {
+    max-width: 100%;
+    margin: 40px auto;
+    background-color: var(--background-color);
+    padding: 1rem;
+    border-radius: var(--border-style);
+    box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    font-size: 0.9em;
+}
+
+#calendar button {
+    background-color: var(--primary-color);
+    color: var(--primary-contrast);
+    border: 0;
+    margin: 1px;
+}
+
+.fc .fc-button.fc-button-active {
+    background-color: var(--secondary-color);
+    color: var(--secondary-contrast);
+}
+
+.fc .fc-prev-button.fc-button-active {
+    background-color: var(--secondary-color);
+    color: var(--secondary-contrast);
+}
+
+.fc-day-today {
+    background-color: var(--terciary-color);
+}
+
+.control-btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
