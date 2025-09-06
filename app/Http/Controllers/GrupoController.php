@@ -10,13 +10,7 @@ use Illuminate\Http\Request;
 
 class GrupoController extends Controller
 {
-    public function create(){
-
-        $membros = Membro::all();
-
-        return view('grupos/cadastro', ['membros' => $membros]);
-    }
-
+    
     public function store(Request $request){
 
         $grupo = new Agrupamento;
@@ -34,6 +28,13 @@ class GrupoController extends Controller
         $grupo->save();
 
         return redirect('/cadastros#grupos')->with('msg', $msg);
+    }
+
+    public function form_criar(){
+
+        $membros = Membro::all();
+
+        return view('grupos/includes/form_criar', ['membros' => $membros]);
     }
 
     public function update(Request $request, $id) {

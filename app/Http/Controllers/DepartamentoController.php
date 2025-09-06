@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Agrupamento;
 use Illuminate\Http\Request;
 
 class DepartamentoController extends Controller
 {
-    public function index()
+    public function painel()
     {
+        $departamentos = Agrupamento::where('tipo', 'departamento')
+            ->where('congregacao_id', app('congregacao')->id)
+            ->get();
         // Lógica para listar os departamentos
-        return view('departamentos.index');
+        return view('departamentos.painel', compact('departamentos'));
     }
 
     public function create()

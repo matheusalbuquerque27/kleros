@@ -30,7 +30,7 @@
                 </select>
             </div>
         <div class="form-options">
-            <button class="btn" type="submit"><i class="bi bi-check"></i> Atualizar Grupo</button>
+            <button class="btn" type="submit"><i class="bi bi-arrow-clockwise"></i> Atualizar Grupo</button>
             <button type="button" class="btn" onclick="fecharJanelaModal()"><i class="bi bi-x-circle"></i> Cancelar</button>
         </div>
     </div>

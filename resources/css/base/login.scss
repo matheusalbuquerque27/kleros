@@ -16,7 +16,7 @@
 
 #login .login-container {
     background-color: rgba(255, 255, 255, 0.9);;
-    padding: 40px;
+    padding: 20px 40px 40px 40px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 100%;
@@ -25,14 +25,14 @@
 
 #login .login-container img {
     display: block;
-    margin: 0 auto 20px;
+    margin: 0 auto;
     width: 150px; /* Adjust as needed */
     height: auto; /* Maintain aspect ratio */
 }
 
 #login .login-container h2 {
     text-align: center;
-    margin-bottom: 24px;
+    margin: 24px auto 5px;
     color: #333;
 }
 

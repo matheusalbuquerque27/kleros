@@ -20,7 +20,7 @@ class FeedController extends Controller
             ->get() // pega todos
             ->groupBy('fonte')
             ->map(function ($grupo) {
-                return $grupo->take(9); // pega só 10 de cada
+                return $grupo->take(15); // pega só 10 de cada
             });
 
         return view('noticias.painel', compact('noticias'));

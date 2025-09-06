@@ -1,0 +1,79 @@
+.page-container {
+    padding: 20px;
+}
+
+.page-container .page-title {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.page-container .actions {
+    margin-bottom: 15px;
+}
+
+.page-container .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.page-container .card {
+    background: var(--background-color);
+    border: 1px solid var(--secondary-color);
+    border-radius: var(--border-style);
+    padding: 15px;
+    min-width: 200px;
+    flex: 1;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.page-container .card h3 {
+    margin: 0 0 6px 0;
+    color: var(--primary-color);
+}
+
+.page-container .card .sigla {
+    font-weight: bold;
+    color: var(--secondary-color);
+    margin-bottom: 8px;
+}
+
+.page-container .card-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+}
+
+.page-container .btn {
+    padding: 6px 12px;
+    border-radius: var(--border-style);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: background 0.2s;
+}
+
+.page-container .btn.primary {
+    background: var(--primary-color);
+    color: var(--primary-contrast);
+}
+
+.page-container .btn.warning {
+    background: #f59e0b;
+    color: #fff;
+}
+
+.page-container .btn.danger {
+    background: #dc2626;
+    color: #fff;
+}
+
+.page-container .empty {
+    font-style: italic;
+    color: var(--secondary-color);
+}

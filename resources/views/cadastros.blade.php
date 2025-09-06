@@ -151,7 +151,7 @@
                 </div>
             @endif
         </div>
-        <a href="/grupos/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo grupo</button></a>
+        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('grupos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo grupo</button>
         <button id="grupos" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
     <div class="info" id="ministerios">
@@ -163,13 +163,15 @@
                         <div class="item-15">
                             <div class="card-title">{{$item->titulo}}</div>
                         </div>
-                        <div class="item-2"></div>
+                        <div class="item-2">
+                            <div class="card-description">{{$item->descricao}}</div>
+                        </div>
                         <div class="item-15">
                             <form action="POST">
                                 @csrf
                                 @method('DELETE')
                                 <a href="/ministerios/lista/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
-                                <a href="/ministerios/lista/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-pencil-square"></i> Editar</button></a>
+                                <button type="button" onclick="abrirJanelaModal('{{route('ministerios.form_editar', $item->id)}}')" class="btn-options"><i class="bi bi-pencil-square"></i> Editar</button>
                                 <button class="delete-ministerio btn-options" data-action="/ministerios/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
                             </form>
                             
@@ -182,7 +184,7 @@
                 </div>
             @endif
         </div>
-        <a href="/ministerios/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo ministério</button></a>
+        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('ministerios.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo ministério</button>
         <button id="ministerios" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
 
@@ -227,7 +229,7 @@
     </div>
 
     <div class="info" id="celulas">
-        <h3>GCA</h3>
+        <h3>Células</h3>
         <a href="/celulas/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo GCA</button></a>
         <button id="celulas" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir relatório</button>
     </div>

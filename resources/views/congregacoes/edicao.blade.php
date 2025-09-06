@@ -66,7 +66,7 @@
                     <input type="color" name="conjunto_cores[secundaria]" id="cor_secundaria" value="{{$congregacao->config->conjunto_cores['secundaria']}}">
                 </div>
                 <div class="form-item">
-                    <label for="cor_terciaria">Cor Primária</label>
+                    <label for="cor_terciaria">Cor Terciária</label>
                     <input type="color" name="conjunto_cores[terciaria]" id="cor_terciaria" value="{{$congregacao->config->conjunto_cores['terciaria']}}">
                 </div>
                 
@@ -141,7 +141,7 @@
                     </select>
                 </div>
                 <div class="form-options">
-                    <button class="btn" type="submit"><i class="bi bi-save"></i> Atualizar</button>
+                    <button class="btn" type="submit"><i class="bi bi-arrow-clockwise"></i> Atualizar</button>
                     <button class="btn" type="button"><i class="bi bi-skip-backward"></i> Restaurar</button>
                     <a href="/"><button type="button" class="btn"><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
                 </div>

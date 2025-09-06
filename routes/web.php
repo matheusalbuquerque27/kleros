@@ -25,8 +25,10 @@ use App\Http\Controllers\ArquivoController;
 use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\BibliaController;
+use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\LocalizacaoController;
 use App\Jobs\TesteJob;
+use App\Models\Departamento;
 use Illuminate\Support\Facades\DB;
 
 Route::domain('kleros.local')->group(function () {
@@ -95,11 +97,11 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::delete('/visitantes/{id}', [VisitanteController::class, 'destroy'])->name('visitantes.destroy');
     
     Route::post('/grupos', [GrupoController::class, 'store']);
-    Route::get('/grupos/adicionar', [GrupoController::class, 'create']);
     Route::delete('/grupos/{id}', [GrupoController::class, 'destroy']);
     Route::get('/grupos/integrantes/{id}', [GrupoController::class, 'show'])->name('grupos.integrantes');
     Route::post('/grupos/integrantes', [GrupoController::class, 'addMember']);
     Route::get('/grupos/imprimir/{data}', [GrupoController::class, 'print']);
+    Route::get('/grupos/novo', [GrupoController::class, 'form_criar'])->name('grupos.form_criar');
     Route::get('/grupos/editar/{id}', [GrupoController::class, 'form_editar'])->name('grupos.form_editar');
     Route::put('/grupos/{id}', [GrupoController::class, 'update'])->name('grupos.update');
     Route::get('/grupos/lista', [GrupoController::class, 'lista'])->name('grupos.lista');
@@ -133,7 +135,8 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::delete('/cultos/{id}', [CultoController::class, 'destroy'])->name('cultos.destroy');
     
     Route::post('/ministerios', [MinisterioController::class, 'store'])->name('ministerios.store');
-    Route::get('/ministerios/adicionar', [MinisterioController::class, 'create'])->name('ministerios.create');
+    Route::get('/ministerios/novo', [MinisterioController::class, 'form_criar'])->name('ministerios.form_criar');
+    Route::get('/ministerios/editar/{id}', [MinisterioController::class, 'form_editar'])->name('ministerios.form_editar');
     Route::get('/ministerios/lista/{id}', [MinisterioController::class, 'lista'])->name('ministerios.lista');
     Route::delete('/ministerios/{id}', [MinisterioController::class, 'destroy'])->name('ministerios.destroy');
     Route::get('/ministerios/imprimir/{data}', [MinisterioController::class, 'print'])->name('ministerios.print');
@@ -146,12 +149,12 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::put('/celulas/{id}', [CelulaController::class, 'update'])->name('celulas.update');
     Route::delete('/celulas/{id}', [CelulaController::class, 'destroy'])->name('celulas.destroy');
     
-    Route::get('/departamentos', [CongregacaoController::class, 'painel'])->name('departamentos.painel');
-    Route::get('/departamentos/adicionar', [CongregacaoController::class, 'create'])->name('departamentos.create');
-    Route::post('/departamentos', [CongregacaoController::class, 'store'])->name('departamentos.store');
-    Route::get('/departamentos/{id}', [CongregacaoController::class, 'show'])->name('departamentos.show');
-    Route::put('/departamentos/{id}', [CongregacaoController::class, 'update'])->name('departamentos.update');
-    Route::delete('/departamentos/{id}', [CongregacaoController::class, 'destroy'])->name('departamentos.destroy');
+    Route::get('/departamentos', [DepartamentoController::class, 'painel'])->name('departamentos.painel');
+    Route::get('/departamentos/adicionar', [DepartamentoController::class, 'create'])->name('departamentos.create');
+    Route::post('/departamentos', [DepartamentoController::class, 'store'])->name('departamentos.store');
+    Route::get('/departamentos/{id}', [DepartamentoController::class, 'show'])->name('departamentos.show');
+    Route::put('/departamentos/{id}', [DepartamentoController::class, 'update'])->name('departamentos.update');
+    Route::delete('/departamentos/{id}', [DepartamentoController::class, 'destroy'])->name('departamentos.destroy');
     
     Route::get('/setores', [CongregacaoController::class, 'index'])->name('setores.index');
     Route::get('/setores/adicionar', [CongregacaoController::class, 'create'])->name('setores.create');

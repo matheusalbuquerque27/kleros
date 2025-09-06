@@ -58,6 +58,9 @@
                         {{ session('error') }}
                     </div>
                 @endif
+                <div class="form-group center" style="margin-top: 20px;">
+                    <a href="#" class="link-standard">Esqueci a senha</a>
+                </div>
             </form>
         </div>
     </div>

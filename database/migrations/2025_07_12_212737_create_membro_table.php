@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('titulo');
             $table->string('sigla')->nullable();
+            $table->text('descricao')->nullable();
             $table->foreignId('denominacao_id')->constrained('denominacoes')->onDelete('cascade');
             $table->timestamps();
         });
