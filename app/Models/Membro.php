@@ -24,17 +24,10 @@ class Membro extends Model
     public function setor() {
         return $this->belongsTo(Setor::class);
     }
-    public function departamento() {
-        return $this->belongsTo(Departamento::class);
-    }
     public function celula() {
         return $this->belongsTo(Celula::class);
     }
     public function agrupamentos() {
-        return $this->belongsToMany(Agrupamento::class, 'agrupamentos_membros', 'membro_id', 'agrupamento_id');
-    }
-    public function gruposMembro()
-    {
         return $this->belongsToMany(Agrupamento::class, 'agrupamentos_membros', 'membro_id', 'agrupamento_id');
     }
     public function eventos()
@@ -49,8 +42,11 @@ class Membro extends Model
     {
         return $this->belongsToMany(Reuniao::class, 'reuniao_membro', 'membro_id', 'reuniao_id');
     }
-    public function avisos(){
-        return $this->hasMany(Aviso::class);
+    public function avisos()
+    {
+        return $this->belongsToMany(Aviso::class, 'aviso_membro', 'membro_id', 'aviso_id')
+            ->withPivot('lido')
+            ->withTimestamps();
     }
 
 }

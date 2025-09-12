@@ -18,7 +18,7 @@ class Agrupamento extends Model
         return $this->belongsTo(Membro::class, 'colider_id');
     }
 
-      public function integrantes() {
+    public function integrantes(){
         return $this->belongsToMany(Membro::class, 'agrupamentos_membros', 'agrupamento_id', 'membro_id');
     }
 

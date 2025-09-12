@@ -14,10 +14,6 @@ class Agenda extends Model
     {
         return $this->belongsTo(Congregacao::class);
     }
-    public function departamento()
-    {
-        return $this->belongsTo(Departamento::class);
-    }
     public function referencia()
     {
         return $this->morphTo();

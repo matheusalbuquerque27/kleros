@@ -53,29 +53,37 @@ class GrupoController extends Controller
         return redirect('/cadastros#grupos')->with('msg', $msg);
     }
 
-    public function show($id){
-
+    public function show($id) {
         $congregacao = app('congregacao');
-        $grupo = Agrupamento::find($id);
-        $integrantes = $grupo->integrantes()->paginate(10);
+        $agrupamento = Agrupamento::findOrFail($id);
 
-        $membros = Membro::whereDoesntHave('gruposMembro', function ($query) use ($grupo) {
-            $query->where('agrupamento_id', $grupo->id);
-        })->get(); //Não pertencem ainda ao grupo;
+        // integrantes desse agrupamento
+        $integrantes = $agrupamento->integrantes()->paginate(10);
 
-        return view('/grupos/integrantes', ['congregacao' => $congregacao, 'grupo' => $grupo, 'integrantes' => $integrantes, 'membros' => $membros]);
+        // membros que ainda NÃO pertencem a esse agrupamento
+        $membros = Membro::whereDoesntHave('agrupamentos', function ($query) use ($agrupamento) {
+            $query->where('agrupamento_id', $agrupamento->id);
+        })->get();
+
+        return view('grupos.integrantes', [
+            'congregacao' => $congregacao,
+            'grupo' => $agrupamento, // pode renomear pra 'agrupamento' na view também
+            'integrantes' => $integrantes,
+            'membros' => $membros
+        ]);
     }
 
-    public function addMember(Request $request){
+    public function addMember(Request $request) {
+        $membro = Membro::findOrFail($request->membro);
+        $agrupamento = Agrupamento::findOrFail($request->grupo);
 
-        $membro = Membro::find($request->membro);
-        $grupo = Agrupamento::find($request->grupo);
-
-        $membro->gruposMembro()->attach($grupo, [
-            'congregacao_id' => $grupo->congregacao_id
+        $membro->agrupamentos()->attach($agrupamento->id, [
+            'congregacao_id' => $agrupamento->congregacao_id
         ]);
 
-        return redirect()->route('grupos.integrantes', ['id' => $grupo->id])->with("Novo membro adicionado ao grupo.");
+        return redirect()
+            ->route('grupos.integrantes', ['id' => $agrupamento->id])
+            ->with('msg', 'Novo membro adicionado ao agrupamento.');
     }
 
     public function destroy($id){

@@ -12,7 +12,7 @@ class DepartamentoController extends Controller
     {
         $departamentos = Agrupamento::where('tipo', 'departamento')
             ->where('congregacao_id', app('congregacao')->id)
-            ->get();
+            ->paginate(10);
         // Lógica para listar os departamentos
         return view('departamentos.painel', compact('departamentos'));
     }

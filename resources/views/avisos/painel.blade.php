@@ -7,24 +7,11 @@
 <div class="container">
     <h1>Painel de Avisos</h1>
     <div class="info nao-imprimir">
-        <h3>Não lidos</h3>
+        <h3>Edição geral</h3>
         <div class="search-panel">
             <div class="search-panel-item">
-                <label>Preletor: </label>
-                <select name="" id="preletor">
-                    
-                </select>
-            </div>
-            <div class="search-panel-item">
-                <label>Evento: </label>
-                <select name="" id="evento">
-                    
-                </select>
-            </div>
-            <div class="search-panel-item">
-                <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
                 <button class="" onclick="abrirJanelaModal('{{ route('avisos.form_criar') }}')"><i class="bi bi-plus-circle"></i> Criar Aviso</button>
-                <a href="/cadastros#cultos"><button class=""><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
+                <button class="" onclick="window.history.back()"><i class="bi bi-arrow-return-left"></i> Voltar</button>
             </div>
         </div>
     </div>
@@ -38,8 +25,6 @@
             <p>{{ $item->mensagem }}</p>
             <div class="aviso-footer">
                 <span>Enviado por: {{ $item->criador->membro->ministerio->sigla.' '. primeiroEUltimoNome($item->criador->membro->nome) }}</span>
-                <span>Início: {{ optional($item->data_inicio)->format('d/m/Y') ?? '---' }}</span>
-                <span>Fim: {{ optional($item->data_fim)->format('d/m/Y') ?? '---' }}</span>
             </div>
         </div>
     @endforeach

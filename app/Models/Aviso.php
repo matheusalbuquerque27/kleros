@@ -30,4 +30,11 @@ class Aviso extends Model
     {
         return $this->belongsTo(User::class, 'criado_por');
     }
+
+    public function membros()
+    {
+        return $this->belongsToMany(Membro::class, 'aviso_membro')
+            ->withPivot('lido')
+            ->withTimestamps();
+    }
 }
