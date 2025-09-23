@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Feed;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class MembroController extends Controller
 {
@@ -82,9 +83,11 @@ class MembroController extends Controller
 
     public function painel() {
 
-        $membros = Membro::paginate(10);
-        $congregacao = app('congregacao');
-        
+        $congregacao = $this->congregacao;
+        $membros = Membro::where('congregacao_id', $congregacao->id)
+            ->orderBy('nome')
+            ->paginate(10);
+
         return view('/membros/painel', ['membros' => $membros, 'congregacao' => $congregacao]);
     }
 
@@ -138,6 +141,7 @@ class MembroController extends Controller
         $membro->rg = $request->rg;
         $membro->cpf = $request->cpf;
         $membro->data_nascimento = $request->data_nascimento;
+        $membro->sexo = $request->sexo;
         $membro->telefone = $request->telefone;
         $membro->estado_civ_id = $request->estado_civil;
         $membro->escolaridade_id = $request->escolaridade;
@@ -198,6 +202,7 @@ class MembroController extends Controller
         $membro->nome = $request->nome;
         $membro->telefone = $request->telefone;
         $membro->email = $request->email;
+        $membro->biografia = $request->biografia;
         $membro->foto = $request->file('foto') ? $request->file('foto')->store('fotos', 'public') : $membro->foto;
         // $membro->estado_civ_id = $request->estado_civil;
         // $membro->escolaridade_id = $request->escolaridade;
@@ -214,11 +219,28 @@ class MembroController extends Controller
         // Atualiza os timestamps
         $membro->updated_at = date('Y-m-d H:i:s');
 
+        // Se veio senha atual e nova senha
+        if ($request->filled('senha_atual') && $request->filled('nova_senha')) {
+            
+            $user = $membro->user; // relação membro → user
+
+            if ($user && Hash::check($request->senha_atual, $user->password)) {
+                
+                $user->password = Hash::make($request->nova_senha);
+                $user->save();
+
+            } else {
+                return redirect()->back()->with('msg-error', 'A senha atual não confere.');
+            }
+        }
+
         // Salva as alterações
         if ($membro->save()) {
+
             return redirect()->route('perfil')->with('msg', 'Perfil atualizado com sucesso!');
+
         } else {
-            return redirect()->back()->withErrors(['msg' => 'Erro ao atualizar perfil.']);
+            return redirect()->back()->with('msg-error',  'Erro ao atualizar perfil.');
         }
     }
 }

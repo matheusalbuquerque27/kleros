@@ -42,5 +42,60 @@ function primeiroEUltimoNome(string $nomeCompleto): string {
     return $partes[0] . ' ' . $partes[count($partes) - 1];
 }
 
+function diaSemana($numero)
+{
+    $dias = [
+        1 => 'Domingo',
+        2 => 'Segunda-feira',
+        3 => 'Terça-feira',
+        4 => 'Quarta-feira',
+        5 => 'Quinta-feira',
+        6 => 'Sexta-feira',
+        7 => 'Sábado',
+    ];
+
+    return $dias[$numero] ?? 'Não definido';
+}
+
+
+if (! function_exists('module_enabled')) {
+    function module_enabled(string $module): bool
+    {
+        static $cache;
+
+        $module = strtolower($module);
+
+        if ($cache !== null && array_key_exists($module, $cache)) {
+            return $cache[$module];
+        }
+
+        $cache ??= [];
+
+        $modulesPath = base_path('modules');
+        $manifestPath = $modulesPath . '/' . ucfirst($module) . '/module.json';
+        $enabled = false;
+
+        if (file_exists($manifestPath)) {
+            $definition = json_decode(file_get_contents($manifestPath), true) ?: [];
+            $enabled = (bool) ($definition['enabled'] ?? false);
+        }
+
+        $congregacaoId = app()->bound('congregacao') ? optional(app('congregacao'))->id : null;
+
+        if ($congregacaoId && \Illuminate\Support\Facades\Schema::hasTable('extensoes')) {
+            $record = App\Models\Extensao::query()
+                ->where('congregacao_id', $congregacaoId)
+                ->where('module', $module)
+                ->first();
+
+            if ($record) {
+                $enabled = (bool) $record->enabled;
+            }
+        }
+
+        return $cache[$module] = $enabled;
+    }
+}
+
 
 ?>

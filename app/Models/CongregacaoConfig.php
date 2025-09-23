@@ -14,10 +14,13 @@ class CongregacaoConfig extends Model
         'font_family',
         'tema_id',
         'congregacao_id',
+        'agrupamentos',
+        'celulas'
     ];
 
     protected $casts = [
-        'conjunto_cores' => 'array', 
+        'conjunto_cores' => 'array',
+        'celulas' => 'boolean',
     ];
 
     public function congregacao()

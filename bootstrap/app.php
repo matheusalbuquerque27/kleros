@@ -15,8 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'dominio' => \App\Http\Middleware\AcessarCongregacaoPeloDominio::class,
         ]);
     
-        $middleware->append(\App\Http\Middleware\AcessarCongregacaoPeloDominio::class);
-    })
+        $middleware->web(append: [
+                \App\Http\Middleware\AcessarCongregacaoPeloDominio::class,
+                \App\Http\Middleware\CheckSession::class,
+            ]);    
+        })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

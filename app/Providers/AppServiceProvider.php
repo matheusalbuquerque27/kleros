@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
+use App\Models\Extensao;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +30,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->registerEnabledModules();
+
         Relation::morphMap([
             'culto' => Culto::class,
             'evento' => Evento::class,
@@ -53,5 +58,48 @@ class AppServiceProvider extends ServiceProvider
                 ->orderBy('publicado_em', 'desc')->limit(9)->get();
             $view->with('destaques', $destaques);
         });
+    }
+
+    protected function registerEnabledModules(): void
+    {
+        $modulesPath = base_path('modules');
+
+        if (! File::isDirectory($modulesPath)) {
+            return;
+        }
+
+        $congregacaoId = app()->bound('congregacao') ? optional(app('congregacao'))->id : null;
+
+        $databaseOverrides = collect();
+
+        if (Schema::hasTable('extensoes')) {
+            $databaseOverrides = Extensao::query()
+                ->when($congregacaoId, fn ($query) => $query->where('congregacao_id', $congregacaoId))
+                ->get()
+                ->keyBy(fn ($extension) => strtolower($extension->module));
+        }
+
+        foreach (File::glob($modulesPath . '/*/module.json') as $manifestPath) {
+            $manifest = json_decode(File::get($manifestPath), true) ?: [];
+            $moduleKey = strtolower(basename(dirname($manifestPath)));
+
+            $enabled = data_get($manifest, 'enabled', false);
+
+            if ($databaseOverrides->has($moduleKey)) {
+                $enabled = $databaseOverrides[$moduleKey]->enabled;
+            }
+
+            if (! $enabled) {
+                continue;
+            }
+
+            $provider = data_get($manifest, 'provider');
+
+            if (! $provider || ! class_exists($provider)) {
+                continue;
+            }
+
+            $this->app->register($provider);
+        }
     }
 }

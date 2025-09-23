@@ -42,9 +42,8 @@
                 
             </div><!--list-item-->
             <div id="content">
-                @foreach ($reunioes as $item)
-            <a href="#">
-            <div class="list-item">
+            @foreach ($reunioes as $item)
+            <div class="list-item" onclick="abrirJanelaModal('{{ route('reunioes.form_editar', $item->id)}}')">
                 <div class="item item-1">
                     <p class="tag">{{ date('H:i', strtotime($item->data_inicio)) }}</p>
                 </div>
@@ -58,7 +57,6 @@
                     <p>{{ $item->local }}</p>
                 </div>                
             </div><!--list-item-->
-            </a>
             @endforeach
             @if($reunioes->total() > 10)
                 <div class="pagination">

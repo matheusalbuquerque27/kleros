@@ -16,6 +16,8 @@
 
 <div class="container">
     <h1>Novo Evento</h1>
+    <div class="info">
+    <h3>Registrar</h3>
     <form action="/eventos" method="post">
         @csrf
         <div class="form-control">
@@ -89,6 +91,7 @@
             </div>
         </div>
     </form>
+    </div>
 </div>
 
 @endsection

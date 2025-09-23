@@ -17,11 +17,12 @@
                     <select name="" id="filtro">
                         <option value="nome">Nome</option>
                         <option value="telefone">Telefone</option>
+                        <option value="email">Email</option>
                     </select>
                 </div>
                 <div class="search-panel-item">
-                    <label>Nome/Telefone: </label>
-                    <input type="text" name="" placeholder="Nome ou telefone" id="chave">
+                    <label>Palavra-chave: </label>
+                    <input type="text" name="" placeholder="Palavra-chave" id="chave">
                 </div>
                 <div class="search-panel-item">
                     <button id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>

@@ -1,0 +1,6 @@
+{
+    "name": "Celulas",
+    "description": "Gestao de celulas, participantes e reunioes semanais.",
+    "provider": "Modules\\Celulas\\Providers\\CelulasServiceProvider",
+    "enabled": true
+}

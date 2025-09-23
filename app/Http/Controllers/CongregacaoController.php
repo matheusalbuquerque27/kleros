@@ -149,8 +149,12 @@ class CongregacaoController extends Controller
             ]);
             
         }
+        
+         // Atualiza as configurações gerais
 
         $congregacao->config->update([
+            'agrupamentos' => $request->agrupamentos,
+            'celulas' => $request->celulas,
             'conjunto_cores' => $request->conjunto_cores,
             'font_family' => $request->fonte,
             'tema_id' => $request->tema,

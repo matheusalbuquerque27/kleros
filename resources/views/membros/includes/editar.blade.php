@@ -116,7 +116,7 @@
             </div>
             <div class="form-options">
                 <button class="btn" type="submit"><i class="bi bi-save"></i> Atualizar Membro</button>
-                <a href="/"><button type="button" class="btn"><i class="bi bi-x-circle"></i> Cancelar</button></a>
+                <button type="button" onclick="window.history.back()" class="btn"><i class="bi bi-x-circle"></i> Cancelar</button>
             </div>
         </div><!--form-control-->
     </form>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Membro extends Model
 {
@@ -15,6 +16,11 @@ class Membro extends Model
     public function ministerio() {
         return $this->belongsTo(Ministerio::class);
     }
+    public function celulas(): BelongsToMany
+    {
+        return $this->belongsToMany(Celula::class, 'membro_celula', 'membro_id', 'celula_id');
+    }
+
     public function denominacao() {
         return $this->belongsTo(Denominacao::class);
     }
@@ -25,7 +31,7 @@ class Membro extends Model
         return $this->belongsTo(Setor::class);
     }
     public function celula() {
-        return $this->belongsTo(Celula::class);
+        return $this->belongsToMany(Celula::class, 'membro_celula', 'membro_id', 'celula_id');
     }
     public function agrupamentos() {
         return $this->belongsToMany(Agrupamento::class, 'agrupamentos_membros', 'membro_id', 'agrupamento_id');
@@ -36,7 +42,7 @@ class Membro extends Model
     }
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(User::class);
     }
     public function reunioes()
     {

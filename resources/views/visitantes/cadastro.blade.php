@@ -51,7 +51,9 @@
                 </div>
             </div>
         </form>
-        <a href="/recados/adicionar"><button type="button" class="float-btn"><i class="bi bi-chat-left-dots"></i></button></a>
+        @if(module_enabled('recados'))
+            <a href="/recados/adicionar"><button type="button" class="float-btn"><i class="bi bi-chat-left-dots"></i></button></a>
+        @endif
         <div class="clear"></div>
     </div>
 </div>

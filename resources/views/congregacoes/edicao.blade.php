@@ -126,7 +126,7 @@
                                 <select name="fonte" id="fonte">
                                     <option value="Teko" @selected($congregacao->config->font_family === 'Teko')>Teko</option>
                                     <option value="Roboto" @selected($congregacao->config->font_family === 'Roboto')>Roboto</option>
-                                    <option value="Open Sans" @selected($congregacao->config->font_family === 'Open Sans')>Open Sans</option>
+                                    <option value="Source Sans Pro" @selected($congregacao->config->font_family === 'Source Sans Pro')>Source Sans Pro</option>
                                     <option value="Oswald" @selected($congregacao->config->font_family === 'Oswald')>Oswald</option>
                                     <option value="Saira" @selected($congregacao->config->font_family === 'Saira')>Saira</option>
                                 </select>
@@ -159,20 +159,20 @@
                             <div class="form-item">
                                 <label for="agrupamentos">Organização de grupos</label>
                                 <select name="agrupamentos" id="agrupamentos">
-                                    <option value="">Apenas grupos</option>
-                                    <option value="">Grupos e Departamentos</option>
-                                    <option value="">Grupos, Departamentos, Setores</option>
+                                    <option value="grupo" {{ old('agrupamentos', $congregacao->config->agrupamentos) === 'grupo' ? 'selected' : '' }}>Apenas grupos</option>
+                                    <option value="departamento" {{ old('agrupamentos', $congregacao->config->agrupamentos) === 'departamento' ? 'selected' : '' }}>Grupos e Departamentos</option>
+                                    <option value="setor" {{ old('agrupamentos', $congregacao->config->agrupamentos) === 'setor' ? 'selected' : '' }}>Grupos, Departamentos, Setores</option>
                                 </select>
                             </div>
                             <div class="form-item">
                                 <label for="celula">Células/Pequenos Grupos</label>
                                 <div class="form-square">
                                     <div>
-                                        <input type="radio" id="celula_ativo" name="celula" value="1" @checked($congregacao->config->celula == 1)>
+                                        <input type="radio" id="celula_ativo" name="celulas" value="1" @checked($congregacao->config->celulas == 1)>
                                         <label for="celula_ativo">Ativo</label>
                                     </div>
                                     <div>
-                                        <input type="radio" id="celula_inativo" name="celula" value="0" @checked($congregacao->config->celula == 0)>
+                                        <input type="radio" id="celula_inativo" name="celulas" value="0" @checked($congregacao->config->celulas == 0)>
                                         <label for="celula_inativo">Inativo</label>
                                     </div>
                                 </div>
@@ -222,7 +222,6 @@
 
     /* Conteúdo das abas */
     .card {
-        background: #fff;
         border-radius: 0 8px 8px 8px;
         padding: 20px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);

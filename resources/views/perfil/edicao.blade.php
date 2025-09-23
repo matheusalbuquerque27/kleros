@@ -61,7 +61,7 @@
                     <div id="bio" class="tab-pane form-control">
                         <div class="form-item">
                             <label for="bio">Biografia</label>
-                            <textarea id="bio" name="bio" rows="6">{{ old('bio', optional($membro)->bio) }}</textarea>
+                            <textarea id="biografia" name="biografia" rows="6" placeholder="Escreva sua biografia para que outros te conheçam melhor">{{ old('bio', optional($membro)->biografia) }}</textarea>
                         </div>
                     </div>
 
@@ -76,7 +76,7 @@
                                     alt="Foto de perfil">
                             @else
                                 <img class="image-small" id="foto-img" 
-                                    src="{{ asset('images/default-avatar.png') }}" 
+                                    src="{{ asset('storage/images/newuser.png') }}" 
                                     alt="Sem foto">
                             @endif
 
@@ -90,38 +90,13 @@
                 </div>
                 
                 <div class="form-options">
-                    <button type="submit" class="btn"><i class="bi bi-check2-circle"></i> Salvar Alterações</button>
+                    <button type="submit" class="btn"><i class="bi bi-arrow-clockwise"></i> Atualizar</button>
                 </div>
             </form>
         </div>
         @include('noticias.includes.destaques')
     </div>
 </div>
-
-
-<!-- JS simples para alternar abas -->
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const tabs = document.querySelectorAll('.tab-menu li');
-    const panes = document.querySelectorAll('.tab-pane');
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            // Remove classes ativas
-            tabs.forEach(t => t.classList.remove('active'));
-            panes.forEach(p => p.classList.remove('active'));
-
-            // Ativa aba clicada
-            this.classList.add('active');
-            const target = this.getAttribute('data-tab');
-            const pane = document.getElementById(target);
-            if (pane) {
-                pane.classList.add('active');
-            }
-        });
-    });
-});
-</script>
 
 <!-- Estilo básico -->
 <style>

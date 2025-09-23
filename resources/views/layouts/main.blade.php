@@ -13,7 +13,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Teko" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Roboto" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Oswald" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Saira" rel="stylesheet">
         
@@ -53,6 +53,7 @@
             --border-style: {{$congregacao->config->tema->propriedades['borda']}}
         }
         </style>
+        @stack('styles')
     </head>
     <body>
         <div class="layout-wrapper">
@@ -135,7 +136,9 @@
                         </div>
 
                         <div class="profile-container">
-                            <img class="avatar" id="profileBtn" src="{{ asset('storage/'.optional(auth()->user()->membro)->foto) }}" title="{{optional(auth()->user()->membro)->nome}}" alt="">
+                            <img class="avatar" id="profileBtn" src="{{ auth()->user()?->membro?->foto 
+                                ? asset('storage/'.auth()->user()->membro->foto) 
+                                : asset('storage/images/newuser.png') }}" title="{{optional(auth()->user()->membro)->nome}}" alt="">
                             <div class="profile-dropdown" id="profileDropdown">
                                 <div class="profile-info">
                                     <div class="profile-header">
@@ -144,6 +147,7 @@
                                     <p><i class="bi bi-person"></i> {{optional(auth()->user()->membro)->nome ?? 'Admin'}}</p>
                                 </div>
                                 <a href="/perfil"><i class="bi bi-pencil"></i> Editar perfil</a>
+                                <a href="/perfil"><i class="bi bi-bookmark"></i> Favoritos</a>
                                 <a href="/logout" title="Sair"><i class="bi bi-box-arrow-right"></i> Logout</a>
                             </div>
                         </div>
@@ -178,8 +182,10 @@
                         <a href="{{route('avisos.painel')}}"><li><span title="Avisos"><i class="bi bi-megaphone"></i></span><span>Avisos</span></li></a>
                         <a href="{{route('visitantes.historico')}}"><li><span title="Visitantes"><i class="bi bi-person-raised-hand"></i></span><span>Visitantes</span></li></a>
                         <a href="{{route('departamentos.painel')}}"><li><span title="Departamentos"><i class="bi bi-intersect"></i></span><span>Departamentos</span></li></a>
-                        <a href="{{route('celulas.painel')}}"><li><span title="GCA - Células"><i class="bi bi-cup-hot"></i></span><span>GCA - Células</span></li></a>
-                        <a href="{{route('celulas.painel')}}"><li><span title="Escola Virtual"><i class="bi bi-mortarboard"></i></span><span>Escola Virtual</span></li></a>
+                        @if(module_enabled('celulas') && Route::has('celulas.painel'))
+                            <a href="{{ route('celulas.painel') }}"><li><span title="GCA - Células"><i class="bi bi-cup-hot"></i></span><span>GCA - Células</span></li></a>
+                        @endif
+                        <a href="{{route('cursos.index')}}"><li><span title="Escola Virtual"><i class="bi bi-mortarboard"></i></span><span>Escola Virtual</span></li></a>
                         <a href=""><li><span title="Financeiro"><i class="bi bi-currency-exchange"></i></span><span>Financeiro</span></li></a>
                         <a href="{{route('noticias.painel')}}"><li><span title="Notícias"><i class="bi bi-newspaper"></i></span><span>Notícias</span></li></a>
                         <a href="{{route('podcasts.painel')}}"><li><span title="Podcasts"><i class="bi bi-mic-fill"></i></span><span>Podcasts</span></li></a>
@@ -188,10 +194,14 @@
                         <a href="{{route('relatorios.painel')}}"><li><span title="Projetos"><i class="bi bi-clipboard2-data"></i></span><span>Projetos</span></li></a>
                         <a href="{{route('livraria.index')}}"><li><span title="Ação Social"><i class="bi bi-box2-heart"></i></span><span>Ação Social</span></li></a>
                         <a href="{{route('livraria.index')}}"><li><span title="Pesquisas"><i class="bi bi-bar-chart"></i></span><span>Pesquisas</span></li></a>
-                        <a href="{{route('biblia.index')}}"><li><span title="Bíblia"><x-icon title="Bíblia Sagrada" name="biblia" class="svg"/> </span><span>Bíblia Sagrada</span></li></a>
-                        <a href="{{route('recados.historico')}}"><li><span title="Recados"><i class="bi bi-chat-left-dots"></i></span><span>Recados</span></li></a>
+                        @if(module_enabled('biblia'))
+                            <a href="{{route('biblia.index')}}"><li><span title="Bíblia"><x-icon title="Bíblia Sagrada" name="biblia" class="svg"/> </span><span>Bíblia Sagrada</span></li></a>
+                        @endif
+                        @if(module_enabled('recados') && Route::has('recados.historico'))
+                            <a href="{{ route('recados.historico') }}"><li><span title="Recados"><i class="bi bi-chat-left-dots"></i></span><span>Recados</span></li></a>
+                        @endif
                         <a href="{{route('tutoriais.index')}}"><li><span title="Tutoriais"><i class="bi bi-question-octagon"></i></span><span>Tutoriais</span></li></a>
-                        <a href=""><li><span title="Extensões"><i class="bi bi-nut"></i></span><span>Extensões</span></li></a>
+                        <a href="{{route('extensoes.painel')}}"><li><span title="Extensões"><i class="bi bi-nut"></i></span><span>Extensões</span></li></a>
                         <a href="{{route('configuracoes.atualizar', $congregacao->id)}}"><li><span title="Drive"><i class="bi bi-hdd"></i></span><span>Drive</span></li></a>
                     </ul>
                 </nav>
@@ -421,6 +431,30 @@
             // opcional: fechar com ESC
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') closeAll();
+            });
+        </script>
+
+        <!--Script para a seleção de abas-->
+        <script>
+            document.addEventListener("click", function (e) {
+                const tab = e.target.closest(".tab-menu li");
+                if (!tab) return;
+
+                const tabs = tab.parentElement.querySelectorAll("li");
+                const container = tab.closest(".tabs");
+                const panes = container.querySelectorAll(".tab-pane");
+
+                // remove ativos
+                tabs.forEach(t => t.classList.remove("active"));
+                panes.forEach(p => p.classList.remove("active"));
+
+                // adiciona ativo
+                tab.classList.add("active");
+                const target = tab.getAttribute("data-tab");
+                const pane = container.querySelector("#" + target);
+                if (pane) {
+                    pane.classList.add("active");
+                }
             });
         </script>
 

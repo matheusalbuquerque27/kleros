@@ -57,7 +57,7 @@ return new class extends Migration
             $table->string('nome_paterno')->nullable();
             $table->string('nome_materno')->nullable();
             $table->string('foto')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null'); // Cria a chave estrangeira
+            $table->text('biografia')->nullable();
             $table->boolean('ativo')->default(true);
             $table->timestamps();
         });

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Modules\Biblia\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -23,7 +24,7 @@ class BibliaController extends Controller
                 return $testamento;
             });
 
-        return view('biblia.index', compact('testamentos'));
+        return view('biblia::index', compact('testamentos'));
     }
 
     /**
@@ -40,7 +41,7 @@ class BibliaController extends Controller
 
         $book = DB::table('books')->where('id', $bookId)->first();
 
-        return view('biblia.chapters', compact('capitulos', 'book'));
+        return view('biblia::chapters', compact('capitulos', 'book'));
     }
 
     /**
@@ -56,7 +57,7 @@ class BibliaController extends Controller
 
         $book = DB::table('books')->where('id', $bookId)->first();
 
-        return view('biblia.verses', compact('versiculos', 'book', 'chapter'));
+        return view('biblia::verses', compact('versiculos', 'book', 'chapter'));
     }
 
     /**
@@ -75,6 +76,6 @@ class BibliaController extends Controller
             ->orderBy('verses.verse')
             ->get();
 
-        return view('biblia.search', compact('resultados', 'query'));
+        return view('biblia::search', compact('resultados', 'query'));
     }
 }

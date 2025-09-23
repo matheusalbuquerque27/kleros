@@ -9,9 +9,22 @@
     <div class="info">
         <h3>Visão Geral</h3>
         <div class="search-panel">
+            @if ($congregacao->config->agrupamentos == 'setor')
+                <div class="search-panel-item">
+                <label>Setor: </label>
+                <select name="setor" id="setor">
+                    <option value="setor">Setor 1</option>
+                    <option value="setor">Setor 2</option>
+                </select>
+            </div>
+            @endif
+            <div class="search-panel-item">
+                <label>Membro: </label>
+                <input type="text" name="" placeholder="Nome" id="membro">
+            </div>
             <div class="search-panel-item">
                 <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
-                <button class="imprimir"><i class="bi bi-plus-circle"></i> Novo departamento</button>
+                <button class="" onclick="abrirJanelaModal('{{route('departamentos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo</button>
                 <button class="" onclick="window.history.back()"><i class="bi bi-arrow-return-left"></i> Voltar</button>
             </div>
         </div>
@@ -25,25 +38,23 @@
                 <div class="item-2">
                     <b>Descrição</b>
                 </div>
-                <div class="item-2">
+                <div class="item-1">
                     <b>Liderança</b>
                 </div>
             </div><!--list-item-->
             <div id="content">
                 @foreach ($departamentos as $item)
-                <a href="/departamentos/exibir/{{$item->id}}">
-                <div class="list-item">
+                <div class="list-item" onclick="abrirJanelaModal('{{route('departamentos.form_editar', $item->id)}}')">
                     <div class="item item-1">
-                        <p style="display:flex; align-items: center; gap:.5em"><img src="{{ $item->foto ? asset('storage/' . $item->foto) : asset('storage/images/newuser.png') }}" class="avatar" alt="Avatar">{{$item->nome}}</p>
+                        <p><i class="bi bi-intersect"></i> {{$item->nome}}</p>                   
                     </div>
                     <div class="item item-2">
                         <p>{{$item->descricao}}</p>
                     </div>
                     <div class="item item-1">
-                        <p>{{$item->lider}} @if($item->colider) {{" / " .$item->colider}} @endif </p>
+                        <p>{{$item->lider->nome}} @if($item->colider) {{" / " .$item->colider->nome}} @endif </p>
                     </div>                    
                 </div><!--list-item-->
-                </a>
                 @endforeach
                 @if($departamentos->total() > 10)
                     <div class="pagination">

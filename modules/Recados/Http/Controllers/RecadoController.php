@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Modules\Recados\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Culto;
@@ -12,11 +12,11 @@ class RecadoController extends Controller
 
     public function historico() {
         $recados = Recado::all();
-        return view('recados/historico', ['recados' => $recados]);
+        return view('recados::historico', ['recados' => $recados]);
     }
     public function create() {
         $congregacao = app('congregacao');
-        return view('recados/cadastro', ['congregacao' => $congregacao]);
+        return view('recados::cadastro', ['congregacao' => $congregacao]);
     }
 
     public function store(Request $request) {
@@ -45,7 +45,7 @@ class RecadoController extends Controller
 
         $recados = Recado::where('culto_id', $id)->get();
 
-        return view('/recados/listar', ['recados' => $recados]);
+        return view('recados::listar', ['recados' => $recados]);
     }
 
     public function destroy($id) {

@@ -38,6 +38,13 @@
                     <input type="date" name="data_nascimento" id="data_nascimento" value="{{ old('data_nascimento') }}">
                 </div>
                 <div class="form-item">
+                    <label for="sexo">Sexo: </label>
+                    <select name="sexo" id="sexo">
+                        <option value="M" {{ old('sexo') == 'M' ? 'selected' : '' }}>Masculino</option>
+                        <option value="F" {{ old('sexo') == 'F' ? 'selected' : '' }}>Feminino</option>
+                    </select>
+                </div>
+                <div class="form-item">
                     <label for="telefone">Telefone: </label>
                     <input type="tel" id="telefone" name="telefone" placeholder="(00)00000-0000" value="{{ old('telefone') }}">
                 </div>

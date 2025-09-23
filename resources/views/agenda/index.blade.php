@@ -59,8 +59,14 @@
                 }
             },
             events: "{{ route('agenda.eventos.json') }}",
+            eventDidMount: function(info) {
+                const titleEl = info.el.querySelector('.fc-event-title');
+                if (titleEl) {
+                    titleEl.innerHTML = info.event.title;
+                }
+            },
             eventClick: function(info) {
-                alert('Evento: ' + info.event.title + '\nInício: ' + info.event.start.toLocaleString());
+                alert('Evento: ' + info.event.title.replace(/<[^>]+>/g, '') + '\nInício: ' + info.event.start.toLocaleString());
             }
         });
 

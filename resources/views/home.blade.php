@@ -59,27 +59,34 @@
                 @endif
             </div>
         </div>
-        <div class="info" id="recados">
-            <h3>Recados</h3>
-            <div class="card-container">
-                @if($recados)
-                    @foreach ($recados as $item)
-                    <div class="card info_item center">
-                        <form action="{{ route('recados.excluir', $item->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn-confirm"><i class="bi bi-check-circle"></i></button>
-                        </form>
-                        <p><i class="bi bi-exclamation-triangle"></i> {{$item->mensagem}}</p>  
-                    </div>
-                    @endforeach
-                @else
-                    <div class="card">
-                        <p><i class="bi bi-exclamation-triangle"></i> Não há novos recados.</p>  
-                    </div>
-                @endif
-            </div>    
-        </div>
+        @if(module_enabled('recados'))
+            @php
+                $recadoDeleteRoute = Route::has('recados.excluir');
+            @endphp
+            <div class="info" id="recados">
+                <h3>Recados</h3>
+                <div class="card-container">
+                    @if($recados)
+                        @foreach ($recados as $item)
+                        <div class="card info_item center">
+                            @if($recadoDeleteRoute)
+                            <form action="{{ route('recados.excluir', $item->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn-confirm"><i class="bi bi-check-circle"></i></button>
+                            </form>
+                            @endif
+                            <p><i class="bi bi-exclamation-triangle"></i> {{$item->mensagem}}</p>  
+                        </div>
+                        @endforeach
+                    @else
+                        <div class="card">
+                            <p><i class="bi bi-exclamation-triangle"></i> Não há novos recados.</p>  
+                        </div>
+                    @endif
+                </div>    
+            </div>
+        @endif
         <div class="info">
             <h3>Eventos</h3>
             <div class="card-container">
@@ -153,4 +160,3 @@
         </div>
     </div>
 @endsection
-

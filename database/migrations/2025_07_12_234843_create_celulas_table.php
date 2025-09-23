@@ -26,6 +26,7 @@ return new class extends Migration
             $table->time('hora_encontro')->nullable()->comment('Hora da reunião (HH:MM:SS)');
             $table->boolean('ativa')->default(true)->comment('Indica se a célula está ativa');
             $table->text('descricao')->nullable();
+            $table->string('cor_borda', 7)->default('#ffffff')->comment('Define a cor da borda para exibição no painel');
 
             $table->timestamps();
         });

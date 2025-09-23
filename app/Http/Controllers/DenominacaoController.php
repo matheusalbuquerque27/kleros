@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Agrupamento;
 use App\Models\BaseDoutrinaria;
 use App\Models\Denominacao;
 use App\Models\Ministerio;

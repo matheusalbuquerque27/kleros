@@ -8,6 +8,24 @@ use App\Models\Curso;
 class CursoController extends Controller
 {
     public function index(){
+        $congregacaoId = optional(app('congregacao'))->id;
+
+        $cursos = Curso::query()
+            ->with(['modulos' => fn ($query) => $query->ordenado()->where('ativo', true)])
+            ->where('ativo', true)
+            ->where(function ($query) use ($congregacaoId) {
+                $query->where('publico', true);
+
+                if ($congregacaoId) {
+                    $query->orWhere('congregacao_id', $congregacaoId);
+                } else {
+                    $query->orWhereNull('congregacao_id');
+                }
+            })
+            ->orderBy('titulo')
+            ->get();
+
+        return view('cursos.painel', compact('cursos'));
     }
     public function create(){
        

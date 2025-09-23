@@ -42,6 +42,7 @@
         <a href="{{route('cultos.complete', 'adicionar')}}"><button class="btn"><i class="bi bi-plus-circle-fill"></i> Registrar</button></a>
         <a href="/cultos/historico"><button class="btn"><i class="bi bi-card-list"></i> Histórico</button></a>
     </div>
+
     <div class="info" id="eventos">
         <h3>Eventos</h3>
         <b>Próximos eventos previstos: </b>
@@ -97,7 +98,7 @@
                 @endif
         </div>
         <a href="{{route('reunioes.create')}}"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Nova reunião</button></a>
-        <a href="/eventos/historico"><button class="btn mg-top-10"><i class="bi bi-card-list"></i> Histórico</button></a>
+        <a href="{{route('reunioes.painel')}}"><button class="btn mg-top-10"><i class="bi bi-card-list"></i> Histórico</button></a>
         <a href="/eventos/agenda"><button class="btn mg-top-10"><i class="bi bi-arrow-right-circle"></i> Próximos reuniões</button></a>
     </div>
 
@@ -151,9 +152,52 @@
                 </div>
             @endif
         </div>
-        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('grupos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo grupo</button>
+        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('grupos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo Departamento</button>
         <button id="grupos" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
+
+    <div class="info" id="departamentos">
+        <h3>Departamentos</h3>
+        <div class="card-container">
+            @if(count($departamentos) > 0)
+                @foreach ($departamentos as $item)
+                    <div class="list-item">
+                        <div class="item-15">
+                            <div class="card-title"><i class="bi bi-intersect"></i>{{$item->nome}}</div>
+                            <div class="card-description">{{$item->descricao}}</div>
+                        </div>
+                        <div class="item-2">
+                            <div class="card-description"><b>Liderança: </b>{{optional($item->lider)->nome}} @if($item->colider) | @endif {{optional($item->colider)->nome}}</div>
+                        </div>
+                        <div class="item-15">
+                            <form method="POST">
+                                <a href="/departamentos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Equipe</button></a>
+                                <button type="button" class="btn-options" onclick="abrirJanelaModal('{{route('departamentos.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="delete-departamento btn-options" data-action="/departamentos/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
+                            </form>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="card">
+                    <p><i class="bi bi-exclamation-triangle"></i> Nenhum departamento foi adicionado até o momento.</p>  
+                </div>
+            @endif
+        </div>
+        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('departamentos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo departamento</button>
+        <button class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
+    </div>
+
+    @if($congregacao->config->agrupamentos == 'setor')
+    <div class="info" id="setores">
+        <h3>Setores</h3>
+        <a href="/setores/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo Setor</button></a>
+        <button class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
+    </div>
+    @endif
+
     <div class="info" id="ministerios">
         <h3>Ministérios</h3>
         <div class="card-container">
@@ -188,12 +232,6 @@
         <button id="ministerios" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
 
-    <div class="info" id="departamentos">
-        <h3>Departamentos</h3>
-        <a href="/departamentos/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo departamento</button></a>
-        <button id="departamentos" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
-    </div>
-
     <div class="info" id="cursos">
         <h3>Cursos</h3>
         <div class="card-container">
@@ -201,7 +239,7 @@
                 @foreach ($cursos as $item)
                     <div class="alterlist">
                         <div class="item-15">
-                            <div class="card-title"><img style="width: 2em; border-radius: 10px;" src="{{'storage/'. $item->icone}}" alt=""> {{$item->titulo}}</div>
+                            <div class="card-title"><img style="width: 2em; border-radius: 10px;" src="{{'storage/'. ($item->icone ?? 'images/podcast.png')}}" alt=""> {{$item->titulo}}</div>
                         </div>
                         <div class="item-2">
                             <div class="card-description">{{$item->descricao}}</div>
@@ -228,11 +266,48 @@
         
     </div>
 
+    @if(module_enabled('celulas'))
     <div class="info" id="celulas">
         <h3>Células</h3>
-        <a href="/celulas/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo GCA</button></a>
+
+        <div class="card-container">
+            @if(count($celulas) > 0)
+                @foreach ($celulas as $item)
+                    <div class="alterlist">
+                        <div class="item-15">
+                            <div class="card-title"><i class="bi bi-cup-hot"></i> {{$item->identificacao}}</div>
+                            <div class="card-description"><b>Liderança: </b>{{optional($item->lider)->nome}} @if($item->colider) | @endif {{optional($item->colider)->nome}}</div>
+                        </div>
+
+                        <div class="item-2">
+                            <div class="card-description">
+                                <b>Encontro semanal: </b> {{ diaSemana($item->dia_encontro) }} / 
+                                {{ date('H:i', strtotime($item->hora_encontro)) }} h
+                            </div>
+                        </div>
+                        <div class="item-15">
+                            <form method="POST">
+                                <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Ver</button></a>
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="delete-grupo btn-options" data-action="/grupos/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
+                            </form>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="card">
+                    <p><i class="bi bi-exclamation-triangle"></i> Nenhum cadastro foi efetuado até o momento.</p>  
+                </div>
+            @endif
+        </div>
+
+        @if(module_enabled('celulas') && Route::has('celulas.form_criar'))
+            <button class="btn mg-top-10" onclick="abrirJanelaModal('{{ route('celulas.form_criar') }}')"><i class="bi bi-plus-circle"></i> Novo GCA</button>
+        @endif
         <button id="celulas" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir relatório</button>
     </div>
+    @endif
 @include('noticias.includes.destaques', ['destaques' => $destaques])
 </div>{{--container--}}
 
@@ -351,4 +426,3 @@
         
     </script>
 @endpush
-

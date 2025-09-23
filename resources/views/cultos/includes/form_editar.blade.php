@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="form-options">
-            <button class="btn" type="submit"><i class="bi bi-check"></i> Atualizar Culto</button>
+            <button class="btn" type="submit"><i class="bi bi-arrow-clockwise"></i> Atualizar Culto</button>
             <button type="button" class="btn" onclick="fecharJanelaModal()"><i class="bi bi-arrow-return-left"></i> Voltar</button>
         </div>
     </div>

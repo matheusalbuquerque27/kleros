@@ -69,10 +69,14 @@ class HomeController extends Controller
 
             Se não houver ele envia uma informação vazia, com mensagem sobre a ausencia de mensagens.
         */
-        $recados = Recado::where('data_recado', date('Y/m/d'))->get();
-        
-        if($recados->isEmpty()) {
-            $recados = '';
+        $recados = '';
+
+        if (module_enabled('recados')) {
+            $recadosCollection = Recado::where('data_recado', date('Y/m/d'))->get();
+
+            if ($recadosCollection->isNotEmpty()) {
+                $recados = $recadosCollection;
+            }
         }
 
         /*Esta parte verifica se há eventos cadastrados para os próximos dias
@@ -102,7 +106,7 @@ class HomeController extends Controller
             Se não houver ele envia uma informação vazia, com mensagem sobre a ausencia de aniversariantes.
         */
 
-        $membros = Membro::whereMonth('data_nascimento', Carbon::now()->month)->get();
+        $membros = Membro::whereMonth('data_nascimento', Carbon::now()->month)->orderBy('data_nascimento', 'asc')->get();
 
         if($membros->isEmpty()) {
             $membros = '';

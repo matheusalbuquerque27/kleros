@@ -59,7 +59,7 @@ class EventoController extends Controller
         $evento->titulo = $request->titulo;
         $evento->agrupamento_id = $request->grupo_id;
         $evento->descricao = $request->descricao;
-        $evento->recorrente = $request->recorrente == "1" ? true : false;
+        $evento->recorrente = $request->evento_recorrente == "1" ? true : false;
         $geracao_cultos = $request->geracao_cultos == "1" ? true : false;
         $evento->local = $request->local;
         $evento->requer_inscricao = $request->requer_inscricao == "1" ? true : false;

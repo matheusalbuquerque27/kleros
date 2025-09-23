@@ -87,8 +87,8 @@
                 <div class="form-options">
                     <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> Salvar Culto</button>
                     
-                    @if($culto != null)
-                    <a href="{{route('recados.listar', $culto->id)}}"><button class="btn" type="button"><i class="bi bi-chat-left-dots"></i> Ver Recados</button></a>
+                    @if($culto != null && module_enabled('recados') && Route::has('recados.listar'))
+                    <a href="{{ route('recados.listar', $culto->id) }}"><button class="btn" type="button"><i class="bi bi-chat-left-dots"></i> Ver Recados</button></a>
                     @endif
                     
                     <button type="button" class="btn" onclick="window.history.back()"><i class="bi bi-arrow-return-left"></i> Voltar</button>

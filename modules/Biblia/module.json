@@ -1,0 +1,6 @@
+{
+    "name": "Biblia",
+    "description": "Funcionalidades relacionadas à Bíblia Sagrada (consulta de livros, capítulos e versículos).",
+    "provider": "Modules\\Biblia\\Providers\\BibliaServiceProvider",
+    "enabled": true
+}

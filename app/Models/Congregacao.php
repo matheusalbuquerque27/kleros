@@ -30,7 +30,7 @@ class Congregacao extends Model
     }
     public function grupos()
     {
-        return $this->hasMany(Grupo::class, 'congregacao_id');
+        return $this->hasMany(Agrupamento::class, 'congregacao_id');
     }
     public function setores()
     {

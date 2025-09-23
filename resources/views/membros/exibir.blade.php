@@ -6,7 +6,6 @@
 
 <div class="container">
     <h1>Informações de Membro</h1>
-    
     <form action="{{ route('membros.destroy', $membro->id) }}" method="post" onsubmit="return handleSubmit(event, this, 'Tem certeza que deseja excluir?')">
         @csrf
         <div class="data-view">

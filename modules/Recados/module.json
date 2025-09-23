@@ -1,0 +1,6 @@
+{
+    "name": "Recados",
+    "description": "Envio e gerenciamento de recados durante os cultos.",
+    "provider": "Modules\\Recados\\Providers\\RecadosServiceProvider",
+    "enabled": true
+}

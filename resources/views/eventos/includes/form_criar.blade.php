@@ -19,12 +19,12 @@
             <label for="evento_recorrente">Natureza do evento: </label>
             <div class="form-square">
                 <div>
-                    <input type="radio" id="regular" name="evento_recorrente" value="1" checked>
-                    <label for="regular">Regular (cadastro único)</label>
+                    <input type="radio" id="especifico" name="evento_recorrente" value="0" checked>
+                    <label for="especifico">Específico (cadastro individual)</label>
                 </div>
                 <div>
-                    <input type="radio" id="especifico" name="evento_recorrente" value="0">
-                    <label for="especifico">Específico (cadastro individual)</label>
+                    <input type="radio" id="recorrente" name="evento_recorrente" value="1">
+                    <label for="recorrente">Recorrente (cadastro único)</label>
                 </div>
             </div>
         </div>
@@ -44,25 +44,25 @@
             <label for="requer_inscricao">Tipo de Acesso: </label>
             <div class="form-square">
                 <div>
-                    <input type="radio" id="automatica" name="requer_inscricao" value="0" checked>
-                    <label for="automatica">Público - Livre</label>
+                    <input type="radio" id="publico" name="requer_inscricao" value="0" checked>
+                    <label for="publico">Público - Livre</label>
                 </div>
                 <div>
-                    <input type="radio" id="manual" name="requer_inscricao" value="1">
-                    <label for="manual">Privado - Requer confirmação</label>
+                    <input type="radio" id="privado" name="requer_inscricao" value="1">
+                    <label for="privado">Privado - Requer confirmação</label>
                 </div>
             </div>
         </div>
-        <div class="form-item">
+        <div class="form-item geracao_cultos">
             <label for="geracao_cultos">Geração de cultos: </label>
             <div class="form-square">
                 <div>
-                    <input type="radio" id="automatica" name="geracao_cultos" value="1" checked>
-                    <label for="automatica">Automática</label>
+                    <input type="radio" id="geracao_automatica" name="geracao_cultos" value="1" checked>
+                    <label for="geracao_automatica">Automática</label>
                 </div>
                 <div>
-                    <input type="radio" id="manual" name="geracao_cultos" value="0">
-                    <label for="manual">Manual</label>
+                    <input type="radio" id="geracao_manual" name="geracao_cultos" value="0">
+                    <label for="geracao_manual">Manual</label>
                 </div>
             </div>
         </div>

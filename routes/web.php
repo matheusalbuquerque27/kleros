@@ -7,10 +7,8 @@ use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MembroController;
 use App\Http\Controllers\MinisterioController;
-use App\Http\Controllers\RecadoController;
 use App\Http\Controllers\VisitanteController;
 use App\Http\Controllers\CongregacaoController;
-use App\Http\Controllers\CelulaController;
 use App\Http\Controllers\DenominacaoController;
 use App\Http\Controllers\TutorialController;
 use Illuminate\Support\Facades\Route;
@@ -24,12 +22,9 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\ArquivoController;
 use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\RelatorioController;
-use App\Http\Controllers\BibliaController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\LocalizacaoController;
-use App\Jobs\TesteJob;
-use App\Models\Departamento;
-use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\ExtensoesController;
 
 Route::domain('kleros.local')->group(function () {
     
@@ -117,12 +112,6 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::put('/eventos/{id}', [EventoController::class, 'update'])->name('eventos.update');
 
     
-    Route::get('/recados', [RecadoController::class, 'historico'])->name('recados.historico');
-    Route::post('/recados', [RecadoController::class, 'store'])->name('recados.store');
-    Route::get('/recados/adicionar', [RecadoController::class, 'create'])->name('recados.create');
-    Route::get('/recados/listar/{id}', [RecadoController::class, 'list'])->name('recados.listar');
-    Route::delete('/recados/{id}', [RecadoController::class, 'destroy'])->name('recados.excluir');
-    
     Route::post('/cultos', [CultoController::class, 'store'])->name('cultos.store');
     Route::get('/cultos/agenda', [CultoController::class, 'agenda'])->name('cultos.agenda');
     Route::get('/cultos/historico', [CultoController::class, 'index'])->name('cultos.historico');
@@ -142,18 +131,12 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/ministerios/imprimir/{data}', [MinisterioController::class, 'print'])->name('ministerios.print');
     Route::put('/ministerios/{id}', [MinisterioController::class, 'update'])->name('ministerios.update');
     
-    Route::get('/celulas', [CelulaController::class, 'painel'])->name('celulas.painel');
-    Route::get('/celulas/adicionar', [CelulaController::class, 'create'])->name('celulas.create');
-    Route::post('/celulas', [CelulaController::class, 'store'])->name('celulas.store');
-    Route::get('/celulas/{id}', [CelulaController::class, 'show'])->name('celulas.show');
-    Route::put('/celulas/{id}', [CelulaController::class, 'update'])->name('celulas.update');
-    Route::delete('/celulas/{id}', [CelulaController::class, 'destroy'])->name('celulas.destroy');
-    
     Route::get('/departamentos', [DepartamentoController::class, 'painel'])->name('departamentos.painel');
     Route::get('/departamentos/adicionar', [DepartamentoController::class, 'create'])->name('departamentos.create');
     Route::post('/departamentos', [DepartamentoController::class, 'store'])->name('departamentos.store');
-    Route::get('/departamentos/{id}', [DepartamentoController::class, 'show'])->name('departamentos.show');
     Route::put('/departamentos/{id}', [DepartamentoController::class, 'update'])->name('departamentos.update');
+    Route::get('/departamentos/novo', [DepartamentoController::class, 'form_criar'])->name('departamentos.form_criar');
+    Route::get('/departamentos/editar/{id}', [DepartamentoController::class, 'form_editar'])->name('departamentos.form_editar');
     Route::delete('/departamentos/{id}', [DepartamentoController::class, 'destroy'])->name('departamentos.destroy');
     
     Route::get('/setores', [CongregacaoController::class, 'index'])->name('setores.index');
@@ -203,17 +186,10 @@ Route::middleware(['web', 'dominio'])->group(function () {
 
     Route::get('/relatorios', [RelatorioController::class, 'painel'])->name('relatorios.painel');
 
-    Route::prefix('biblia')->group(function () {
-        Route::get('/', [BibliaController::class, 'index'])->name('biblia.index');
-        Route::get('/livro/{bookId}', [BibliaController::class, 'chapters'])->name('biblia.chapters');
-        Route::get('/livro/{bookId}/capitulo/{chapter}', [BibliaController::class, 'verses'])->name('biblia.verses');
-        Route::get('/buscar', [BibliaController::class, 'search'])->name('biblia.search');
-    });
-
     //Rotas para buscas dinâmicas de localização
     Route::get('/estados/{pais_id}', [LocalizacaoController::class, 'getEstados'])->name('localizacao.estados');
     Route::get('/cidades/{uf}', [LocalizacaoController::class, 'getCidades'])->name('localizacao.cidades');
 
-
+    Route::get('/extensoes', [ExtensoesController::class, 'index'])->name('extensoes.painel');
+    Route::put('/extensoes/{module}', [ExtensoesController::class, 'update'])->name('extensoes.update');
 });
-

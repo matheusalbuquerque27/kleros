@@ -54,7 +54,7 @@
                     <button type="submit" class="btn btn-primary">Entrar</button>
                 </div>
                 @if (session('error'))
-                    <div class="alert alert-danger">
+                    <div class="alert alert-danger center">
                         {{ session('error') }}
                     </div>
                 @endif
