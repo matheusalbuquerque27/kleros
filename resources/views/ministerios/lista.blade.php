@@ -10,24 +10,39 @@
         <h3>Membros</h3>
         <div class="search-panel">
             <div class="search-panel-item">
-                    <label>Buscar: </label>
-                    <input type="text" name="" placeholder="Nome" id="chave">
-                    <a href="/ministerios/adicionar"><button><i class="bi bi-search"></i> Procurar</button></a>
-                </div>
+                <label for="chave">Buscar: </label>
+                <input type="text" id="chave" name="chave" placeholder="Nome">
+                <button type="button" id="btnProcurar">
+                    <i class="bi bi-search"></i> Procurar
+                </button>
+            </div>
+
             <div class="search-panel-item">
-                <label>Outros membros: </label>
-                <select name="membro" id="nome" placeholder="Outros membros">
-                    @if ($membros != null)
-                        @foreach ($membros as $item)
-                            <option value="{{$item->id}}">{{$item->nome}}</option>
-                        @endforeach
-                    @endif                        
+                <label for="nome">Outros membros: </label>
+                <select name="membro" id="nome">
+                    <option value="" disabled selected>Selecione um membro</option>
+                    @foreach ($naoInclusos ?? [] as $item)
+                        <option value="{{ $item->id }}">{{ $item->nome }}</option>
+                    @endforeach
                 </select>
             </div>
+
+            <form id="formIncluir" action="{{ url('/ministerios/incluir/' . $ministerio->id) }}" method="POST" style="display:none;">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="membro_id" id="membro_id">
+            </form>
+
             <div class="search-panel-item">
-                <a href="/ministerios/adicionar"><button><i class="bi bi-plus-circle"></i> Incluir</button></a>
-                <button><i class="bi bi-printer"></i> Imprimir</button>
-                <a href="/cadastros#ministerios"><button><i class="bi bi-arrow-return-left"></i> Voltar</button></a>    
+                <button type="button" id="btnIncluir">
+                    <i class="bi bi-plus-circle"></i> Incluir
+                </button>
+                <button type="button">
+                    <i class="bi bi-printer"></i> Imprimir
+                </button>
+                <a href="/cadastros#ministerios" class="btn btn-secondary">
+                    <i class="bi bi-arrow-return-left"></i> Voltar
+                </a>
             </div>
         </div>
     </div>
@@ -70,3 +85,26 @@
 </div>
 
 @endsection
+
+@push('scripts')
+    
+<script>
+    document.getElementById('btnProcurar').addEventListener('click', function() {
+        let chave = document.getElementById('chave').value;
+        if (chave) {
+            window.location.href = "/ministerios/buscar?chave=" + encodeURIComponent(chave);
+        }
+    });
+
+    document.getElementById('btnIncluir').addEventListener('click', function() {
+        let membroId = document.getElementById('nome').value;
+        if (membroId) {
+            document.getElementById('membro_id').value = membroId;
+            document.getElementById('formIncluir').submit();
+        } else {
+            alert("Selecione um membro primeiro!");
+        }
+    });
+</script>
+
+@endpush

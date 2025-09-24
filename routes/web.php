@@ -130,6 +130,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::delete('/ministerios/{id}', [MinisterioController::class, 'destroy'])->name('ministerios.destroy');
     Route::get('/ministerios/imprimir/{data}', [MinisterioController::class, 'print'])->name('ministerios.print');
     Route::put('/ministerios/{id}', [MinisterioController::class, 'update'])->name('ministerios.update');
+    Route::put('/ministerios/incluir/{ministerio}', [MinisterioController::class, 'incluir']);
     
     Route::get('/departamentos', [DepartamentoController::class, 'painel'])->name('departamentos.painel');
     Route::get('/departamentos/adicionar', [DepartamentoController::class, 'create'])->name('departamentos.create');
@@ -173,9 +174,9 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/avisos/novo', [AvisoController::class, 'form_criar'])->name('avisos.form_criar');
 
     Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
-    Route::get('/cursos/adicionar', [CursoController::class, 'create'])->name('cursos.create');
+    Route::get('/cursos/novo', [CursoController::class, 'form_criar'])->name('cursos.form_criar');
+    Route::get('/cursos/editar/{id}', [CursoController::class, 'form_editar'])->name('cursos.form_editar');
     Route::post('/cursos', [CursoController::class, 'store'])->name('cursos.store');
-    Route::get('/cursos/{id}', [CursoController::class, 'show'])->name('cursos.show');
     Route::put('/cursos/{id}', [CursoController::class, 'update'])->name('cursos.update');
     Route::delete('/cursos/{id}', [CursoController::class, 'destroy'])->name('cursos.destroy');
 

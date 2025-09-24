@@ -22,7 +22,7 @@
             </div>
             <div class="form-item">
                 <label for="descricao">Co-líder: </label>
-                <select name="colider_id" id="" required>
+                <select name="colider_id" id="">
                     <option value="">Selecione um membro: </option>
                     @foreach ($membros as $item)
                         <option value="{{$item->id}}">{{$item->nome}}</option>

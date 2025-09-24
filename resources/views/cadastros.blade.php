@@ -148,11 +148,11 @@
                 @endforeach
             @else
                 <div class="card">
-                    <p><i class="bi bi-exclamation-triangle"></i> Nenhum membro foi incluído até o momento.</p>  
+                    <p><i class="bi bi-exclamation-triangle"></i> Nenhum grupo foi criado até o momento.</p>  
                 </div>
             @endif
         </div>
-        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('grupos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo Departamento</button>
+        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('grupos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo Grupo</button>
         <button id="grupos" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
 
@@ -256,12 +256,12 @@
                 @endforeach
             @else
                 <div class="card">
-                    <p><i class="bi bi-exclamation-triangle"></i> Nenhum membro foi incluído até o momento.</p>  
+                    <p><i class="bi bi-exclamation-triangle"></i> Nenhum curso foi registrado até o momento.</p>  
                 </div>
             @endif
         </div>
 
-        <a href="{{route('cursos.create')}}"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo curso</button></a>
+        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('cursos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo curso</button>
         <button id="cursos" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
         
     </div>

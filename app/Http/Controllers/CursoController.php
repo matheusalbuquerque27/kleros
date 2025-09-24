@@ -27,10 +27,9 @@ class CursoController extends Controller
 
         return view('cursos.painel', compact('cursos'));
     }
-    public function create(){
+    public function form_criar(){
        
-        return view('cursos.cadastro');
-
+        return view('cursos/includes/form_criar');
     }
 
     public function store(Request $request){

@@ -13,7 +13,8 @@ class Membro extends Model
     public function escolaridade() {
         return $this->belongsTo(Escolaridade::class);
     }
-    public function ministerio() {
+    public function ministerio()
+    {
         return $this->belongsTo(Ministerio::class);
     }
     public function celulas(): BelongsToMany
@@ -53,6 +54,13 @@ class Membro extends Model
         return $this->belongsToMany(Aviso::class, 'aviso_membro', 'membro_id', 'aviso_id')
             ->withPivot('lido')
             ->withTimestamps();
+    }
+    /**
+     * Scope para filtrar membros pela congregação atual
+     */
+    public function scopeDaCongregacao($query)
+    {
+        return $query->where('congregacao_id', app('congregacao')->id);
     }
 
 }

@@ -49,11 +49,9 @@ class MinisterioController extends Controller
 
     public function lista($id){
 
-        $congregacao = app('congregacao');
-
         //Pesquisa no banco os membros desse ministério pelo id
-        $membros = Membro::where('ministerio_id', $id)->paginate(10);
-        $naoInclusos = Membro::where(function($query) use ($id) {
+        $membros = Membro::DaCongregacao()->where('ministerio_id', $id)->paginate(10);
+        $naoInclusos = Membro::DaCongregacao()->where(function($query) use ($id) {
             $query->whereNull('ministerio_id')
                 ->orWhere('ministerio_id', '<>', $id);
         })->get(); //Não pertencem ainda ao grupo;
@@ -61,7 +59,7 @@ class MinisterioController extends Controller
         //Informa dados sobre o ministério
         $ministerio = Ministerio::find($id);
        
-        return view('ministerios/lista', ['membros' => $membros, 'ministerio' => $ministerio, 'naoInclusos' => $naoInclusos, 'congregacao' => $congregacao]);
+        return view('ministerios/lista', ['membros' => $membros, 'ministerio' => $ministerio, 'naoInclusos' => $naoInclusos]);
     }
 
     public function destroy($id){
@@ -87,5 +85,16 @@ class MinisterioController extends Controller
         
 
         return view('impressoes/print-ministerios', compact('membrosByMinisterio'));
+    }
+
+    public function incluir(Request $request, $ministerioId)
+    {
+        $membroId = $request->input('membro_id');
+
+        $membro = Membro::findOrFail($membroId);
+        $membro->ministerio_id = $ministerioId;
+        $membro->save();
+
+        return redirect()->back()->with('msg', 'Membro incluído com sucesso!');
     }
 }

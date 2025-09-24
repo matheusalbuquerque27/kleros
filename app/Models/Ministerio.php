@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ministerio extends Model
 {
-    public function membro(){
+    public function membros()
+    {
         return $this->hasMany(Membro::class);
     }
     public function denominacao()

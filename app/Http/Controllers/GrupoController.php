@@ -32,7 +32,7 @@ class GrupoController extends Controller
 
     public function form_criar(){
 
-        $membros = Membro::all();
+        $membros = Membro::DaCongregacao()->get();
 
         return view('grupos/includes/form_criar', ['membros' => $membros]);
     }
@@ -61,7 +61,7 @@ class GrupoController extends Controller
         $integrantes = $agrupamento->integrantes()->paginate(10);
 
         // membros que ainda NÃO pertencem a esse agrupamento
-        $membros = Membro::whereDoesntHave('agrupamentos', function ($query) use ($agrupamento) {
+        $membros = Membro::DaCongregacao()->whereDoesntHave('agrupamentos', function ($query) use ($agrupamento) {
             $query->where('agrupamento_id', $agrupamento->id);
         })->get();
 
@@ -113,7 +113,7 @@ class GrupoController extends Controller
 
     public function form_editar($id) {
         $grupo = Agrupamento::findOrFail($id);
-        $membros = Membro::all();
+        $membros = Membro::DaCongregacao()->get();
         return view('grupos/includes/form_editar', compact('grupo', 'membros'));
     }
 }

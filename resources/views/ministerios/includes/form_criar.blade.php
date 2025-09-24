@@ -1,5 +1,6 @@
-<div class="container">
-    <h1>Adicionar Ministério</h1>
+<h1>Adicionar Ministério</h1>
+<div class="info">
+    <h3>Registrar</h3>
     <form action="/ministerios" method="post">
         @csrf
         <div class="form-control">
