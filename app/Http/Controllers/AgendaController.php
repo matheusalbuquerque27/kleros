@@ -47,19 +47,19 @@ class AgendaController extends Controller
             ->whereNotNull('data_nascimento')
             ->get()
             ->map(function ($membro) {
-                $data = Carbon::parse($membro->data_nascimento)->setYear(now()->year);
+            $data = Carbon::parse($membro->data_nascimento)->setYear(now()->year);
 
-                if ($data->isPast()) {
-                    $data = $data->addYear();
-                }
+            if ($data->isPast()) {
+                $data = $data->addYear();
+            }
 
-                return [
-                    'id' => 'birthday-' . $membro->id,
+            return [
+                'id' => 'birthday-' . $membro->id,
                     'title' => '<i class="bi bi-cake2"></i> ' . $membro->nome,
-                    'start' => $data->toDateString(),
-                    'color' => '#d4a017',
-                ];
-            });
+                'start' => $data->toDateString(),
+                'color' => '#d4a017',
+            ];
+        });
 
         $eventos = Evento::select([
             'id',
@@ -69,16 +69,16 @@ class AgendaController extends Controller
         ])->where('congregacao_id', $congregacao->id)
             ->get()
             ->map(function ($evento) {
-                return [
-                    'id' => $evento->id,
-                    'title' => $evento->title,
-                    'start' => Carbon::parse($evento->data_inicio)->toDateString(),
-                    'end' => $evento->data_encerramento
-                        ? Carbon::parse($evento->data_encerramento)->addDay()->toDateString()
-                        : null,
-                    'color' => '#2196f3',
-                ];
-            });
+            return [
+                'id' => $evento->id,
+                'title' => $evento->title,
+                'start' => Carbon::parse($evento->data_inicio)->toDateString(),
+                'end' => $evento->data_encerramento
+                    ? Carbon::parse($evento->data_encerramento)->addDay()->toDateString()
+                    : null,
+                'color' => '#2196f3',
+            ];
+        });
 
         $reunioes = $reunioes->map(function ($item) {
             $item->color = '#eb8b1e';
