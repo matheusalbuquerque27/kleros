@@ -12,6 +12,7 @@ use App\Models\Reuniao;
 use App\Models\Visitante;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Curso;
+use App\Models\Pesquisa;
 
 class CadastroController extends Controller
 {
@@ -23,7 +24,7 @@ class CadastroController extends Controller
 
         //Esta parte verifica se há cultos cadastrados para os próximos dias
         $cultos = Culto::where('congregacao_id', $congregacaoId)
-            ->whereDate('data_culto', '>=', $now->toDateString())
+            ->whereDate('data_culto', '>', $now->toDateString())
             ->orderBy('data_culto', 'asc')
             ->limit(3)
             ->get();
@@ -66,6 +67,17 @@ class CadastroController extends Controller
             ->get();
         $celulas = Celula::where('congregacao_id', $congregacaoId)->get();
 
+        $pesquisas = Pesquisa::with('criador')
+            ->forCongregacao($congregacaoId)
+            ->where(function ($query) use ($now) {
+                $query->whereNull('data_fim')
+                    ->orWhereDate('data_fim', '>=', $now->toDateString());
+            })
+            ->orderByDesc('data_inicio')
+            ->orderByDesc('created_at')
+            ->limit(3)
+            ->get();
+
         $noticias = Cache::get('noticias_feed') ?? [];
         $destaques = array_slice($noticias['guiame'] ?? [], 0, 9);
 
@@ -80,6 +92,7 @@ class CadastroController extends Controller
             'congregacao' => $congregacao,
             'departamentos' => $departamentos,
             'celulas' => $celulas,
+            'pesquisas' => $pesquisas,
             'destaques' => $destaques,
         ]);
     }

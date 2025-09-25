@@ -54,6 +54,7 @@ class CultoController extends Controller
         $culto->texto_base = $request->texto_base ?? null;
         $culto->quant_adultos = $request->quantidade_adultos ?? 0;
         $culto->quant_criancas = $request->quantidade_criancas ?? 0;
+        $culto->congregacao_id = app('congregacao')->id;
 
         $culto->save();
 

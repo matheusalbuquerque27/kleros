@@ -101,18 +101,22 @@ class HomeController extends Controller
             $visitantes = '';
         }
 
+        $visitas_count = Visitante::where('congregacao_id', $congregacao->id)->whereMonth('data_visita', Carbon::now()->month)->count();
+
         /*Esta parte verifica se há membros fazendo aniversário neste mês
 
             Se não houver ele envia uma informação vazia, com mensagem sobre a ausencia de aniversariantes.
         */
 
-        $membros = Membro::whereMonth('data_nascimento', Carbon::now()->month)->orderBy('data_nascimento', 'asc')->get();
+        $aniversariantes = Membro::whereMonth('data_nascimento', Carbon::now()->month)->orderBy('data_nascimento', 'asc')->get();
 
-        if($membros->isEmpty()) {
-            $membros = '';
+        if($aniversariantes->isEmpty()) {
+            $aniversariantes = '';
         }
 
+        $membros_count = Membro::where('congregacao_id', $congregacao->id)->where('ativo', true)->count();
 
-        return view('home', ['visitantes' => $visitantes, 'culto_hoje' => $culto_hoje, 'recados' => $recados, 'eventos' => $eventos, 'membros' => $membros, 'congregacao' => $congregacao, 'usuario' => $usuario]);
+
+        return view('home', ['visitantes' => $visitantes, 'culto_hoje' => $culto_hoje, 'recados' => $recados, 'eventos' => $eventos, 'aniversariantes' => $aniversariantes, 'congregacao' => $congregacao, 'usuario' => $usuario, 'membros_count' => $membros_count, 'visitas_count' => $visitas_count]);
     }
 }

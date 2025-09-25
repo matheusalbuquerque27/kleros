@@ -96,7 +96,8 @@ class MembroController extends Controller
         $filtro = $request->filtro;
         $chave = '%'. $request->chave .'%';
         
-        $membros = Membro::where($filtro, 'LIKE', $chave)->get();
+        $membros = Membro::where('congregacao_id', app('congregacao')->id)
+        ->where($filtro, 'LIKE', $chave)->get();
 
         // Renderiza a view com os resultados
         $view = view('membros/includes/painel_search', ['membros' => $membros])->render();

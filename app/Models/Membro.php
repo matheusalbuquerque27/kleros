@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Membro extends Model
 {
+
+    protected $cast = [
+        'data_nascimento' => 'date',
+        'data_batismo' => 'date',
+        'data_conversao' => 'date',
+        'data_cadastro' => 'date',
+        'ativo' => 'boolean',
+    ];
+
     public function estadoCiv() {
         return $this->belongsTo(EstadoCiv::class);
     }

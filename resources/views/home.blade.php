@@ -54,9 +54,14 @@
                 @else
                     <div class="info_item center">
                         <b>Nenhum culto cadastrado. </b>
-                        <p><a class="link-standard" href="{{route('cultos.create')}}">Registrar culto</a></p>
+                        <p class="link-standard" onclick="abrirJanelaModal('{{route('cultos.form_criar')}}')">Registrar culto</p>
                     </div>
                 @endif
+                <div class="info_item center">
+                    <b><i class="bi bi-pie-chart"></i> Estatísticas: </b>
+                    <p>Nº de membros: <b>{{ $membros_count }}</b></p>
+                    <p>Visitantes no mês: <b>{{ $visitas_count }}</b></p>
+                </div>
             </div>
         </div>
         @if(module_enabled('recados'))
@@ -115,8 +120,8 @@
         <div class="info">
             <h3>Aniversariantes</h3>
             <div class="card-container">
-                @if ($membros)
-                    @foreach ($membros as $item)
+                @if ($aniversariantes)
+                    @foreach ($aniversariantes as $item)
                     <div class="card">
                         <div class="card-date"><i class="bi bi-cake2"></i> 
                         @php

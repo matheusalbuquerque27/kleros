@@ -23,9 +23,12 @@ return new class extends Migration
             $table->id();
             $table->integer('codigo_uf');
             $table->string('nome');
-            $table->char('uf', 2)->unique();
+            $table->char('uf', 2);
             $table->integer('regiao_id')->nullable();
             $table->foreignId('pais_id')->constrained('paises')->onDelete('cascade');
+
+            // índice único composto
+            $table->unique(['uf', 'pais_id'], 'estados_uf_pais_unique');
         });
 
         Schema::create('cidades', function (Blueprint $table) {

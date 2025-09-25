@@ -63,7 +63,7 @@
         </div>
         <div class="form-options">
             <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> Confirmar Reunião</button>
-            <a href="/cadastros#reunioes"><button type="button" class="btn"><i class="bi bi-x-circle"></i> Cancelar</button></a>
+            <button type="button" onclick="fecharJanelaModal()" class="btn"><i class="bi bi-x-circle"></i> Cancelar</button>
         </div>
     </div>
 </form>

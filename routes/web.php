@@ -25,6 +25,7 @@ use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\LocalizacaoController;
 use App\Http\Controllers\ExtensoesController;
+use App\Http\Controllers\PesquisaController;
 
 Route::domain('kleros.local')->group(function () {
     
@@ -167,6 +168,16 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/reunioes/novo', [ReuniaoController::class, 'form_criar'])->name('reunioes.form_criar');
     Route::get('/reunioes/editar/{id}', [ReuniaoController::class, 'form_editar'])->name('reunioes.form_editar');
     Route::put('/reunioes/{id}', [ReuniaoController::class, 'update'])->name('reunioes.update');
+
+    Route::get('/pesquisas/painel', [PesquisaController::class, 'painel'])->name('pesquisas.painel');
+    Route::get('/pesquisas/novo', [PesquisaController::class, 'form_criar'])->name('pesquisas.form_criar');
+    Route::get('/pesquisas/editar/{id}', [PesquisaController::class, 'form_editar'])->name('pesquisas.form_editar');
+    Route::post('/pesquisas', [PesquisaController::class, 'store'])->name('pesquisas.store');
+    Route::put('/pesquisas/{id}', [PesquisaController::class, 'update'])->name('pesquisas.update');
+    Route::delete('/pesquisas/{id}', [PesquisaController::class, 'destroy'])->name('pesquisas.destroy');
+    Route::post('/pesquisas/{pesquisa}/perguntas', [PesquisaController::class, 'storePergunta'])->name('pesquisas.perguntas.store');
+    Route::put('/pesquisas/{pesquisa}/perguntas/{pergunta}', [PesquisaController::class, 'updatePergunta'])->name('pesquisas.perguntas.update');
+    Route::delete('/pesquisas/{pesquisa}/perguntas/{pergunta}', [PesquisaController::class, 'destroyPergunta'])->name('pesquisas.perguntas.destroy');
 
     Route::get('/avisos/admin', [AvisoController::class, 'index'])->name('avisos.admin');
     Route::get('/avisos', [AvisoController::class, 'avisosDoMembro'])->name('avisos.painel');

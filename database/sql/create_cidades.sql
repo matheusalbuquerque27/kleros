@@ -5570,3 +5570,55 @@ insert into cidades (codigo, nome, uf) values ('5222054','Vicentinópolis', 'GO'
 insert into cidades (codigo, nome, uf) values ('5222203','Vila Boa', 'GO');
 insert into cidades (codigo, nome, uf) values ('5222302','Vila Propício', 'GO');
 insert into cidades (codigo, nome, uf) values ('5300108','Brasília', 'DF');
+
+
+
+--- Espanha 50 mais importantes----
+insert into cidades (codigo, nome, uf) values ('5500109','Madrid','MD');
+insert into cidades (codigo, nome, uf) values ('5500110','Barcelona','CT');
+insert into cidades (codigo, nome, uf) values ('5500111','Valencia','VC');
+insert into cidades (codigo, nome, uf) values ('5500112','Sevilla','AN');
+insert into cidades (codigo, nome, uf) values ('5500113','Zaragoza','AR');
+insert into cidades (codigo, nome, uf) values ('5500114','Málaga','AN');
+insert into cidades (codigo, nome, uf) values ('5500115','Murcia','MC');
+insert into cidades (codigo, nome, uf) values ('5500116','Palma de Mallorca','IB');
+insert into cidades (codigo, nome, uf) values ('5500117','Las Palmas de Gran Canaria','CN');
+insert into cidades (codigo, nome, uf) values ('5500118','Bilbao','PV');
+insert into cidades (codigo, nome, uf) values ('5500119','Alicante','VC');
+insert into cidades (codigo, nome, uf) values ('5500120','Córdoba','AN');
+insert into cidades (codigo, nome, uf) values ('5500121','Valladolid','CL');
+insert into cidades (codigo, nome, uf) values ('5500122','Vigo','GA');
+insert into cidades (codigo, nome, uf) values ('5500123','Gijón','AS');
+insert into cidades (codigo, nome, uf) values ('5500124','A Coruña','GA');
+insert into cidades (codigo, nome, uf) values ('5500125','Vitoria-Gasteiz','PV');
+insert into cidades (codigo, nome, uf) values ('5500126','Granada','AN');
+insert into cidades (codigo, nome, uf) values ('5500127','Oviedo','AS');
+insert into cidades (codigo, nome, uf) values ('5500128','Santa Cruz de Tenerife','CN');
+insert into cidades (codigo, nome, uf) values ('5500129','Pamplona','NC');
+insert into cidades (codigo, nome, uf) values ('5500130','San Sebastián','PV');
+insert into cidades (codigo, nome, uf) values ('5500131','Santander','CB');
+insert into cidades (codigo, nome, uf) values ('5500132','Burgos','CL');
+insert into cidades (codigo, nome, uf) values ('5500133','Salamanca','CL');
+insert into cidades (codigo, nome, uf) values ('5500134','Toledo','CM');
+insert into cidades (codigo, nome, uf) values ('5500135','Albacete','CM');
+insert into cidades (codigo, nome, uf) values ('5500136','Ciudad Real','CM');
+insert into cidades (codigo, nome, uf) values ('5500137','Cuenca','CM');
+insert into cidades (codigo, nome, uf) values ('5500138','Guadalajara','CM');
+insert into cidades (codigo, nome, uf) values ('5500139','Almería','AN');
+insert into cidades (codigo, nome, uf) values ('5500140','Cádiz','AN');
+insert into cidades (codigo, nome, uf) values ('5500141','Huelva','AN');
+insert into cidades (codigo, nome, uf) values ('5500142','Jaén','AN');
+insert into cidades (codigo, nome, uf) values ('5500143','Algeciras','AN');
+insert into cidades (codigo, nome, uf) values ('5500144','Badajoz','EX');
+insert into cidades (codigo, nome, uf) values ('5500145','Cáceres','EX');
+insert into cidades (codigo, nome, uf) values ('5500146','Logroño','RI');
+insert into cidades (codigo, nome, uf) values ('5500147','Lugo','GA');
+insert into cidades (codigo, nome, uf) values ('5500148','Ourense','GA');
+insert into cidades (codigo, nome, uf) values ('5500149','Pontevedra','GA');
+insert into cidades (codigo, nome, uf) values ('5500150','Segovia','CL');
+insert into cidades (codigo, nome, uf) values ('5500151','León','CL');
+insert into cidades (codigo, nome, uf) values ('5500152','Palencia','CL');
+insert into cidades (codigo, nome, uf) values ('5500153','Soria','CL');
+insert into cidades (codigo, nome, uf) values ('5500154','Zamora','CL');
+insert into cidades (codigo, nome, uf) values ('5500155','Ceuta','CE');
+insert into cidades (codigo, nome, uf) values ('5500156','Melilla','ML');

@@ -1,5 +1,93 @@
 export function initModalScripts(container) {
                 
+    // --- controle de abas internas ---
+    const tabGroups = container.querySelectorAll('[data-tabs]');
+    tabGroups.forEach(group => {
+        if (group.dataset.tabsInitialized) {
+            return;
+        }
+        group.dataset.tabsInitialized = 'true';
+
+        const buttons = Array.from(group.querySelectorAll('[data-tab-target]'));
+        const panels = Array.from(group.querySelectorAll('.tab-panel'));
+        const defaultTab = group.dataset.activeTab || (buttons[0] && buttons[0].dataset.tabTarget);
+
+        const activate = (tabId) => {
+            buttons.forEach(btn => {
+                const isActive = btn.dataset.tabTarget === tabId;
+                btn.classList.toggle('active', isActive);
+            });
+
+            panels.forEach(panel => {
+                const isActive = panel.id === tabId;
+                panel.classList.toggle('active', isActive);
+            });
+        };
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => activate(btn.dataset.tabTarget));
+        });
+
+        if (defaultTab) {
+            activate(defaultTab);
+        }
+    });
+
+    // --- controle de exibição das opções das perguntas ---
+    const optionToggles = container.querySelectorAll('[data-toggle-options]');
+    optionToggles.forEach(select => {
+        if (select.dataset.optionsInitialized) {
+            return;
+        }
+        select.dataset.optionsInitialized = 'true';
+        const targetSelector = select.dataset.toggleOptions;
+        if (!targetSelector) {
+            return;
+        }
+
+        const target = container.querySelector(targetSelector);
+        if (!target) {
+            return;
+        }
+
+        const toggleOptions = () => {
+            const needsOptions = ['radio', 'checkbox'].includes(select.value);
+            target.style.display = needsOptions ? '' : 'none';
+        };
+
+        select.addEventListener('change', toggleOptions);
+        toggleOptions();
+    });
+
+    // --- acordeões das perguntas ---
+    const accordions = container.querySelectorAll('[data-accordion]');
+    accordions.forEach(accordion => {
+        if (accordion.dataset.accordionInitialized) {
+            return;
+        }
+        accordion.dataset.accordionInitialized = 'true';
+
+        const toggle = accordion.querySelector('[data-accordion-toggle]');
+        const body = accordion.querySelector('[data-accordion-body]');
+
+        if (!toggle || !body) {
+            return;
+        }
+
+        const setState = (open) => {
+            accordion.classList.toggle('open', open);
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        };
+
+        const initialOpen = accordion.dataset.open === 'true';
+        setState(initialOpen);
+
+        toggle.addEventListener('click', () => {
+            const willOpen = !accordion.classList.contains('open');
+            setState(willOpen);
+        });
+    });
+
     // --- controle de destinatários ---
     const selectDest = container.querySelector('#destinatarios');
     const divSelecionados = container.querySelector('#selecionados');

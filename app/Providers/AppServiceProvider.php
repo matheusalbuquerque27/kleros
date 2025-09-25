@@ -30,6 +30,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        app()->singleton('congregacao', function () {
+            return Auth::check() ? Auth::user()->congregacao : null;
+        });
+
+        app()->singleton('modo_admin', function () {
+            return request()->getHost() === 'kleros.local';
+        });
+
         $this->registerEnabledModules();
 
         Relation::morphMap([
@@ -43,14 +51,6 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('*', function ($view) {
             $view->with('congregacao', app()->bound('congregacao') ? app('congregacao') : null);
-        });
-
-        app()->singleton('congregacao', function () {
-            return Auth::check() ? Auth::user()->congregacao : null;
-        });
-
-        app()->singleton('modo_admin', function () {
-            return request()->getHost() === 'kleros.local';
         });
 
         View::composer('noticias.includes.destaques', function ($view) {
@@ -72,11 +72,16 @@ class AppServiceProvider extends ServiceProvider
 
         $databaseOverrides = collect();
 
-        if (Schema::hasTable('extensoes')) {
-            $databaseOverrides = Extensao::query()
-                ->when($congregacaoId, fn ($query) => $query->where('congregacao_id', $congregacaoId))
-                ->get()
-                ->keyBy(fn ($extension) => strtolower($extension->module));
+        try {
+            if (Schema::hasTable('extensoes')) {
+                $databaseOverrides = Extensao::query()
+                    ->when($congregacaoId !== null, fn ($query) => $query->where('congregacao_id', $congregacaoId))
+                    ->when($congregacaoId === null, fn ($query) => $query->whereNull('congregacao_id'))
+                    ->get()
+                    ->keyBy(fn ($extension) => strtolower($extension->module));
+            }
+        } catch (\Throwable $e) {
+            $databaseOverrides = collect();
         }
 
         foreach (File::glob($modulesPath . '/*/module.json') as $manifestPath) {

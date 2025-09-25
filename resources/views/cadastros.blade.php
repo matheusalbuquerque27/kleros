@@ -37,7 +37,7 @@
             
             
         </div>
-        <a href="{{route('cultos.create')}}"><button class="btn"><i class="bi bi-plus-circle"></i> Agendar culto</button></a>
+        <button class="btn" onclick="abrirJanelaModal('{{route('cultos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Agendar culto</button>
         <a href="/cultos/agenda"><button class="btn"><i class="bi bi-arrow-right-circle"></i> Próximos cultos</button></a>
         <a href="{{route('cultos.complete', 'adicionar')}}"><button class="btn"><i class="bi bi-plus-circle-fill"></i> Registrar</button></a>
         <a href="/cultos/historico"><button class="btn"><i class="bi bi-card-list"></i> Histórico</button></a>
@@ -97,9 +97,37 @@
                     </div>
                 @endif
         </div>
-        <a href="{{route('reunioes.create')}}"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Nova reunião</button></a>
+        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('reunioes.form_criar')}}')"><i class="bi bi-plus-circle"></i> Nova reunião</button></a>
         <a href="{{route('reunioes.painel')}}"><button class="btn mg-top-10"><i class="bi bi-card-list"></i> Histórico</button></a>
         <a href="/eventos/agenda"><button class="btn mg-top-10"><i class="bi bi-arrow-right-circle"></i> Próximos reuniões</button></a>
+    </div>
+
+    <div class="info" id="pesquisas">
+        <h3>Pesquisas</h3>
+        <b>Pesquisas abertas:</b>
+        <div class="card-container">
+            @if(count($pesquisas) > 0)
+                @foreach($pesquisas as $item)
+                    <div class="card">
+                        <div class="card-edit" onclick="abrirJanelaModal('{{ route('pesquisas.form_editar', $item->id) }}')"><i class="bi bi-pencil-square"></i></div>
+                        <div class="card-title">{{ $item->titulo }}</div>
+                        <div class="card-date">
+                            <i class="bi bi-calendar-event"></i>
+                            @if($item->data_fim)
+                                <span>Até {{ $item->data_fim?->format('d/m/Y') }}</span>
+                            @endif
+                        </div>
+                        <div class="card-meta"><b>Editor: </b> {{ optional($item->criador)->nome ?? 'Responsável não informado' }}</div>
+                    </div>
+                @endforeach
+            @else
+                <div class="card">
+                    <p><i class="bi bi-exclamation-triangle"></i> Nenhuma pesquisa aberta no momento.</p>
+                </div>
+            @endif
+        </div>
+        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{ route('pesquisas.form_criar') }}')"><i class="bi bi-plus-circle"></i> Nova pesquisa</button>
+        <a href="{{ route('pesquisas.painel') }}"><button class="btn mg-top-10"><i class="bi bi-card-list"></i> Painel de pesquisas</button></a>
     </div>
 
     <div class="info" id="visitantes">
@@ -303,7 +331,7 @@
         </div>
 
         @if(module_enabled('celulas') && Route::has('celulas.form_criar'))
-            <button class="btn mg-top-10" onclick="abrirJanelaModal('{{ route('celulas.form_criar') }}')"><i class="bi bi-plus-circle"></i> Novo GCA</button>
+            <button class="btn mg-top-10" onclick="abrirJanelaModal('{{ route('celulas.form_criar') }}')"><i class="bi bi-plus-circle"></i> Nova Célula</button>
         @endif
         <button id="celulas" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir relatório</button>
     </div>
