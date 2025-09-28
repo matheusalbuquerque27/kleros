@@ -1,6 +1,12 @@
 <h1>Criar Departamento</h1>
 <form action="{{ route('departamentos.store') }}" method="post">
     @csrf
+    @php
+        $setores = isset($setores) ? $setores : collect();
+        $agrupamentoConfig = optional(optional($congregacao)->config)->agrupamentos;
+        $mostrarSelecaoSetor = $agrupamentoConfig === 'setor';
+        $selectedSetor = old('agrupamento_pai_id');
+    @endphp
 
     <div class="form-control">
         <div class="form-item">
@@ -12,6 +18,21 @@
             <label for="descricao">Descrição: </label>
             <textarea name="descricao" id="descricao" cols="30" rows="4" placeholder="Descreva a função do departamento">{{ old('descricao') }}</textarea>
         </div>
+
+        @if($mostrarSelecaoSetor)
+        <div class="form-item">
+            <label for="agrupamento_pai_id">Setor: </label>
+            <select name="agrupamento_pai_id" id="agrupamento_pai_id" @if($setores->isEmpty()) disabled @endif>
+                <option value="">{{ $setores->isEmpty() ? 'Nenhum setor cadastrado' : 'Selecione um setor' }}</option>
+                @foreach($setores as $setor)
+                    <option value="{{ $setor->id }}" @selected($selectedSetor == $setor->id)>{{ $setor->nome }}</option>
+                @endforeach
+            </select>
+            @if($setores->isEmpty())
+                <small class="hint">Cadastre um setor para vinculá-lo ao departamento.</small>
+            @endif
+        </div>
+        @endif
 
         <div class="form-item">
             <label for="lider_id">Líder Responsável: </label>

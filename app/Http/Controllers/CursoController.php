@@ -66,4 +66,17 @@ class CursoController extends Controller
         return redirect('/cadastros#cursos')->with('success', 'Curso cadastrado com sucesso!');
 
     }
+
+    public function destroy(Request $request, $id)
+    {
+        $curso = Curso::findOrFail($id);
+
+        $curso->delete();
+
+        if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Curso excluído com sucesso!']);
+        }
+
+        return redirect('/cadastros#cursos')->with('msg', 'Curso excluído com sucesso!');
+    }
 }

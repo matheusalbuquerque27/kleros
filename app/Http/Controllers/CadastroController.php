@@ -13,6 +13,8 @@ use App\Models\Visitante;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Curso;
 use App\Models\Pesquisa;
+use App\Models\Setor;
+use App\Models\TipoEscala;
 
 class CadastroController extends Controller
 {
@@ -65,6 +67,10 @@ class CadastroController extends Controller
         $departamentos = Agrupamento::where('congregacao_id', $congregacaoId)
             ->where('tipo', 'departamento')
             ->get();
+        $setores = Setor::where('congregacao_id', $congregacaoId)
+            ->orderBy('nome')
+            ->with('departamentos')
+            ->get();
         $celulas = Celula::where('congregacao_id', $congregacaoId)->get();
 
         $pesquisas = Pesquisa::with('criador')
@@ -77,6 +83,8 @@ class CadastroController extends Controller
             ->orderByDesc('created_at')
             ->limit(3)
             ->get();
+
+        $tiposEscala = TipoEscala::orderBy('nome')->get();
 
         $noticias = Cache::get('noticias_feed') ?? [];
         $destaques = array_slice($noticias['guiame'] ?? [], 0, 9);
@@ -91,9 +99,11 @@ class CadastroController extends Controller
             'cursos' => $cursos,
             'congregacao' => $congregacao,
             'departamentos' => $departamentos,
+            'setores' => $setores,
             'celulas' => $celulas,
             'pesquisas' => $pesquisas,
             'destaques' => $destaques,
+            'tiposEscala' => $tiposEscala,
         ]);
     }
 }

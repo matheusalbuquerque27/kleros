@@ -10,4 +10,9 @@ class Recado extends Model
     {
         return $this->belongsTo(Culto::class);
     }
+
+    public function membro()
+    {
+        return $this->belongsTo(Membro::class);
+    }
 }

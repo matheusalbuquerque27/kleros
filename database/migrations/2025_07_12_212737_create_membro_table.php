@@ -38,7 +38,7 @@ return new class extends Migration
             $table->string('nome');
             $table->string('rg')->nullable();
             $table->string('cpf')->nullable();
-            $table->date('data_nascimento');
+            $table->date('data_nascimento')->nullable();
             $table->enum('sexo', ['Masculino', 'Feminino'])->nullable();
             $table->string('telefone');
             $table->string('email')->nullable();

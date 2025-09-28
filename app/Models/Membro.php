@@ -16,6 +16,16 @@ class Membro extends Model
         'ativo' => 'boolean',
     ];
 
+    protected static function booted() {
+        static::creating(function ($membro) {
+            $membro->congregacao_id = app('congregacao')->id;
+        });
+
+        static::updating(function ($membro) {
+            $membro->congregacao_id = app('congregacao')->id;
+        });
+    }
+
     public function estadoCiv() {
         return $this->belongsTo(EstadoCiv::class);
     }

@@ -62,12 +62,16 @@ class MinisterioController extends Controller
         return view('ministerios/lista', ['membros' => $membros, 'ministerio' => $ministerio, 'naoInclusos' => $naoInclusos]);
     }
 
-    public function destroy($id){
-        $ministerio = Ministerio::find($id);
+    public function destroy(Request $request, $id){
+        $ministerio = Ministerio::findOrFail($id);
 
-        $ministerio->delete();        
+        $ministerio->delete();
 
-        return response()->json(['success' => true, 'message' => 'Ministério excluído com sucesso!']);
+        if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Ministério excluído com sucesso!']);
+        }
+
+        return redirect('/cadastros#ministerios')->with('msg', 'Ministério excluído com sucesso!');
     }
 
     public function print($data) {

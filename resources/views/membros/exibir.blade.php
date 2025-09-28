@@ -129,7 +129,7 @@
                 </div>
             </div>{{-- form-control --}}
             <div class="form-options nao-imprimir limit-80">
-                <a onclick="abrirJanelaModal('{{route('membros.editar', $membro->id)}}')"><button class="btn" type="button"><i class="bi bi-pencil-square"></i> Editar</button></a>   
+                <a onclick="abrirJanelaModal('{{route('membros.form_editar', $membro->id)}}')"><button class="btn" type="button"><i class="bi bi-pencil-square"></i> Editar</button></a>   
                 <button class="btn imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
                 <form action="{{route('membros.destroy', $membro->id)}}" method="post">
                     @csrf

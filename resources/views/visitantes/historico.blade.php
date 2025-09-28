@@ -28,10 +28,10 @@
     <div class="list">
         <div class="list-title">
             <div class="item-1">
-                <b>Data da visita</b>
+                <b>Nome</b>
             </div>
             <div class="item-1">
-                <b>Nome</b>
+                <b>Data da visita</b>
             </div>
             <div class="item-1">
                 <b>Telefone</b>
@@ -45,10 +45,10 @@
             @foreach ($visitantes as $item)
             <a href="{{route('visitantes.exibir', $item->id)}}"><div class="list-item">
                 <div class="item item-1">
-                    <p>{{$item->data_visita}}</p>
+                    <p><i class="bi bi-person-raised-hand"></i> {{$item->nome}}</p>
                 </div>
                 <div class="item item-1">
-                    <p>{{$item->nome}}</p>
+                    <p>{{$item->data_visita}}</p>
                 </div>
                 <div class="item item-1">
                     <p>{{ $item->telefone }}

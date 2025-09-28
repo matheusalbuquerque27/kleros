@@ -15,7 +15,8 @@
         "laravel/tinker": "^2.9",
         "php-feed-io/feed-io": "^6.0",
         "php-http/guzzle7-adapter": "^1.1",
-        "psr/log": "^3.0"
+        "psr/log": "^3.0",
+        "spatie/laravel-permission": "^6.21"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

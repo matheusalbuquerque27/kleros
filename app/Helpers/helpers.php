@@ -98,4 +98,12 @@ if (! function_exists('module_enabled')) {
 }
 
 
+if (! function_exists('member_activity_log')) {
+    function member_activity_log(string $action, array $context = []): \App\Models\MemberActivityLog
+    {
+        return app(\App\Services\MemberActivityLogger::class)->log($action, $context);
+    }
+}
+
+
 ?>

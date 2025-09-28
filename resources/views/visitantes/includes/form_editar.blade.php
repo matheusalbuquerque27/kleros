@@ -39,14 +39,21 @@
             </div>
             <div class="form-item">
                 <label for="telefone">Observações: </label>
-                <textarea name="observacoes" id="" cols="30" rows="10">
+                <textarea name="observacoes" id="" cols="30" rows="5">
                     {{ old('telefone', $visitante->observacoes)}}
                 </textarea>
             </div>
         </div>
         <div class="form-options">
-            <button class="btn" type="submit"><i class="bi bi-save"></i> Atualizar Dados</button>
+            <button class="btn" type="submit"><i class="bi bi-arrow-clockwise"></i> Atualizar</button>
+            <button class="btn" form="form-membrar"><i class="bi bi-person-add"></i> Tornar Membro</button>
             <button type="button" class="btn" onclick="window.history.back()"><i class="bi bi-x-circle"></i> Cancelar</button>
         </div>
     </div><!--form-control-->
+</form>
+
+<form id="form-membrar" action="{{ route('visitantes.membrar')}}" method="POST">
+    @csrf
+    <input type="hidden" name="nome" value="{{ old('nome', $visitante->nome) }}" required>
+    <input type="hidden" name="telefone" value="{{ old('telefone', $visitante->telefone) }}" required>
 </form>

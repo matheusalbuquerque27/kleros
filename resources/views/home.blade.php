@@ -73,7 +73,7 @@
                 <div class="card-container">
                     @if($recados)
                         @foreach ($recados as $item)
-                        <div class="card info_item center">
+                        <div class="card card-recado info_item center" style="max-width: 50vw;">
                             @if($recadoDeleteRoute)
                             <form action="{{ route('recados.excluir', $item->id) }}" method="POST">
                                 @csrf
@@ -82,6 +82,9 @@
                             </form>
                             @endif
                             <p><i class="bi bi-exclamation-triangle"></i> {{$item->mensagem}}</p>  
+                            @if($item->membro)
+                                <small class="hint right">Enviado por {{ $item->membro->nome }}</small>
+                            @endif
                         </div>
                         @endforeach
                     @else

@@ -42,6 +42,39 @@
         <a href="{{route('cultos.complete', 'adicionar')}}"><button class="btn"><i class="bi bi-plus-circle-fill"></i> Registrar</button></a>
         <a href="/cultos/historico"><button class="btn"><i class="bi bi-card-list"></i> Histórico</button></a>
     </div>
+    
+    <div class="info" id="escalas">
+        <h3>Escalas</h3>
+        <b>Tipos de escala cadastrados:</b>
+        <div class="card-container">
+            @if($tiposEscala->count())
+                @foreach($tiposEscala as $tipo)
+                    <div class="list-item">
+                        <div class="item-2">
+                            <div class="card-title"><i class="bi bi-diagram-3"></i> {{ $tipo->nome }}</div>
+                            <div class="card-description hint">Status: {{ $tipo->ativo ? 'Ativo' : 'Inativo' }}</div>
+                        </div>
+                        <div class="item-15">
+                            <button type="button" class="btn-options" onclick="window.location.href='{{ route('escalas.painel', ['tipo' => $tipo->id]) }}'"><i class="bi bi-list-task"></i> Ver escalas</button>
+                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{ route('escalas.tipos.form_editar', $tipo->id) }}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <form id="delete-tipo-{{ $tipo->id }}" action="{{ route('escalas.tipos.destroy', $tipo->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este tipo de escala?')"><i class="bi bi-trash"></i> Excluir</button>
+                            </form>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="card">
+                    <p><i class="bi bi-exclamation-triangle"></i> Nenhum tipo de escala foi cadastrado ainda.</p>
+                </div>
+            @endif
+        </div>
+        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{ route('escalas.tipos.form_criar') }}')"><i class="bi bi-plus-circle"></i> Novo tipo de escala</button>
+        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{ route('escalas.form_criar') }}')"><i class="bi bi-plus-circle-fill"></i> Gerar escala</button>
+        <button id="escalas" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir</button>
+    </div>
 
     <div class="info" id="eventos">
         <h3>Eventos</h3>
@@ -164,12 +197,12 @@
                             <div class="card-description"><b>Liderança: </b>{{optional($item->lider)->nome}} @if($item->colider) | @endif {{optional($item->colider)->nome}}</div>
                         </div>
                         <div class="item-15">
-                            <form method="POST">
-                                <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
-                                <button type="button" class="btn-options" onclick="abrirJanelaModal('{{route('grupos.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
+                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{route('grupos.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <form id="delete-grupo-{{$item->id}}" action="{{ route('grupos.destroy', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="delete-grupo btn-options" data-action="/grupos/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
+                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este grupo?')"><i class="bi bi-trash"></i> Excluir</button>
                             </form>
                         </div>
                     </div>
@@ -198,12 +231,12 @@
                             <div class="card-description"><b>Liderança: </b>{{optional($item->lider)->nome}} @if($item->colider) | @endif {{optional($item->colider)->nome}}</div>
                         </div>
                         <div class="item-15">
-                            <form method="POST">
-                                <a href="/departamentos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Equipe</button></a>
-                                <button type="button" class="btn-options" onclick="abrirJanelaModal('{{route('departamentos.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <a href="/departamentos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Equipe</button></a>
+                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{route('departamentos.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <form id="delete-departamento-{{$item->id}}" action="{{ route('departamentos.destroy', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="delete-departamento btn-options" data-action="/departamentos/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
+                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este departamento?')"><i class="bi bi-trash"></i> Excluir</button>
                             </form>
                         </div>
                     </div>
@@ -221,7 +254,43 @@
     @if($congregacao->config->agrupamentos == 'setor')
     <div class="info" id="setores">
         <h3>Setores</h3>
-        <a href="/setores/adicionar"><button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> Novo Setor</button></a>
+        <div class="card-container">
+            @if(($setores ?? collect())->count() > 0)
+                @foreach ($setores as $setor)
+                    <div class="list-item">
+                        <div class="item-15">
+                            <div class="card-title">{{ $setor->nome }}</div>
+                            @if($setor->lider)
+                                <div class="card-description"><b>Liderança: </b>{{ $setor->lider->nome }}@if($setor->colider) {{ ' / ' . $setor->colider->nome }}@endif</div>
+                            @endif
+                        </div>
+                        <div class="item-2">
+                            <div class="card-description">{{ $setor->descricao ?: 'Sem descrição cadastrada.' }}</div>
+                            @php
+                                $relacionados = $setor->departamentos->pluck('nome')
+                                    ->merge($setor->grupos->pluck('nome'))
+                                    ->filter()
+                                    ->unique();
+                            @endphp
+                            <small class="hint"><b>Relacionados:</b> {{ $relacionados->implode(', ') ?: 'Nenhum agrupamento vinculado.' }}</small>
+                        </div>
+                        <div class="item-15">
+                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{ route('setores.form_editar', $setor->id) }}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <form id="delete-setor-{{ $setor->id }}" action="{{ route('setores.destroy', $setor->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este setor?')"><i class="bi bi-trash"></i> Excluir</button>
+                            </form>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="card">
+                    <p><i class="bi bi-exclamation-triangle"></i> Nenhum setor foi cadastrado até o momento.</p>
+                </div>
+            @endif
+        </div>
+        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{ route('setores.form_criar') }}')"><i class="bi bi-plus-circle"></i> Novo Setor</button>
         <button class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
     @endif
@@ -239,14 +308,13 @@
                             <div class="card-description">{{$item->descricao}}</div>
                         </div>
                         <div class="item-15">
-                            <form action="POST">
+                            <a href="/ministerios/lista/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
+                            <button type="button" onclick="abrirJanelaModal('{{route('ministerios.form_editar', $item->id)}}')" class="btn-options"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <form id="delete-ministerio-{{$item->id}}" action="{{ route('ministerios.destroy', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <a href="/ministerios/lista/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
-                                <button type="button" onclick="abrirJanelaModal('{{route('ministerios.form_editar', $item->id)}}')" class="btn-options"><i class="bi bi-pencil-square"></i> Editar</button>
-                                <button class="delete-ministerio btn-options" data-action="/ministerios/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
+                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este ministério?')"><i class="bi bi-trash"></i> Excluir</button>
                             </form>
-                            
                         </div>
                     </div>
                 @endforeach
@@ -273,11 +341,11 @@
                             <div class="card-description">{{$item->descricao}}</div>
                         </div>
                         <div class="item-15">
-                            <form method="POST">
-                                <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Ver</button></a>
+                            <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Ver</button></a>
+                            <form id="delete-curso-{{$item->id}}" action="{{ route('cursos.destroy', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="delete-grupo btn-options" data-action="/grupos/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
+                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este curso?')"><i class="bi bi-trash"></i> Excluir</button>
                             </form>
                         </div>
                     </div>
@@ -314,11 +382,11 @@
                             </div>
                         </div>
                         <div class="item-15">
-                            <form method="POST">
-                                <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Ver</button></a>
+                            <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Ver</button></a>
+                            <form id="delete-celula-{{$item->id}}" action="{{ route('grupos.destroy', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="delete-grupo btn-options" data-action="/grupos/" id="{{$item->id}}"><i class="bi bi-trash"></i> Excluir</button>
+                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir esta célula?')"><i class="bi bi-trash"></i> Excluir</button>
                             </form>
                         </div>
                     </div>
@@ -347,109 +415,11 @@
     <script>
 
         $(document).ready(function(){
-            
-            function popup(msg){
-
-                $('#msg_content').text(msg)
-
-            }
-
-            async function popup_response(){
-
-                return new Promise((resolve) => {
-                    $('#confirmaBtn').click(function() {
-                        resolve(true)
-                    })
-                    $('#cancelaBtn').click(function() {
-                        resolve(false)
-                    })
-                })
-
-            }
-    
-            $('.delete-grupo').click(async function(event) {
-                const elemento = $(this);
-                const token = $('meta[name="csrf-token"]').attr('content');
-                const url = elemento.attr('data-action') + elemento.attr('id')
-                event.preventDefault()
-
-                popup('Você realmente deseja excluir este grupo?')
-                $('.popup').addClass('mostrar');
-                const response = await popup_response();
-                
-                if(response){
-
-                    $.ajax({
-                        url: url, // Rota de destino
-                        type: 'DELETE',
-                        data: {
-                            _token: $('meta[name="csrf-token"]').attr('content'),
-                            id: elemento.attr('id')
-                        },
-                        success: function(response) {
-                                if(response.success){
-                                    setTimeout(function() {
-                                    window.location.reload();
-                                }, 200);
-                            }
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.error('Erro na requisição:', textStatus, errorThrown);
-                            alert('Ocorreu um erro: ' + textStatus + ' - ' + errorThrown);
-                        }
-                    })
-
-                } else {
-                    $('.popup').removeClass('mostrar');
-                }
-
-            });
-
-            $(".delete-ministerio").click(async function(event){
-                event.preventDefault();
-                const elemento = $(this);       
-                const token = $('meta[name="csrf-token"]').attr('content');
-                const url = elemento.attr('data-action') + elemento.attr('id');
-
-                popup('Você realmente deseja excluir este ministério?')
-                $('.popup').addClass('mostrar');
-                const response = await popup_response();
-
-                if(response){
-
-                    $.ajax({
-                        url: url, // Rota de destino
-                        type: 'DELETE',
-                        data: {
-                            _token: $('meta[name="csrf-token"]').attr('content'),
-                            id: elemento.attr('id')
-                        },
-                        success: function(response) {
-                                if(response.success){
-                                    setTimeout(function() {
-                                    window.location.reload();
-                                }, 200);
-                            }
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.error('Erro na requisição:', textStatus, errorThrown);
-                            alert('Ocorreu um erro: ' + textStatus + ' - ' + errorThrown);
-                        }
-                    })
-
-                    } else {
-                    $('.popup').removeClass('mostrar');
-                }
-
-            })
-
-            
             $('.imprimir').click(function() {
                 const printData = $(this).attr('data-action');
-                const reference = $(this).attr('id')
+                const reference = $(this).attr('id');
                 window.open(`/${reference}/imprimir/${printData}`, '_blank');
             });
-
         });
         
     </script>

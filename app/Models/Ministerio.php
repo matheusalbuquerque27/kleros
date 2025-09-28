@@ -14,4 +14,8 @@ class Ministerio extends Model
     {
         return $this->belongsTo(Denominacao::class);
     }
+    public static function daDenominacao()
+    {        
+        return static::where('denominacao_id', app('congregacao')->denominacao->id);
+    }
 }

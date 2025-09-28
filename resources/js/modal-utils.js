@@ -101,34 +101,230 @@ export function initModalScripts(container) {
 
     // --- inicialização do Select2 ---
     if (typeof $ !== 'undefined' && $.fn.select2) {
-        const $grupos = $(container).find('#grupos');
-        const $membros = $(container).find('#membros');
+        const $container = $(container);
+        const $selects = $container.find('select.select2');
 
-        if ($membros.length) {
-            $membros.select2({
-                placeholder: "Selecione os membros",
-                allowClear: true,
+        $selects.each(function () {
+            const $select = $(this);
+
+            if ($select.data('select2')) {
+                return;
+            }
+
+            const placeholder = ($select.data('placeholder') || '').toString().trim();
+            const searchPlaceholder = ($select.data('search-placeholder') || '').toString().trim();
+
+            $select.select2({
+                placeholder: placeholder || undefined,
+                allowClear: Boolean(placeholder),
                 width: '100%',
-                dropdownParent: $(container)
+                dropdownParent: $container
             });
 
-            // força o placeholder no input interno
-            $membros.data('select2').$selection.find('input.select2-search__field')
-                .attr('placeholder', 'Selecione os membros');
+            if (searchPlaceholder && $select.data('select2')) {
+                $select.data('select2').$selection.find('input.select2-search__field')
+                    .attr('placeholder', searchPlaceholder);
+            }
+        });
+
+        // suporte a formulários legados (ex: avisos) que não usam a classe select2
+        const $legacyGrupos = $container.find('#grupos').filter(function () {
+            return !$(this).data('select2');
+        });
+        const $legacyMembros = $container.find('#membros').filter(function () {
+            return !$(this).data('select2');
+        });
+
+        if ($legacyGrupos.length) {
+            $legacyGrupos.select2({
+                placeholder: 'Selecione os grupos',
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $container
+            });
+
+            const instance = $legacyGrupos.data('select2');
+            if (instance) {
+                instance.$selection.find('input.select2-search__field')
+                    .attr('placeholder', 'Selecione os grupos');
+            }
         }
 
-        if ($grupos.length) {
-            $grupos.select2({
-                placeholder: "Selecione os grupos",
+        if ($legacyMembros.length) {
+            $legacyMembros.select2({
+                placeholder: 'Selecione os membros',
                 allowClear: true,
                 width: '100%',
-                dropdownParent: $(container)
+                dropdownParent: $container
             });
 
-            $grupos.data('select2').$selection.find('input.select2-search__field')
-                .attr('placeholder', 'Selecione os grupos');
+            const instance = $legacyMembros.data('select2');
+            if (instance) {
+                instance.$selection.find('input.select2-search__field')
+                    .attr('placeholder', 'Selecione os membros');
+            }
         }
     }
+
+    // --- formulários de escalas ---
+    container.querySelectorAll('form[data-escala-form]').forEach(form => {
+        if (form.dataset.escalaInitialized) {
+            return;
+        }
+        form.dataset.escalaInitialized = 'true';
+
+        const itemsContainer = form.querySelector('[data-escala-items]');
+        const addButton = form.querySelector('[data-escala-add]');
+        const template = form.querySelector('#escala-item-template');
+
+        if (!itemsContainer || !addButton || !template) {
+            return;
+        }
+
+        const updateSummary = (item) => {
+            const funcSummary = item.querySelector('[data-escala-funcao]');
+            const responsavelSummary = item.querySelector('[data-escala-responsavel]');
+
+            const funcInput = item.querySelector('input[data-escala-field="funcao"]');
+            if (funcSummary && funcInput) {
+                const value = funcInput.value.trim();
+                funcSummary.textContent = value || 'Definir função';
+            }
+
+            if (responsavelSummary) {
+                const membroSelect = item.querySelector('select[data-escala-field="membro_id"]');
+                const externoInput = item.querySelector('input[data-escala-field="responsavel_externo"]');
+
+                let responsavel = '';
+                if (membroSelect && membroSelect.value) {
+                    const option = membroSelect.options[membroSelect.selectedIndex];
+                    responsavel = option ? option.text.trim() : '';
+                } else if (externoInput && externoInput.value.trim()) {
+                    responsavel = externoInput.value.trim();
+                }
+
+                responsavelSummary.textContent = responsavel || 'Responsável não definido';
+            }
+        };
+
+        const updateTitles = () => {
+            const items = itemsContainer.querySelectorAll('.escala-item');
+            items.forEach((item, index) => {
+                const orderLabel = item.querySelector('[data-escala-order]');
+                if (orderLabel) {
+                    orderLabel.textContent = `Item ${index + 1}`;
+                }
+                updateSummary(item);
+            });
+        };
+
+        const getNextIndex = () => {
+            const items = Array.from(itemsContainer.querySelectorAll('.escala-item'));
+            if (!items.length) {
+                return 0;
+            }
+
+            const maxIndex = items.reduce((acc, item) => {
+                const value = Number(item.dataset.index);
+                return Number.isFinite(value) ? Math.max(acc, value) : acc;
+            }, -1);
+
+            return maxIndex + 1;
+        };
+
+        const applySelect2 = (scope) => {
+            if (typeof $ === 'undefined' || !$.fn.select2) {
+                return;
+            }
+
+            $(scope).find('select.select2').each(function () {
+                const $select = $(this);
+
+                if ($select.data('select2')) {
+                    return;
+                }
+
+                const placeholder = ($select.data('placeholder') || '').toString().trim();
+                const searchPlaceholder = ($select.data('search-placeholder') || '').toString().trim();
+
+                $select.select2({
+                    placeholder: placeholder || undefined,
+                    allowClear: Boolean(placeholder),
+                    width: '100%',
+                    dropdownParent: $(form)
+                });
+
+                if (searchPlaceholder && $select.data('select2')) {
+                    $select.data('select2').$selection.find('input.select2-search__field')
+                        .attr('placeholder', searchPlaceholder);
+                }
+            });
+        };
+
+        const attachSummaryHandler = (root) => {
+            root.querySelectorAll('.escala-item').forEach(item => {
+                const funcInput = item.querySelector('input[data-escala-field="funcao"]');
+                if (funcInput && !funcInput.dataset.summaryHandlerAttached) {
+                    const handler = () => updateSummary(item);
+                    funcInput.dataset.summaryHandlerAttached = 'true';
+                    funcInput.addEventListener('input', handler);
+                    funcInput.addEventListener('change', handler);
+                }
+
+                const memberSelect = item.querySelector('select[data-escala-field="membro_id"]');
+                if (memberSelect && !memberSelect.dataset.summaryHandlerAttached) {
+                    const handler = () => updateSummary(item);
+                    memberSelect.dataset.summaryHandlerAttached = 'true';
+                    memberSelect.addEventListener('change', handler);
+                }
+
+                const externoInput = item.querySelector('input[data-escala-field="responsavel_externo"]');
+                if (externoInput && !externoInput.dataset.summaryHandlerAttached) {
+                    const handler = () => updateSummary(item);
+                    externoInput.dataset.summaryHandlerAttached = 'true';
+                    externoInput.addEventListener('input', handler);
+                    externoInput.addEventListener('change', handler);
+                }
+
+                updateSummary(item);
+            });
+        };
+
+        const attachRemoveHandler = (root) => {
+            root.querySelectorAll('.btn-remover-item').forEach(button => {
+                if (button.dataset.removeHandlerAttached) {
+                    return;
+                }
+                button.dataset.removeHandlerAttached = 'true';
+                button.addEventListener('click', () => {
+                    const item = button.closest('.escala-item');
+                    if (item) {
+                        item.remove();
+                        updateTitles();
+                    }
+                });
+            });
+        };
+
+        applySelect2(itemsContainer);
+        attachRemoveHandler(itemsContainer);
+        attachSummaryHandler(itemsContainer);
+        updateTitles();
+
+        addButton.addEventListener('click', () => {
+            const nextIndex = getNextIndex();
+            const html = template.innerHTML.replace(/__INDEX__/g, nextIndex);
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = html.trim();
+            const element = wrapper.firstElementChild;
+            itemsContainer.appendChild(element);
+
+            applySelect2(element);
+            attachRemoveHandler(element);
+            attachSummaryHandler(element);
+            updateTitles();
+        });
+    });
 
     // --- gerenciador de participantes das células---
     const participanteTab = container.querySelector('#participantes[data-participantes]');

@@ -18,13 +18,21 @@ class ReuniaoController extends Controller
 
     public function create(){
 
-        $grupos = Agrupamento::where('tipo', 'grupo')->get();
-        $departamentos = Agrupamento::where('tipo', 'departamento')->get();
-        $setores = Agrupamento::where('tipo', 'setor')->get();
         $congregacao = app('congregacao');
-        $membros = Membro::all();
+        $congregacaoId = $congregacao->id;
 
-        return view('reunioes.cadastro', ['grupos' => $grupos, 'departamentos' => $departamentos, 'setores' => $setores, 'membros' => $membros, 'congregacao' => $congregacao]);
+        $agrupamentos = Agrupamento::where('congregacao_id', $congregacaoId)
+            ->orderBy('nome')
+            ->get()
+            ->groupBy('tipo');
+
+        $membros = Membro::DaCongregacao()->orderBy('nome')->get();
+
+        return view('reunioes.cadastro', [
+            'agrupamentos' => $agrupamentos,
+            'membros' => $membros,
+            'congregacao' => $congregacao,
+        ]);
     }
 
     public function store(Request $request){
@@ -32,62 +40,138 @@ class ReuniaoController extends Controller
         $reuniao = new Reuniao;
 
         $reuniao->congregacao_id = app('congregacao')->id;
-        $reuniao->tipo = $request->tipo_reuniao;
-        $reuniao->assunto = $request->assunto ?? 'Reunião';
-        $reuniao->data_inicio = $request->data_inicio . ' ' . $request->horario_inicio;
-        $reuniao->data_fim = $request->data_fim ?? null;
-        $reuniao->local = $request->local;
-        $reuniao->descricao = $request->descricao;
-        $reuniao->privado = $request->tipo_acesso;
-    
+        $reuniao->assunto = $request->input('assunto', 'Reunião');
+        $reuniao->descricao = $request->input('descricao');
+        $reuniao->tipo = $request->input('tipo', 'geral');
+        $reuniao->privado = (bool) $request->input('privado', false);
+        $reuniao->online = (bool) $request->input('online', false);
+        $reuniao->local = $request->input('local');
+        $reuniao->link_online = $request->input('link_online');
 
-        if($request->membros){
-            $reuniao->membros()->sync($request->membros);
+        $dataInicio = $request->input('data_inicio');
+        $horaInicio = $request->input('horario_inicio');
+        if ($dataInicio) {
+            $reuniao->data_inicio = $dataInicio . ' ' . ($horaInicio ?? '00:00:00');
+        } elseif ($horaInicio) {
+            $reuniao->data_inicio = now()->format('Y-m-d') . ' ' . $horaInicio;
+        } else {
+            $reuniao->data_inicio = now();
+        }
+
+        if ($request->filled('data_fim')) {
+            $reuniao->data_fim = $request->input('data_fim');
         }
 
         $reuniao->save();
+
+        $agrupamentos = collect((array) $request->input('agrupamentos'))
+            ->filter()
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        $membros = collect((array) $request->input('membros'))
+            ->filter()
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        $reuniao->agrupamentos()->sync($agrupamentos);
+        $reuniao->membros()->sync($membros);
 
         return redirect('/cadastros#reunioes')->with('msg', 'Reunião agendada com sucesso.');
     }
 
 
-    public function update(Request $request, Reuniao $reuniao) // se usar Route Model Binding
+    public function update(Request $request, Reuniao $reuniao)
     {
-        // Atualiza campos
-        $reuniao->tipo        = $request->tipo;
-        $reuniao->assunto     = $request->assunto;
-        $reuniao->data_inicio = $request->data_inicio . ' ' . $request->horario_inicio;
-        $reuniao->data_fim    = $request->data_fim ?? null;
-        $reuniao->local       = $request->local;
-        $reuniao->descricao   = $request->descricao;
-        $reuniao->privado     = $request->privado;
+        $dataInicio = $request->input('data_inicio');
+        $horaInicio = $request->input('horario_inicio');
+
+        if ($dataInicio) {
+            $reuniao->data_inicio = $dataInicio . ' ' . ($horaInicio ?? $reuniao->data_inicio?->format('H:i'));
+        } elseif ($horaInicio && $reuniao->data_inicio) {
+            $reuniao->data_inicio = $reuniao->data_inicio->format('Y-m-d') . ' ' . $horaInicio;
+        }
+
+        if ($request->filled('data_fim')) {
+            $reuniao->data_fim = $request->input('data_fim');
+        } elseif ($request->has('data_fim')) {
+            $reuniao->data_fim = null;
+        }
+
+        $reuniao->assunto = $request->input('assunto', $reuniao->assunto);
+        $reuniao->tipo = $request->input('tipo', $reuniao->tipo);
+        $reuniao->descricao = $request->input('descricao', $reuniao->descricao);
+        $reuniao->privado = (bool) $request->input('privado', $reuniao->privado);
+        $reuniao->online = (bool) $request->input('online', $reuniao->online);
+        $reuniao->local = $request->input('local', $reuniao->local);
+        if ($request->has('link_online')) {
+            $reuniao->link_online = $request->input('link_online');
+        }
 
         $reuniao->save();
 
-        // Se o formulário enviar o campo membros, sincroniza; se não enviar, mantém como está
-        if ($request->has('membros')) {
-            $reuniao->membros()->sync($validated['membros'] ?? []);
-        }
+        $agrupamentos = collect((array) $request->input('agrupamentos'))
+            ->filter()
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        $membros = collect((array) $request->input('membros'))
+            ->filter()
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        $reuniao->agrupamentos()->sync($agrupamentos);
+        $reuniao->membros()->sync($membros);
 
         return redirect('/cadastros#reunioes')->with('msg', 'Reunião atualizada com sucesso.');
     }
 
     public function form_criar(){
-        $grupos = Agrupamento::where('tipo', 'grupo')->get();
-        $departamentos = Agrupamento::where('tipo', 'departamento')->get();
-        $setores = Agrupamento::where('tipo', 'setor')->get();
-        $membros = Membro::all();
+        $congregacaoId = app('congregacao')->id;
 
-        return view('reunioes.includes.form_criar', ['grupos' => $grupos, 'departamentos' => $departamentos, 'setores' => $setores, 'membros' => $membros]);
+        $agrupamentos = Agrupamento::where('congregacao_id', $congregacaoId)
+            ->orderBy('nome')
+            ->get()
+            ->groupBy('tipo');
+
+        $membros = Membro::DaCongregacao()->orderBy('nome')->get();
+
+        return view('reunioes.includes.form_criar', [
+            'agrupamentos' => $agrupamentos,
+            'membros' => $membros,
+        ]);
     }
 
     public function form_editar($id){
-        $grupos = Agrupamento::where('tipo', 'grupo')->get();
-        $departamentos = Agrupamento::where('tipo', 'departamento')->get();
-        $setores = Agrupamento::where('tipo', 'setor')->get();
-        $membros = Membro::all();
-        $reuniao = Reuniao::findOrFail($id);
+        $congregacaoId = app('congregacao')->id;
 
-        return view('reunioes.includes.form_editar', ['reuniao' => $reuniao, 'grupos' => $grupos, 'departamentos' => $departamentos, 'setores' => $setores, 'membros' => $membros]);
+        $agrupamentos = Agrupamento::where('congregacao_id', $congregacaoId)
+            ->orderBy('nome')
+            ->get()
+            ->groupBy('tipo');
+
+        $membros = Membro::DaCongregacao()->orderBy('nome')->get();
+        $reuniao = Reuniao::with(['membros', 'agrupamentos'])->findOrFail($id);
+
+        return view('reunioes.includes.form_editar', [
+            'reuniao' => $reuniao,
+            'agrupamentos' => $agrupamentos,
+            'membros' => $membros,
+        ]);
+    }
+
+    public function destroy(Reuniao $reuniao)
+    {
+        $reuniao->delete();
+
+        return redirect('/cadastros#reunioes')->with('msg', 'Reunião excluída com sucesso.');
     }
 }

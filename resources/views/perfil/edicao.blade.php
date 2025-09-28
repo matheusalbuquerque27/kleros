@@ -7,18 +7,17 @@
 <div class="container">
     <h1>Editar Perfil</h1>
     <div class="info">
-        <div class="tabs">
-            <!-- Menu de abas -->
-            <ul class="tab-menu">
-                <li class="active" data-tab="pessoais"><i class="bi bi-person"></i> Dados Pessoais</li>
-                <li data-tab="bio"><i class="bi bi-journal-text"></i> Biografia</li>
-                <li data-tab="tab-foto"><i class="bi bi-image"></i> Foto</li>
-                <li data-tab="seguranca"><i class="bi bi-shield-lock"></i> Segurança</li>
-            </ul>
-
-            <form action="{{route('perfil.update', $membro->id)}}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
+        <form action="{{route('perfil.update', $membro->id)}}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+            <div class="tabs">
+                <!-- Menu de abas -->
+                <ul class="tab-menu">
+                    <li class="active" data-tab="pessoais"><i class="bi bi-person"></i> Dados Pessoais</li>
+                    <li data-tab="bio"><i class="bi bi-journal-text"></i> Biografia</li>
+                    <li data-tab="tab-foto"><i class="bi bi-image"></i> Foto</li>
+                    <li data-tab="seguranca"><i class="bi bi-shield-lock"></i> Segurança</li>
+                </ul>
 
                 <!-- Conteúdo das abas -->
                 <div class="tab-content card">
@@ -92,19 +91,16 @@
                 <div class="form-options">
                     <button type="submit" class="btn"><i class="bi bi-arrow-clockwise"></i> Atualizar</button>
                 </div>
-            </form>
-        </div>
+               
+            </div>
+            </div>
+        </form>
         @include('noticias.includes.destaques')
     </div>
 </div>
 
 <!-- Estilo básico -->
 <style>
-.perfil-container {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
 /* Abas */
 .tab-menu {
     display: flex;
@@ -133,9 +129,23 @@
     font-weight: bold;
 }
 
+.perfil-tabs {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+}
+.perfil-tabs .tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.perfil-tabs .tab-content.card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 /* Conteúdo das abas */
 .card {
-    background: #fff;
     border-radius: 0 8px 8px 8px;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);

@@ -8,6 +8,7 @@ use App\Models\SituacaoVisitante;
 use App\Models\Visitante;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Membro;
 
 
 class VisitanteController extends Controller
@@ -112,6 +113,21 @@ class VisitanteController extends Controller
         $visitante = Visitante::findOrFail($id);
         $visitante->delete();
         return redirect()->route('visitantes.historico')->with('msg', 'Visitante excluído com sucesso.');
+    }
+
+    public function tornarMembro(Request $request) {
+        
+        $membro = new Membro;
+        $membro->nome = $request->nome;
+        $membro->telefone = $request->telefone;
+        $membro->data_nascimento = null;
+        $membro->congregacao_id = app('congregacao')->id;
+        $membro->created_at = date('Y-m-d H:i:s');
+        $membro->updated_at = date('Y-m-d H:i:s');
+        $membro->save();
+
+
+        return redirect()->route('membros.editar', $membro->id)->with('msg', $membro->nome.' agora é um membro! Complete os dados cadastrais.');
     }
 
 }

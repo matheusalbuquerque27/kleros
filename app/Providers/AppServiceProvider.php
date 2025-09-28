@@ -7,6 +7,7 @@ use App\Models\Evento;
 use App\Models\EncontroCelula;
 use App\Models\Reuniao;
 use App\Models\Feed;
+use App\Services\MemberActivityLogger;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Extensao;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-    
+        $this->app->singleton(MemberActivityLogger::class, fn () => new MemberActivityLogger());
     }
 
     /**
@@ -58,6 +61,29 @@ class AppServiceProvider extends ServiceProvider
                 ->orderBy('publicado_em', 'desc')->limit(9)->get();
             $view->with('destaques', $destaques);
         });
+
+        if (class_exists(Role::class) && Schema::hasTable('roles') && Schema::hasTable('users') && Schema::hasTable('model_has_roles')) {
+            foreach (['gestor', 'membro'] as $roleName) {
+                Role::findOrCreate($roleName, 'web');
+            }
+
+            User::whereDoesntHave('roles')->cursor()->each(function (User $user) {
+                $user->assignRole('membro');
+            });
+
+            User::created(function (User $user) {
+                if (! $user->hasAnyRole()) {
+                    $user->assignRole('membro');
+                }
+            });
+
+            if (User::role('gestor')->count() === 0) {
+                $firstUser = User::first();
+                if ($firstUser && ! $firstUser->hasRole('gestor')) {
+                    $firstUser->assignRole('gestor');
+                }
+            }
+        }
     }
 
     protected function registerEnabledModules(): void

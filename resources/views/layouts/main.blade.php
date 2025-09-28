@@ -69,11 +69,18 @@
                         <img src="{{asset('storage/'.$congregacao->config->logo_caminho)}}" alt="{{$congregacao->denominacao->nome}} Logo">
                     </div>
                     <div class="nav-menu">
-                        <ul>
-                            <a href="/"><li><i class="bi bi-kanban"></i> Visão Geral</li></a>
-                            <a href="/membros/painel"><li><i class="bi bi-people"></i> Membros</li></a>
-                            <a href="/cadastros"><li><i class="bi bi-journals"></i> Cadastros</li></a>
-                            <a href="/visitantes/adicionar"><li><i class="bi bi-people-fill"></i> Visitantes</li></a>
+                        <ul id="menu-express">
+                            @role('gestor')
+                                <a href="{{ route('index') }}"><li><i class="bi bi-kanban"></i> Visão Geral</li></a>
+                                <a href="{{ route('membros.painel') }}"><li><i class="bi bi-people"></i> Membros</li></a>
+                                <a href="{{ route('cadastros.index') }}"><li><i class="bi bi-journals"></i> Cadastros</li></a>
+                                <a href="{{ route('visitantes.adicionar') }}"><li><i class="bi bi-people-fill"></i> Visitantes</li></a>
+                            @else
+                                <a href="{{ route('index') }}"><li><i class="bi bi-kanban"></i> Visão Geral</li></a>
+                                <a href="{{ route('agenda.index') }}"><li><i class="bi bi-calendar3"></i> Agenda</li></a>
+                                <a href="{{ route('noticias.painel') }}"><li><i class="bi bi-newspaper"></i> Notícias</li></a>
+                                <a href="#"><li><i class="bi bi-collection"></i> Programações</li></a>
+                            @endrole
                         </ul>
                     </div>
                     <div class="login_info">
@@ -168,41 +175,54 @@
                 @endif
                 <nav class="left-navbar nao-imprimir">
                     <div class="menu-btn">
-                        <a href="{{route('tutoriais.index')}}"><span title="Tutoriais" id="btn-tutorial"><i class="bi bi-question-octagon"></i></span></a>
-                        <a href="{{route('configuracoes.atualizar', $congregacao->id)}}"><span title="Configurações" id="btn-config"><i class="bi bi-gear"></i></span></a>
+                        @role('gestor')
+                            <a href="{{route('tutoriais.index')}}"><span title="Tutoriais" id="btn-tutorial"><i class="bi bi-question-octagon"></i></span></a>
+                            <a href="{{route('configuracoes.atualizar', $congregacao->id)}}"><span title="Configurações" id="btn-config"><i class="bi bi-gear"></i></span></a>
+                        @endrole
                         <span title="Menu Principal" id="btn-menu"><i class="bi bi-list"></i></span>
                     </div>
                     <ul class="menu-content">
                         <a href="{{route('index')}}"><li><span title="Visão Geral"><i class="bi bi-kanban"></i></span><span>Visão Geral</span></li></a>
-                        <a href="{{route('membros.painel')}}"><li><span title="Membros"><i class="bi bi-people"></i></span><span>Membros</span></li></a>
-                        <a href="{{route('agenda.index')}}"><li><span title="Agenda"><i class="bi bi-calendar3"></i></span><span>Agenda</span></li></a>
-                        <a href="{{route('eventos.agenda')}}"><li><span title="Eventos"><i class="bi bi-calendar-event"></i></span><span>Eventos</span></li></a>
-                        <a href="{{route('cultos.agenda')}}"><li><span title="Cultos"><i class="bi bi-bell"></i></span><span>Cultos</span></li></a>
-                        <a href="{{route('reunioes.painel')}}"><li><span title="Reuniões"><i class="bi bi-people-fill"></i></span><span>Reuniões</span></li></a>
-                        <a href="{{route('avisos.painel')}}"><li><span title="Avisos"><i class="bi bi-megaphone"></i></span><span>Avisos</span></li></a>
-                        <a href="{{route('visitantes.historico')}}"><li><span title="Visitantes"><i class="bi bi-person-raised-hand"></i></span><span>Visitantes</span></li></a>
-                        <a href="{{route('departamentos.painel')}}"><li><span title="Departamentos"><i class="bi bi-intersect"></i></span><span>Departamentos</span></li></a>
-                        @if(module_enabled('celulas') && Route::has('celulas.painel'))
-                            <a href="{{ route('celulas.painel') }}"><li><span title="GCA - Células"><i class="bi bi-cup-hot"></i></span><span>GCA - Células</span></li></a>
-                        @endif
-                        <a href="{{route('cursos.index')}}"><li><span title="Escola Virtual"><i class="bi bi-mortarboard"></i></span><span>Escola Virtual</span></li></a>
-                        <a href=""><li><span title="Financeiro"><i class="bi bi-currency-exchange"></i></span><span>Financeiro</span></li></a>
-                        <a href="{{route('noticias.painel')}}"><li><span title="Notícias"><i class="bi bi-newspaper"></i></span><span>Notícias</span></li></a>
-                        <a href="{{route('podcasts.painel')}}"><li><span title="Podcasts"><i class="bi bi-mic-fill"></i></span><span>Podcasts</span></li></a>
-                        <a href="{{route('livraria.index')}}"><li><span title="Livraria"><i class="bi bi-book"></i></span><span>Livraria</span></li></a>
-                        <a href="{{route('relatorios.painel')}}"><li><span title="Relatórios"><i class="bi bi-pie-chart"></i></span><span>Relatórios</span></li></a>
-                        <a href="{{route('relatorios.painel')}}"><li><span title="Projetos"><i class="bi bi-clipboard2-data"></i></span><span>Projetos</span></li></a>
-                        <a href="{{route('livraria.index')}}"><li><span title="Ação Social"><i class="bi bi-box2-heart"></i></span><span>Ação Social</span></li></a>
-                        <a href="{{route('pesquisas.painel')}}"><li><span title="Pesquisas"><i class="bi bi-bar-chart"></i></span><span>Pesquisas</span></li></a>
-                        @if(module_enabled('biblia'))
-                            <a href="{{route('biblia.index')}}"><li><span title="Bíblia"><x-icon title="Bíblia Sagrada" name="biblia" class="svg"/> </span><span>Bíblia Sagrada</span></li></a>
-                        @endif
-                        @if(module_enabled('recados') && Route::has('recados.historico'))
-                            <a href="{{ route('recados.historico') }}"><li><span title="Recados"><i class="bi bi-chat-left-dots"></i></span><span>Recados</span></li></a>
-                        @endif
-                        <a href="{{route('tutoriais.index')}}"><li><span title="Tutoriais"><i class="bi bi-question-octagon"></i></span><span>Tutoriais</span></li></a>
-                        <a href="{{route('extensoes.painel')}}"><li><span title="Extensões"><i class="bi bi-nut"></i></span><span>Extensões</span></li></a>
-                        <a href="{{route('configuracoes.atualizar', $congregacao->id)}}"><li><span title="Drive"><i class="bi bi-hdd"></i></span><span>Drive</span></li></a>
+                        @role('gestor')
+                            <a href="{{route('membros.painel')}}"><li><span title="Membros"><i class="bi bi-people"></i></span><span>Membros</span></li></a>
+                            <a href="{{route('agenda.index')}}"><li><span title="Agenda"><i class="bi bi-calendar3"></i></span><span>Agenda</span></li></a>
+                            <a href="{{route('eventos.agenda')}}"><li><span title="Eventos"><i class="bi bi-calendar-event"></i></span><span>Eventos</span></li></a>
+                            <a href="{{route('cultos.agenda')}}"><li><span title="Cultos"><i class="bi bi-bell"></i></span><span>Cultos</span></li></a>
+                            <a href="{{route('reunioes.painel')}}"><li><span title="Reuniões"><i class="bi bi-people-fill"></i></span><span>Reuniões</span></li></a>
+                            <a href="{{route('avisos.painel')}}"><li><span title="Avisos"><i class="bi bi-megaphone"></i></span><span>Avisos</span></li></a>
+                            <a href="{{route('visitantes.historico')}}"><li><span title="Visitantes"><i class="bi bi-person-raised-hand"></i></span><span>Visitantes</span></li></a>
+                            <a href="{{route('departamentos.painel')}}"><li><span title="Departamentos"><i class="bi bi-intersect"></i></span><span>Departamentos</span></li></a>
+                            @if(module_enabled('celulas') && Route::has('celulas.painel'))
+                                <a href="{{ route('celulas.painel') }}"><li><span title="GCA - Células"><i class="bi bi-cup-hot"></i></span><span>GCA - Células</span></li></a>
+                            @endif
+                            <a href="{{route('cursos.index')}}"><li><span title="Escola Virtual"><i class="bi bi-mortarboard"></i></span><span>Escola Virtual</span></li></a>
+                            <a href=""><li><span title="Financeiro"><i class="bi bi-currency-exchange"></i></span><span>Financeiro</span></li></a>
+                            <a href="{{route('noticias.painel')}}"><li><span title="Notícias"><i class="bi bi-newspaper"></i></span><span>Notícias</span></li></a>
+                            <a href="{{route('podcasts.painel')}}"><li><span title="Podcasts"><i class="bi bi-mic-fill"></i></span><span>Podcasts</span></li></a>
+                            <a href="{{route('livraria.index')}}"><li><span title="Livraria"><i class="bi bi-book"></i></span><span>Livraria</span></li></a>
+                            <a href="{{route('relatorios.painel')}}"><li><span title="Relatórios"><i class="bi bi-pie-chart"></i></span><span>Relatórios</span></li></a>
+                            <a href="{{route('relatorios.painel')}}"><li><span title="Projetos"><i class="bi bi-clipboard2-data"></i></span><span>Projetos</span></li></a>
+                            <a href="{{route('livraria.index')}}"><li><span title="Ação Social"><i class="bi bi-box2-heart"></i></span><span>Ação Social</span></li></a>
+                            <a href="{{route('pesquisas.painel')}}"><li><span title="Pesquisas"><i class="bi bi-bar-chart"></i></span><span>Pesquisas</span></li></a>
+                            @if(module_enabled('biblia'))
+                                <a href="{{route('biblia.index')}}"><li><span title="Bíblia"><x-icon title="Bíblia Sagrada" name="biblia" class="svg"/> </span><span>Bíblia Sagrada</span></li></a>
+                            @endif
+                            @if(module_enabled('recados') && Route::has('recados.historico'))
+                                <a href="{{ route('recados.historico') }}"><li><span title="Recados"><i class="bi bi-chat-left-dots"></i></span><span>Recados</span></li></a>
+                            @endif
+                            <a href="{{route('tutoriais.index')}}"><li><span title="Tutoriais"><i class="bi bi-question-octagon"></i></span><span>Tutoriais</span></li></a>
+                            <a href="{{route('extensoes.painel')}}"><li><span title="Extensões"><i class="bi bi-nut"></i></span><span>Extensões</span></li></a>
+                            <a href="{{route('configuracoes.atualizar', $congregacao->id)}}"><li><span title="Drive"><i class="bi bi-hdd"></i></span><span>Drive</span></li></a>
+                        @else
+                            <a href="{{route('agenda.index')}}"><li><span title="Agenda"><i class="bi bi-calendar3"></i></span><span>Agenda</span></li></a>
+                            <a href="{{route('noticias.painel')}}"><li><span title="Notícias"><i class="bi bi-newspaper"></i></span><span>Notícias</span></li></a>
+                            <a href="{{ route('avisos.painel') }}"><li><span title="Avisos"><i class="bi bi-megaphone"></i></span><span>Avisos</span></li></a>
+                            <a href="{{route('podcasts.painel')}}"><li><span title="Podcasts"><i class="bi bi-mic-fill"></i></span><span>Podcasts</span></li></a>
+                            @if(module_enabled('biblia'))
+                                <a href="{{route('biblia.index')}}"><li><span title="Bíblia"><x-icon title="Bíblia Sagrada" name="biblia" class="svg"/> </span><span>Bíblia Sagrada</span></li></a>
+                            @endif
+                            <a href="{{ route('perfil') }}"><li><span title="Perfil"><i class="bi bi-person-badge"></i></span><span>Perfil</span></li></a>
+                        @endrole
                     </ul>
                 </nav>
                 @yield('content')

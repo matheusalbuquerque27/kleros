@@ -22,4 +22,14 @@ class Agrupamento extends Model
         return $this->belongsToMany(Membro::class, 'agrupamentos_membros', 'agrupamento_id', 'membro_id');
     }
 
+    public function filhos()
+    {
+        return $this->hasMany(self::class, 'agrupamento_pai_id');
+    }
+
+    public function departamentosFilhos()
+    {
+        return $this->filhos()->where('tipo', 'departamento');
+    }
+
 }

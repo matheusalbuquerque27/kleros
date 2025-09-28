@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Agrupamento;
 use App\Models\GrupoIntegrante;
 use App\Models\Membro;
+use App\Models\Setor;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 
 class GrupoController extends Controller
@@ -17,13 +19,31 @@ class GrupoController extends Controller
 
         $msg = "O grupo ".$request->nome." foi adicionado.";
 
+        $congregacaoId = app('congregacao')->id;
+
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'descricao' => 'nullable|string',
+            'lider_id' => 'required|exists:membros,id',
+            'colider_id' => 'nullable|exists:membros,id',
+            'setor_id' => [
+                'nullable',
+                Rule::exists('agrupamentos', 'id')->where(function ($query) use ($congregacaoId) {
+                    $query->where('tipo', 'setor')
+                        ->where('congregacao_id', $congregacaoId);
+                }),
+            ],
+        ]);
+
         $grupo->nome = $request->nome;
         $grupo->created_at = date('Y/m/d');
         $grupo->updated_at = date('Y/m/d');
         $grupo->descricao = $request->descricao;
         $grupo->lider_id = $request->lider_id;
-        $grupo->colider_id = $request->colider_id;
-        $grupo->congregacao_id = app('congregacao')->id;
+        $grupo->colider_id = $request->colider_id ?: null;
+        $grupo->congregacao_id = $congregacaoId;
+        $grupo->agrupamento_pai_id = $request->setor_id ?: null;
+        $grupo->tipo = 'grupo';
 
         $grupo->save();
 
@@ -33,19 +53,40 @@ class GrupoController extends Controller
     public function form_criar(){
 
         $membros = Membro::DaCongregacao()->get();
+        $setores = Setor::where('congregacao_id', app('congregacao')->id)
+            ->orderBy('nome')
+            ->get();
 
-        return view('grupos/includes/form_criar', ['membros' => $membros]);
+        return view('grupos/includes/form_criar', ['membros' => $membros, 'setores' => $setores]);
     }
 
     public function update(Request $request, $id) {
         $grupo = Agrupamento::findOrFail($id);
+
+        $congregacaoId = app('congregacao')->id;
+
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'descricao' => 'nullable|string',
+            'lider_id' => 'required|exists:membros,id',
+            'colider_id' => 'nullable|exists:membros,id',
+            'setor_id' => [
+                'nullable',
+                Rule::exists('agrupamentos', 'id')->where(function ($query) use ($congregacaoId) {
+                    $query->where('tipo', 'setor')
+                        ->where('congregacao_id', $congregacaoId);
+                }),
+            ],
+        ]);
 
         $msg = "O grupo ".$request->nome." foi atualizado.";
 
         $grupo->nome = $request->nome;
         $grupo->descricao = $request->descricao;
         $grupo->lider_id = $request->lider_id;
-        $grupo->colider_id = $request->colider_id;
+        $grupo->colider_id = $request->colider_id ?: null;
+        $grupo->agrupamento_pai_id = $request->setor_id ?: null;
+        $grupo->tipo = 'grupo';
         $grupo->updated_at = now();
 
         $grupo->save();
@@ -86,12 +127,16 @@ class GrupoController extends Controller
             ->with('msg', 'Novo membro adicionado ao agrupamento.');
     }
 
-    public function destroy($id){
-        $grupo = Agrupamento::find($id);
+    public function destroy(Request $request, $id){
+        $grupo = Agrupamento::findOrFail($id);
 
-        $grupo->delete();        
+        $grupo->delete();
 
-        return response()->json(['success' => true, 'message' => 'Grupo excluído com sucesso!']);
+        if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Grupo excluído com sucesso!']);
+        }
+
+        return redirect('/cadastros#grupos')->with('msg', 'Grupo excluído com sucesso!');
     }
 
     public function print($data) {
@@ -114,6 +159,10 @@ class GrupoController extends Controller
     public function form_editar($id) {
         $grupo = Agrupamento::findOrFail($id);
         $membros = Membro::DaCongregacao()->get();
-        return view('grupos/includes/form_editar', compact('grupo', 'membros'));
+        $setores = Setor::where('congregacao_id', app('congregacao')->id)
+            ->orderBy('nome')
+            ->get();
+        return view('grupos/includes/form_editar', compact('grupo', 'membros', 'setores'));
     }
+
 }

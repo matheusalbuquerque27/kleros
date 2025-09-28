@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+
+
 class Reuniao extends Model
 {
     protected $table = 'reunioes';
@@ -11,19 +13,35 @@ class Reuniao extends Model
     protected $casts = [
         'data_inicio' => 'datetime',
         'data_fim' => 'datetime',
-        'privado' => 'boolean'
+        'privado' => 'boolean',
+        'online' => 'boolean',
+    ];
+
+    protected $fillable = [
+        'congregacao_id',
+        'assunto',
+        'descricao',
+        'data_inicio',
+        'data_fim',
+        'local',
+        'tipo',
+        'privado',
+        'online',
+        'link_online',
     ];
 
     public function congregacao()
     {
         return $this->belongsTo(Congregacao::class);
     }
+
     public function membros()
     {
-        return $this->belongsToMany(Membro::class, 'reuniao_membro', 'reuniao_id', 'membro_id');
+        return $this->belongsToMany(Membro::class, 'reuniao_membros', 'reuniao_id', 'membro_id')->withTimestamps();
     }
-    public function grupos()
+
+    public function agrupamentos()
     {
-        return $this->morphMany(ReuniaoGrupo::class, 'reuniao');
+        return $this->belongsToMany(Agrupamento::class, 'reuniao_agrupamentos', 'reuniao_id', 'agrupamento_id')->withTimestamps();
     }
 }

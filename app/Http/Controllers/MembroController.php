@@ -119,9 +119,19 @@ class MembroController extends Controller
         $membro = Membro::findOrFail($id);
         $estado_civil = EstadoCiv::all();;
         $escolaridade = Escolaridade::all();
-        $ministerio = Ministerio::all();
+        $ministerio = Ministerio::daDenominacao()->get();
 
-        return view('/membros/includes/editar', ['membro' => $membro, 'estado_civil' => $estado_civil, 'escolaridade' => $escolaridade, 'ministerios' => $ministerio]);
+        return view('/membros/editar', ['membro' => $membro, 'estado_civil' => $estado_civil, 'escolaridade' => $escolaridade, 'ministerios' => $ministerio]);
+    }
+
+    public function form_editar($id) {
+
+        $membro = Membro::findOrFail($id);
+        $estado_civil = EstadoCiv::all();;
+        $escolaridade = Escolaridade::all();
+        $ministerio = Ministerio::daDenominacao()->get();
+
+        return view('/membros/includes/form_editar', ['membro' => $membro, 'estado_civil' => $estado_civil, 'escolaridade' => $escolaridade, 'ministerios' => $ministerio]);
     }
 
     public function update(Request $request, $id) {

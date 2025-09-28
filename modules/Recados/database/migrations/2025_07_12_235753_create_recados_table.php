@@ -18,6 +18,7 @@ return new class extends Migration
             $table->boolean('status');
             $table->foreignId('congregacao_id')->constrained('congregacoes')->onDelete('cascade');
             $table->foreignId('culto_id')->constrained('cultos')->onDelete('cascade');
+            $table->foreignId('membro_id')->constrained('membros')->onDelete('cascade');
 
             $table->timestamps();
         });

@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Culto extends Model
 {
+    protected $casts = [
+        'data_culto' => 'datetime',
+    ];
+
     public function evento()
     {
         return $this->belongsTo(Evento::class);
@@ -23,5 +27,10 @@ class Culto extends Model
     public function preletor()
     {
         return $this->belongsTo(Membro::class, 'preletor_id');
+    }
+
+    public function escalas()
+    {
+        return $this->hasMany(Escala::class);
     }
 }

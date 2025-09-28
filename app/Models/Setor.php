@@ -2,25 +2,35 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
-class Setor extends Model
+class Setor extends Agrupamento
 {
-    protected $table = 'setores';
-    protected $fillable = ['congregacao_id', 'nome'];
 
-    public function congregacao()
+    protected $table = 'agrupamentos';
+
+    protected static function booted(): void
     {
-        return $this->belongsTo(Congregacao::class);
+        static::addGlobalScope('setor', function (Builder $builder) {
+            $builder->where('tipo', 'setor');
+        });
+
+        static::creating(function (self $model) {
+            $model->tipo = 'setor';
+        });
+
+        static::updating(function (self $model) {
+            $model->tipo = 'setor';
+        });
     }
 
     public function departamentos()
     {
-        return $this->hasMany(Departamento::class);
+        return $this->departamentosFilhos();
     }
 
-    public function membros()
+    public function grupos()
     {
-        return $this->hasMany(Membro::class);
+        return $this->filhos()->where('tipo', 'grupo');
     }
 }

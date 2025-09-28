@@ -8,15 +8,23 @@
     <h1>Departamentos</h1>
     <div class="info">
         <h3>Visão Geral</h3>
+        @php
+            $setores = isset($setores) ? $setores : collect();
+        @endphp
         <div class="search-panel">
             @if ($congregacao->config->agrupamentos == 'setor')
                 <div class="search-panel-item">
-                <label>Setor: </label>
-                <select name="setor" id="setor">
-                    <option value="setor">Setor 1</option>
-                    <option value="setor">Setor 2</option>
-                </select>
-            </div>
+                    <label for="setor">Setor: </label>
+                    <select name="setor" id="setor">
+                        <option value="">Todos os setores</option>
+                        @forelse($setores as $setor)
+                            <option value="{{ $setor->id }}">{{ $setor->nome }}</option>
+                        @empty
+                            <option value="" disabled>Nenhum setor cadastrado</option>
+                        @endforelse
+                    </select>
+                    <button type="button" class="" onclick="abrirJanelaModal('{{ route('setores.form_criar') }}')"><i class="bi bi-plus-circle"></i> Novo setor</button>
+                </div>
             @endif
             <div class="search-panel-item">
                 <label>Membro: </label>
@@ -29,7 +37,6 @@
             </div>
         </div>
 
-        @if($departamentos->count()>0)
         <div id="list" class="list">
             <div class="list-title">
                 <div class="item-1">
@@ -43,32 +50,43 @@
                 </div>
             </div><!--list-item-->
             <div id="content">
-                @foreach ($departamentos as $item)
-                <div class="list-item" onclick="abrirJanelaModal('{{route('departamentos.form_editar', $item->id)}}')">
-                    <div class="item item-1">
-                        <p><i class="bi bi-intersect"></i> {{$item->nome}}</p>                   
-                    </div>
-                    <div class="item item-2">
-                        <p>{{$item->descricao}}</p>
-                    </div>
-                    <div class="item item-1">
-                        <p>{{$item->lider->nome}} @if($item->colider) {{" / " .$item->colider->nome}} @endif </p>
-                    </div>                    
-                </div><!--list-item-->
-                @endforeach
-                @if($departamentos->total() > 10)
-                    <div class="pagination">
-                        {{ $departamentos->links('pagination::default') }}
-                    </div>
-                @endif
+                @include('departamentos.includes.lista', ['departamentos' => $departamentos])
             </div>{{-- content --}} 
         </div>
-        @else
-            <div class="card">
-                <p><i class="bi bi-exclamation-triangle"></i> Ainda não há departamentos para exibição.</p>
-            </div>
-        @endif
     </div> 
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function () {
+        function filtrar(event) {
+            if (event) {
+                event.preventDefault();
+            }
+
+            const _token = $('meta[name="csrf-token"]').attr('content');
+            const setor = $('#setor').length ? $('#setor').val() : null;
+            const membro = $('#membro').val();
+
+            $.post('{{ route('departamentos.search') }}', { _token, setor, membro })
+                .done(function (response) {
+                    $('#content').html(response.view);
+                })
+                .fail(function (err) {
+                    console.error(err);
+                });
+        }
+
+        $('#btn_filtrar').on('click', filtrar);
+
+        const $setor = $('#setor');
+        if ($setor.length) {
+            $setor.on('change', function () {
+                filtrar();
+            });
+        }
+    });
+</script>
+@endpush

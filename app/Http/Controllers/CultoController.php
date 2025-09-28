@@ -54,6 +54,7 @@ class CultoController extends Controller
         $culto->texto_base = $request->texto_base ?? null;
         $culto->quant_adultos = $request->quantidade_adultos ?? 0;
         $culto->quant_criancas = $request->quantidade_criancas ?? 0;
+        $culto->observacoes = $request->observacoes ?? null;
         $culto->congregacao_id = app('congregacao')->id;
 
         $culto->save();
@@ -114,6 +115,7 @@ class CultoController extends Controller
         $culto->texto_base = $request->texto_base ?? null;
         $culto->quant_adultos = $request->quantidade_adultos ?? 0;
         $culto->quant_criancas = $request->quantidade_criancas ?? 0;
+        $culto->observacoes = $request->observacoes ?? null;
 
         $culto->save();
 
@@ -127,8 +129,16 @@ class CultoController extends Controller
     }
 
     public function form_editar($id){
-        $culto = Culto::findOrFail($id);
+        $culto = Culto::with(['escalas.tipo', 'escalas.itens.membro'])->findOrFail($id);
+        $culto->escalas = $culto->escalas->sortBy('data_hora')->values();
         $eventos = Evento::all();
         return view('cultos/includes/form_editar', ['culto' => $culto, 'eventos' => $eventos]);
+    }
+
+    public function destroy($id){
+        $culto = Culto::findOrFail($id);
+        $culto->delete();
+
+        return redirect()->to(url()->previous())->with('msg', 'Registro de culto excluído com sucesso.');
     }
 }

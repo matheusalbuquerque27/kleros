@@ -87,6 +87,7 @@ class EventoController extends Controller
                 foreach ($datas as $dia) {
                     $culto = new Culto();
                     
+                    $culto->congregacao_id = $this->congregacao->id;
                     $culto->data_culto = $dia;
                     $culto->preletor = "A definir";
                     $culto->quant_visitantes = 0;
@@ -125,7 +126,7 @@ class EventoController extends Controller
     }
 
     public function form_criar(){
-        $grupos = Agrupamento::where('tipo', 'grupo')->get();
+        $grupos = Agrupamento::where('congregacao_id', app('congregacao')->id)->where('tipo', 'grupo')->get();
         return view('eventos/includes/form_criar', ['grupos' => $grupos]);
     }
 
