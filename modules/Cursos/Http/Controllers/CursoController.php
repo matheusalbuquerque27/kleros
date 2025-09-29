@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Modules\Cursos\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Curso;
+use Modules\Cursos\Models\Curso;
 
 class CursoController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $congregacaoId = optional(app('congregacao'))->id;
 
         $cursos = Curso::query()
@@ -25,25 +27,24 @@ class CursoController extends Controller
             ->orderBy('titulo')
             ->get();
 
-        return view('cursos.painel', compact('cursos'));
-    }
-    public function form_criar(){
-       
-        return view('cursos/includes/form_criar');
+        return view('cursos::painel', compact('cursos'));
     }
 
-    public function store(Request $request){
+    public function form_criar()
+    {
+        return view('cursos::includes.form_criar');
+    }
 
-        // Validação dos dados do formulário
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao' => 'nullable|string',
             'publico' => 'required|boolean',
             'ativo' => 'required|boolean',
-            'icone' => 'nullable|image|max:2048', // max 2MB
+            'icone' => 'nullable|image|max:2048',
         ]);
 
-        // Preparar os dados
         $dadosCurso = [
             'titulo' => $validated['titulo'],
             'descricao' => $validated['descricao'] ?? null,
@@ -52,25 +53,20 @@ class CursoController extends Controller
             'congregacao_id' => app('congregacao')->id ?? null,
         ];
 
-        // Se um ícone foi enviado, salvar no storage e adicionar ao array
         if ($request->hasFile('icone')) {
             $icone = $request->file('icone');
             $path = $icone->store('cursos/icones', 'public');
             $dadosCurso['icone'] = $path;
         }
 
-        // Criar o curso
         Curso::create($dadosCurso);
 
-        // Redirecionar com mensagem de sucesso
         return redirect('/cadastros#cursos')->with('success', 'Curso cadastrado com sucesso!');
-
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, int $id)
     {
         $curso = Curso::findOrFail($id);
-
         $curso->delete();
 
         if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {

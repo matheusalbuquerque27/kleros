@@ -1,27 +1,30 @@
 <?php
 
-namespace App\Models;
+namespace Modules\Cursos\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Modulo extends Model
 {
+    protected $fillable = ['curso_id', 'titulo', 'descricao', 'ordem', 'ativo'];
+
     public function licoes()
     {
-        return $this->hasMany(Licao::class)->orderBy('ordem');;
+        return $this->hasMany(Licao::class)->orderBy('ordem');
     }
+
     public function progressoUsuarios()
     {
         return $this->hasMany(ProgressoUsuario::class);
     }
-     public function totalLicoes()
+
+    public function totalLicoes()
     {
         return $this->licoes()->count();
     }
-    //Escopo para ordenar os módulos por ordem
+
     public function scopeOrdenado($query)
     {
         return $query->orderBy('ordem');
     }
-    
 }

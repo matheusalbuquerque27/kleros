@@ -52,7 +52,7 @@
                 <div class="card-description">
                     <p>Divulgue avisos internos em <a href="{{ route('avisos.painel') }}">Avisos</a> e acompanhe o que já foi enviado.</p>
                     <p>Publique notícias, destaques e podcasts pelo módulo <a href="{{ route('feeds.index') }}">Feeds</a>.</p>
-                    <p>Centralize materiais de apoio em <a href="{{ route('arquivos.imagens') }}">Arquivos</a> e adicione planos de aula em <a href="{{ route('cursos.index') }}">Cursos</a>.</p>
+                    <p>Centralize materiais de apoio em <a href="{{ route('arquivos.imagens') }}">Arquivos</a> @if(module_enabled('cursos')) e adicione planos de aula em <a href="{{ route('cursos.index') }}">Cursos</a> @endif.</p>
                 </div>
                 <a href="{{ route('avisos.painel') }}" class="btn mg-top-10">Enviar aviso</a>
             </div>

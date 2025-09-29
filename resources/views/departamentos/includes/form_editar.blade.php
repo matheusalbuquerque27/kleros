@@ -58,6 +58,11 @@
 
         <div class="form-options">
             <button class="btn" type="submit"><i class="bi bi-arrow-clockwise"></i> Atualizar Departamento</button>
+            <form action="{{ route('departamentos.destroy', $departamento->id) }}" method="POST" style="display:inline;" onsubmit="return handleSubmit(event, this, 'Deseja realmente excluir este departamento?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn danger"><i class="bi bi-trash"></i> Excluir</button>
+            </form>
             <button type="button" class="btn" onclick="fecharJanelaModal()"><i class="bi bi-x-circle"></i> Cancelar</button>
         </div>
     </div>

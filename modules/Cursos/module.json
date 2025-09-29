@@ -1,0 +1,6 @@
+{
+    "name": "Cursos",
+    "description": "Gestão de cursos e módulos educativos.",
+    "provider": "Modules\\Cursos\\Providers\\CursosServiceProvider",
+    "enabled": true
+}

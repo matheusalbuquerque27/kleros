@@ -1,7 +1,7 @@
 <h1>Novo Curso</h1>
 <div class="info">
     <h3>Adicionar</h3>
-    <form action="/cursos" method="post" enctype="multipart/form-data">
+    <form action="{{ route('cursos.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="form-control">
 

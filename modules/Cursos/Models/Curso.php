@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Modules\Cursos\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,8 +10,9 @@ class Curso extends Model
 
     public function congregacao()
     {
-        return $this->belongsTo(Congregacao::class);
+        return $this->belongsTo(\App\Models\Congregacao::class);
     }
+
     public function modulos()
     {
         return $this->hasMany(Modulo::class)->orderBy('ordem');

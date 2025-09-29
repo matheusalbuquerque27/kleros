@@ -328,10 +328,78 @@
         <button id="ministerios" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
 
+    <div class="info" id="controle-financeiro">
+        <h3>Controle financeiro</h3>
+        <div class="card-container">
+            @forelse($caixas as $caixa)
+                <div class="alterlist" id="caixa-{{ $caixa->id }}">
+                    <div class="item-15">
+                        <div class="card-title">{{ $caixa->nome }}</div>
+                        <small class="hint">Saldo atual: R$ {{ number_format($caixa->saldo_atual, 2, ',', '.') }} • Entradas: R$ {{ number_format($caixa->entradas_total, 2, ',', '.') }} • Saídas: R$ {{ number_format($caixa->saidas_total, 2, ',', '.') }}</small>
+                        @if($caixa->descricao)
+                            <div class="card-description">{{ $caixa->descricao }}</div>
+                        @endif
+                    </div>
+                    <div class="item-2">
+                        <h4>Lançamentos recentes</h4>
+                        @php
+                            $ultimos = $caixa->lancamentos->take(5);
+                        @endphp
+                        @if($ultimos->count())
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Tipo</th>
+                                        <th>Valor</th>
+                                        <th>Descrição</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($ultimos as $lancamento)
+                                    <tr>
+                                        <td>{{ optional($lancamento->data_lancamento)->format('d/m/Y') }}</td>
+                                        <td>{{ ucfirst($lancamento->tipo) }} @if($lancamento->tipoContribuicao) • {{ $lancamento->tipoContribuicao->nome }} @endif</td>
+                                        <td class="{{ $lancamento->tipo === 'entrada' ? 'text-success' : 'text-danger' }}">R$ {{ number_format($lancamento->valor, 2, ',', '.') }}</td>
+                                        <td>{{ $lancamento->descricao ?? '—' }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p class="card-description">Nenhum lançamento registrado.</p>
+                        @endif
+                    </div>
+                    <div class="item-15">
+                        <div class="form-options">
+                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{ route('financeiro.lancamentos.form_criar', $caixa->id) }}')"><i class="bi bi-plus-circle"></i> Registrar</button>
+                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{ route('financeiro.caixas.form_editar', $caixa->id) }}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <form action="{{ route('financeiro.caixas.destroy', $caixa->id) }}" method="POST" onsubmit="return handleSubmit(event, this, 'Excluir o caixa {{ $caixa->nome }}? Todos os lançamentos serão removidos.')" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-options danger"><i class="bi bi-trash"></i> Excluir</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="card">
+                    <p><i class="bi bi-exclamation-triangle"></i> Nenhum caixa cadastrado. Crie um novo caixa para começar a registrar lançamentos.</p>
+                </div>
+            @endforelse
+        </div>
+
+        <div class="form-options">
+            <button class="btn" type="button" onclick="abrirJanelaModal('{{ route('financeiro.caixas.form_criar') }}')"><i class="bi bi-plus-circle"></i> Novo caixa</button>
+            <button class="btn" type="button" onclick="abrirJanelaModal('{{ route('financeiro.tipos.form_criar') }}')"><i class="bi bi-plus-circle"></i> Tipo de contribuição</button>
+        </div>
+    </div>
+
+    @if(module_enabled('cursos'))
     <div class="info" id="cursos">
         <h3>Cursos</h3>
         <div class="card-container">
-            @if(count($cursos) > 0)
+            @if($cursos->count() > 0)
                 @foreach ($cursos as $item)
                     <div class="alterlist">
                         <div class="item-15">
@@ -361,6 +429,7 @@
         <button id="cursos" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
         
     </div>
+    @endif
 
     @if(module_enabled('celulas'))
     <div class="info" id="celulas">

@@ -85,6 +85,11 @@
 
         <div class="form-options center">
             <button class="btn" type="submit"><i class="bi bi-check-circle"></i> Atualizar Escala</button>
+            <form action="{{ route('escalas.destroy', $escala->id) }}" method="POST" style="display:inline;" onsubmit="return handleSubmit(event, this, 'Deseja realmente excluir esta escala?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn danger"><i class="bi bi-trash"></i> Excluir</button>
+            </form>
             <button type="button" class="btn" onclick="fecharJanelaModal()"><i class="bi bi-x-circle"></i> Cancelar</button>
         </div>
     </div>

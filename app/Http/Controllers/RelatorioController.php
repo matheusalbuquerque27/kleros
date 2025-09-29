@@ -8,12 +8,18 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Charts\VisitantesPorMesChart;
 use App\Charts\MembrosPorSexoChart;
+use App\Charts\CultosFrequenciaChart;
+use App\Charts\CultosFluxoChart;
 
-class RelatorioController extends Controller {
-    public function painel(VisitantesPorMesChart $chartBuilder,
+class RelatorioController extends Controller
+{
+    public function painel(
+        VisitantesPorMesChart $chartBuilder,
         MembrosPorSexoChart $membrosChartBuilder,
-        MembrosPorFaixaEtariaChart $membrosPorFaixaChartBuilder)
-    {
+        MembrosPorFaixaEtariaChart $membrosPorFaixaChartBuilder,
+        CultosFrequenciaChart $cultosFrequenciaChartBuilder,
+        CultosFluxoChart $cultosFluxoChartBuilder
+    ) {
         $inicio = Carbon::parse('2025-02-01')->startOfDay();
         $fim    = Carbon::parse('2025-09-13')->endOfDay();
 
@@ -90,7 +96,7 @@ class RelatorioController extends Controller {
         ];
 
         // gera labels com percentual
-        $labelsFaixaComPct = array_map(function($label, $valor) use ($totalMembros) {
+        $labelsFaixaComPct = array_map(function ($label, $valor) use ($totalMembros) {
             $pct = $totalMembros > 0 ? round(($valor / $totalMembros) * 100, 1) : 0;
             return "{$label} ({$pct}%)";
         }, $labelsFaixa, $dataFaixa);
@@ -98,11 +104,35 @@ class RelatorioController extends Controller {
         $chartFaixaEtaria = $membrosPorFaixaChartBuilder->build($labelsFaixaComPct, $dataFaixa);
 
 
-        // === Retorna view com os dois gráficos ===
+        // === Frequência de cultos ===
+        $cultosQuery = DB::table('cultos')
+            ->where('congregacao_id', optional(app('congregacao'))->id)
+            ->whereDate('data_culto', '<', Carbon::now()->toDateString())
+            ->orderByDesc('data_culto')
+            ->limit(6)
+            ->get();
+
+        $cultos = $cultosQuery->reverse()->values();
+
+        $labelsCultos = $cultos->map(function ($culto) {
+            $data = $culto->data_culto ?? $culto->created_at;
+            return $data ? Carbon::parse($data)->format('d/m/Y') : 'Sem data';
+        })->all();
+
+        $adultosCulto = $cultos->map(fn($culto) => (int) ($culto->quant_adultos ?? 0))->all();
+        $criancasCulto = $cultos->map(fn($culto) => (int) ($culto->quant_criancas ?? 0))->all();
+        $visitantesCulto = $cultos->map(fn($culto) => (int) ($culto->quant_visitantes ?? 0))->all();
+
+        $chartFrequenciaCultos = $cultosFrequenciaChartBuilder->build($labelsCultos, $adultosCulto, $criancasCulto, $visitantesCulto);
+        $chartFluxoCultos = $cultosFluxoChartBuilder->build($labelsCultos, $adultosCulto, $criancasCulto, $visitantesCulto);
+
+        // === Retorna view com os gráficos ===
         return view('relatorios.painel', [
             'chartVisitantes' => $chartVisitantes,
             'chartMembros'    => $chartMembros,
             'chartFaixaEtaria' => $chartFaixaEtaria,
+            'chartFrequenciaCultos' => $chartFrequenciaCultos,
+            'chartFluxoCultos' => $chartFluxoCultos,
             'inicio'          => $inicio->toDateString(),
             'fim'             => $fim->toDateString(),
         ]);

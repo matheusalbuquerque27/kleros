@@ -114,6 +114,16 @@
                 <h2>Membros por Faixa Etária</h2>
                 {!! $chartFaixaEtaria->container() !!}
             </div>
+
+            <div class="chart-box">
+                <h2>Frequência nos Cultos (Últimos 6)</h2>
+                {!! $chartFrequenciaCultos->container() !!}
+            </div>
+
+            <div class="chart-box">
+                <h2>Fluxo de Frequência</h2>
+                {!! $chartFluxoCultos->container() !!}
+            </div>
         </div>
     </div>
 </div>
@@ -126,5 +136,6 @@
 {{ $chartVisitantes->script() }}
 {{ $chartMembros->script() }}
 {{ $chartFaixaEtaria->script() }}
+{{ $chartFrequenciaCultos->script() }}
+{{ $chartFluxoCultos->script() }}
 @endpush
-

@@ -11,10 +11,11 @@ use App\Models\Ministerio;
 use App\Models\Reuniao;
 use App\Models\Visitante;
 use Illuminate\Support\Facades\Cache;
-use App\Models\Curso;
 use App\Models\Pesquisa;
 use App\Models\Setor;
 use App\Models\TipoEscala;
+use App\Models\Caixa;
+use App\Models\TipoContribuicao;
 
 class CadastroController extends Controller
 {
@@ -46,9 +47,30 @@ class CadastroController extends Controller
             ->limit(3)
             ->get();
 
-        $cursos = Curso::where('ativo', true)
-            ->where('congregacao_id', $congregacaoId)
-            ->orderBy('titulo')
+        $cursos = collect();
+        if (module_enabled('cursos') && class_exists(\Modules\Cursos\Models\Curso::class)) {
+            $cursos = \Modules\Cursos\Models\Curso::where('ativo', true)
+                ->where('congregacao_id', $congregacaoId)
+                ->orderBy('titulo')
+                ->get();
+        }
+
+        $caixas = Caixa::where('congregacao_id', $congregacaoId)
+            ->with(['lancamentos' => fn ($query) => $query->orderByDesc('data_lancamento')->orderByDesc('created_at')])
+            ->orderBy('nome')
+            ->get();
+
+        $caixas->each(function ($caixa) {
+            $entradas = $caixa->lancamentos->where('tipo', 'entrada')->sum('valor');
+            $saidas = $caixa->lancamentos->where('tipo', 'saida')->sum('valor');
+
+            $caixa->entradas_total = $entradas;
+            $caixa->saidas_total = $saidas;
+            $caixa->saldo_atual = $entradas - $saidas;
+        });
+
+        $tiposContribuicao = TipoContribuicao::where('congregacao_id', $congregacaoId)
+            ->orderBy('nome')
             ->get();
 
         /*Essa parte verifica o tal de visitantes do mês, se não houver ele receberá uma string vazia*/
@@ -104,6 +126,8 @@ class CadastroController extends Controller
             'pesquisas' => $pesquisas,
             'destaques' => $destaques,
             'tiposEscala' => $tiposEscala,
+            'caixas' => $caixas,
+            'tiposContribuicao' => $tiposContribuicao,
         ]);
     }
 }

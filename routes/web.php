@@ -18,7 +18,6 @@ use App\Http\Controllers\FeedController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\LivrariaController;
 use App\Http\Controllers\ReuniaoController;
-use App\Http\Controllers\CursoController;
 use App\Http\Controllers\ArquivoController;
 use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\RelatorioController;
@@ -28,6 +27,7 @@ use App\Http\Controllers\LocalizacaoController;
 use App\Http\Controllers\ExtensoesController;
 use App\Http\Controllers\PesquisaController;
 use App\Http\Controllers\SetorController;
+use App\Http\Controllers\FinanceiroController;
 
 Route::domain('kleros.local')->group(function () {
     
@@ -204,19 +204,26 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::post('/avisos', [AvisoController::class, 'store'])->name('avisos.store')->middleware(['auth','role:gestor']);
     Route::get('/avisos/novo', [AvisoController::class, 'form_criar'])->name('avisos.form_criar')->middleware(['auth','role:gestor']);
 
-    Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index')->middleware(['auth','role:gestor']);
-    Route::get('/cursos/novo', [CursoController::class, 'form_criar'])->name('cursos.form_criar')->middleware(['auth','role:gestor']);
-    Route::get('/cursos/editar/{id}', [CursoController::class, 'form_editar'])->name('cursos.form_editar')->middleware(['auth','role:gestor']);
-    Route::post('/cursos', [CursoController::class, 'store'])->name('cursos.store')->middleware(['auth','role:gestor']);
-    Route::put('/cursos/{id}', [CursoController::class, 'update'])->name('cursos.update')->middleware(['auth','role:gestor']);
-    Route::delete('/cursos/{id}', [CursoController::class, 'destroy'])->name('cursos.destroy')->middleware(['auth','role:gestor']);
-
     Route::get('/arquivos/imagens', [ArquivoController::class, 'form_imagens'])->name('arquivos.imagens')->middleware(['auth','role:gestor']);
     Route::post('/arquivos', [ArquivoController::class, 'store'])->name('arquivos.store')->middleware(['auth','role:gestor']);
     Route::delete('/arquivos/{id}', [ArquivoController::class, 'destroy'])->name('arquivos.destroy')->middleware(['auth','role:gestor']);
     Route::get('/arquivos/lista_imagens', [ArquivoController::class, 'lista_imagens'])->name('arquivos.lista_imagens')->middleware(['auth','role:gestor']);
 
     Route::get('/relatorios', [RelatorioController::class, 'painel'])->name('relatorios.painel')->middleware(['auth','role:gestor']);
+
+    Route::get('/financeiro/caixas/novo', [FinanceiroController::class, 'formCaixa'])->name('financeiro.caixas.form_criar');
+    Route::get('/financeiro/caixas/{id}/editar', [FinanceiroController::class, 'formCaixaEditar'])->name('financeiro.caixas.form_editar');
+    Route::post('/financeiro/caixas', [FinanceiroController::class, 'storeCaixa'])->name('financeiro.caixas.store');
+    Route::put('/financeiro/caixas/{id}', [FinanceiroController::class, 'updateCaixa'])->name('financeiro.caixas.update');
+    Route::delete('/financeiro/caixas/{id}', [FinanceiroController::class, 'destroyCaixa'])->name('financeiro.caixas.destroy');
+
+    Route::get('/financeiro/tipos/novo', [FinanceiroController::class, 'formTipo'])->name('financeiro.tipos.form_criar');
+    Route::get('/financeiro/tipos/{id}/editar', [FinanceiroController::class, 'formTipoEditar'])->name('financeiro.tipos.form_editar');
+    Route::post('/financeiro/tipos', [FinanceiroController::class, 'storeTipo'])->name('financeiro.tipos.store');
+    Route::put('/financeiro/tipos/{id}', [FinanceiroController::class, 'updateTipo'])->name('financeiro.tipos.update');
+    Route::delete('/financeiro/tipos/{id}', [FinanceiroController::class, 'destroyTipo'])->name('financeiro.tipos.destroy');
+    Route::get('/financeiro/lancamentos/{caixa}/novo', [FinanceiroController::class, 'formLancamento'])->name('financeiro.lancamentos.form_criar');
+    Route::post('/financeiro/lancamentos', [FinanceiroController::class, 'storeLancamento'])->name('financeiro.lancamentos.store');
 
     //Rotas para buscas dinâmicas de localização
     Route::get('/estados/{pais_id}', [LocalizacaoController::class, 'getEstados'])->name('localizacao.estados')->middleware(['auth','role:gestor']);
