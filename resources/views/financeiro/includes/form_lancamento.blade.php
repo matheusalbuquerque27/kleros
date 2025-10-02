@@ -8,11 +8,11 @@
             <input type="text" value="{{ $caixa->nome }}" disabled>
         </div>
         <div class="form-item">
-            <label for="tipo_contribuicao_id">Tipo de contribuição</label>
-            <select name="tipo_contribuicao_id" id="tipo_contribuicao_id">
+            <label for="tipo_lancamento_id">Tipo de lançamento</label>
+            <select name="tipo_lancamento_id" id="tipo_lancamento_id">
                 <option value="">Selecione (opcional)</option>
-                @foreach($tiposContribuicao as $tipo)
-                    <option value="{{ $tipo->id }}" @selected(old('tipo_contribuicao_id') == $tipo->id)>{{ $tipo->nome }}</option>
+                @foreach($tiposLancamento as $tipo)
+                    <option value="{{ $tipo->id }}" @selected(old('tipo_lancamento_id') == $tipo->id)>{{ $tipo->nome }}</option>
                 @endforeach
             </select>
         </div>

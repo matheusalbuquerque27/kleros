@@ -17,10 +17,12 @@
                 <label>Data final: </label>
                 <input type="date" name="" id="data_final">
             </div>
-            <div class="form-control">
-                <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
-                <button class="imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
-                <a href="/cadastros#cultos"><button class=""><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
+            <div class="search-panel-item">
+                <div class="form-options">
+                    <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
+                    <button class="imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
+                    <a href="/cadastros#cultos"><button class=""><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
+                </div>
             </div>
         </div>
     </div>
@@ -44,10 +46,9 @@
 
             <div id="content">
                 @foreach ($cultos as $item)
-                    <a href="{{route('cultos.complete', $item->id)}}">
-                    <div class="list-item">
+                    <div class="list-item" onclick="abrirJanelaModal('{{route('cultos.form_editar', $item->id)}}')">
                         <div class="item item-1">
-                            <p>{{$item->data_culto}}</p>
+                            <p><i class="bi bi-bell"></i> {{ formatarData($item->data_culto) }}</p>
                         </div>
                         <div class="item item-15">
                             <p>{{$item->preletor}}</p>
@@ -62,7 +63,6 @@
                             </p>
                         </div>
                     </div><!--list-item-->
-                    </a>
                 @endforeach
                 @if($cultos->total() > 10)
                     <div class="pagination">

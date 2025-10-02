@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('lancamentos_financeiros', function (Blueprint $table) {
             $table->id();
             $table->foreignId('caixa_id')->constrained('caixas')->cascadeOnDelete();
-            $table->foreignId('tipo_contribuicao_id')->nullable()->constrained('tipos_contribuicoes')->nullOnDelete();
+            $table->foreignId('tipo_lancamento_id')->nullable()->constrained('tipos_lancamento')->nullOnDelete();
             $table->enum('tipo', ['entrada', 'saida']);
             $table->decimal('valor', 12, 2);
             $table->text('descricao')->nullable();

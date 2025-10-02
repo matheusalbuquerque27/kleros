@@ -16,6 +16,7 @@ use App\Models\Setor;
 use App\Models\TipoEscala;
 use App\Models\Caixa;
 use App\Models\TipoContribuicao;
+use App\Models\TipoLancamento;
 
 class CadastroController extends Controller
 {
@@ -69,7 +70,7 @@ class CadastroController extends Controller
             $caixa->saldo_atual = $entradas - $saidas;
         });
 
-        $tiposContribuicao = TipoContribuicao::where('congregacao_id', $congregacaoId)
+        $tiposLancamento = TipoLancamento::where('congregacao_id', $congregacaoId)
             ->orderBy('nome')
             ->get();
 
@@ -127,7 +128,7 @@ class CadastroController extends Controller
             'destaques' => $destaques,
             'tiposEscala' => $tiposEscala,
             'caixas' => $caixas,
-            'tiposContribuicao' => $tiposContribuicao,
+            'tiposLancamento' => $tiposLancamento,
         ]);
     }
 }

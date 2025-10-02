@@ -28,6 +28,7 @@ use App\Http\Controllers\ExtensoesController;
 use App\Http\Controllers\PesquisaController;
 use App\Http\Controllers\SetorController;
 use App\Http\Controllers\FinanceiroController;
+use App\Http\Controllers\NotificacaoController;
 
 Route::domain('kleros.local')->group(function () {
     
@@ -224,6 +225,10 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::delete('/financeiro/tipos/{id}', [FinanceiroController::class, 'destroyTipo'])->name('financeiro.tipos.destroy');
     Route::get('/financeiro/lancamentos/{caixa}/novo', [FinanceiroController::class, 'formLancamento'])->name('financeiro.lancamentos.form_criar');
     Route::post('/financeiro/lancamentos', [FinanceiroController::class, 'storeLancamento'])->name('financeiro.lancamentos.store');
+    Route::get('/financeiro/lancamentos/{id}/editar', [FinanceiroController::class, 'formLancamentoEditar'])->name('financeiro.lancamentos.form_editar');
+    Route::put('/financeiro/lancamentos/{id}', [FinanceiroController::class, 'updateLancamento'])->name('financeiro.lancamentos.update');
+    Route::get('/financeiro/painel', [FinanceiroController::class, 'painel'])->name('financeiro.painel');
+    Route::get('/financeiro/caixas/novo', [FinanceiroController::class, 'formCaixa'])->name('financeiro.caixas.form_criar');
 
     //Rotas para buscas dinâmicas de localização
     Route::get('/estados/{pais_id}', [LocalizacaoController::class, 'getEstados'])->name('localizacao.estados')->middleware(['auth','role:gestor']);
@@ -231,4 +236,6 @@ Route::middleware(['web', 'dominio'])->group(function () {
 
     Route::get('/extensoes', [ExtensoesController::class, 'index'])->name('extensoes.painel')->middleware(['auth','role:gestor']);
     Route::put('/extensoes/{module}', [ExtensoesController::class, 'update'])->name('extensoes.update')->middleware(['auth','role:gestor']);
+
+    Route::get('/notificacoes', [NotificacaoController::class, 'index'])->name('notificacoes.index')->middleware('auth');
 });

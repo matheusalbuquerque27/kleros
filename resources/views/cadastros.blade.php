@@ -335,7 +335,8 @@
                 <div class="alterlist" id="caixa-{{ $caixa->id }}">
                     <div class="item-15">
                         <div class="card-title">{{ $caixa->nome }}</div>
-                        <small class="hint">Saldo atual: R$ {{ number_format($caixa->saldo_atual, 2, ',', '.') }} • Entradas: R$ {{ number_format($caixa->entradas_total, 2, ',', '.') }} • Saídas: R$ {{ number_format($caixa->saidas_total, 2, ',', '.') }}</small>
+                        <p class="hint">Saldo atual: R$ {{ number_format($caixa->saldo_atual, 2, ',', '.') }} 
+                            <br> Entradas: R$ <span class="text-success">{{ number_format($caixa->entradas_total, 2, ',', '.') }}</span> • Saídas: R$ <span class="text-danger">{{ number_format($caixa->saidas_total, 2, ',', '.') }}</span></p>
                         @if($caixa->descricao)
                             <div class="card-description">{{ $caixa->descricao }}</div>
                         @endif
@@ -347,21 +348,12 @@
                         @endphp
                         @if($ultimos->count())
                             <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Data</th>
-                                        <th>Tipo</th>
-                                        <th>Valor</th>
-                                        <th>Descrição</th>
-                                    </tr>
-                                </thead>
                                 <tbody>
                                 @foreach($ultimos as $lancamento)
                                     <tr>
-                                        <td>{{ optional($lancamento->data_lancamento)->format('d/m/Y') }}</td>
-                                        <td>{{ ucfirst($lancamento->tipo) }} @if($lancamento->tipoContribuicao) • {{ $lancamento->tipoContribuicao->nome }} @endif</td>
-                                        <td class="{{ $lancamento->tipo === 'entrada' ? 'text-success' : 'text-danger' }}">R$ {{ number_format($lancamento->valor, 2, ',', '.') }}</td>
-                                        <td>{{ $lancamento->descricao ?? '—' }}</td>
+                                        <td><small>{{ optional($lancamento->data_lancamento)->format('d/m') }}</small></td>
+                                        <td><small>@if($lancamento->tipoLancamento) • {{ $lancamento->tipoLancamento->nome }} @endif</small></td>
+                                        <td class="{{ $lancamento->tipo === 'entrada' ? 'text-success' : 'text-danger' }}"><small>R$ {{ number_format($lancamento->valor, 2, ',', '.') }}</small></td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -372,7 +364,7 @@
                     </div>
                     <div class="item-15">
                         <div class="form-options">
-                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{ route('financeiro.lancamentos.form_criar', $caixa->id) }}')"><i class="bi bi-plus-circle"></i> Registrar</button>
+                            <a href="{{route('financeiro.painel')}}"><button type="button" class="btn-options"><i class="bi bi-list"></i> Gerenciar</button></a>
                             <button type="button" class="btn-options" onclick="abrirJanelaModal('{{ route('financeiro.caixas.form_editar', $caixa->id) }}')"><i class="bi bi-pencil-square"></i> Editar</button>
                             <form action="{{ route('financeiro.caixas.destroy', $caixa->id) }}" method="POST" onsubmit="return handleSubmit(event, this, 'Excluir o caixa {{ $caixa->nome }}? Todos os lançamentos serão removidos.')" style="display:inline;">
                                 @csrf
@@ -391,7 +383,7 @@
 
         <div class="form-options">
             <button class="btn" type="button" onclick="abrirJanelaModal('{{ route('financeiro.caixas.form_criar') }}')"><i class="bi bi-plus-circle"></i> Novo caixa</button>
-            <button class="btn" type="button" onclick="abrirJanelaModal('{{ route('financeiro.tipos.form_criar') }}')"><i class="bi bi-plus-circle"></i> Tipo de contribuição</button>
+            <button class="btn" type="button" onclick="abrirJanelaModal('{{ route('financeiro.tipos.form_criar') }}')"><i class="bi bi-plus-circle"></i> Tipo de lançamento</button>
         </div>
     </div>
 

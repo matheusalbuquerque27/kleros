@@ -102,33 +102,7 @@
                                 </div>
                                 </div>
                                 <div class="notif-list" id="notifList">
-                                <!-- Exemplo de itens -->
-                                <a href="/notificacoes/1" class="notif-item" data-id="1">
-                                    <div class="notif-icon"><i class="bi bi-envelope"></i></div>
-                                    <div class="notif-content">
-                                    <h5>Novo contato</h5>
-                                    <p>Você recebeu uma nova mensagem.</p>
-                                    <div class="notif-meta"><span class="notif-dot"></span><span>há 2 min</span></div>
-                                    </div>
-                                </a>
-
-                                <a href="/notificacoes/2" class="notif-item" data-id="2">
-                                    <div class="notif-icon"><i class="bi bi-exclamation-circle"></i></div>
-                                    <div class="notif-content">
-                                    <h5>Aviso do sistema</h5>
-                                    <p>Manutenção hoje às 22h.</p>
-                                    <div class="notif-meta"><span class="notif-dot"></span><span>há 1 h</span></div>
-                                    </div>
-                                </a>
-
-                                <a href="/notificacoes/3" class="notif-item is-read" data-id="3">
-                                    <div class="notif-icon"><i class="bi bi-check2-circle"></i></div>
-                                    <div class="notif-content">
-                                    <h5>Tarefa concluída</h5>
-                                    <p>Sincronização finalizada.</p>
-                                    <div class="notif-meta"><span class="notif-dot"></span><span>ontem</span></div>
-                                    </div>
-                                </a>
+                                <!-- Itens de notificação serão inseridos aqui dinamicamente -->
                                 </div>
 
                                 <div class="notif-empty" id="notifEmpty" style="display:none;">
@@ -198,7 +172,7 @@
                             @if(module_enabled('cursos'))
                                 <a href="{{route('cursos.index')}}"><li><span title="Escola Virtual"><i class="bi bi-mortarboard"></i></span><span>Escola Virtual</span></li></a>
                             @endif
-                            <a href=""><li><span title="Financeiro"><i class="bi bi-currency-exchange"></i></span><span>Financeiro</span></li></a>
+                            <a href="{{ route('financeiro.painel') }}"><li><span title="Financeiro"><i class="bi bi-currency-exchange"></i></span><span>Financeiro</span></li></a>
                             <a href="{{route('noticias.painel')}}"><li><span title="Notícias"><i class="bi bi-newspaper"></i></span><span>Notícias</span></li></a>
                             <a href="{{route('podcasts.painel')}}"><li><span title="Podcasts"><i class="bi bi-mic-fill"></i></span><span>Podcasts</span></li></a>
                             <a href="{{route('livraria.index')}}"><li><span title="Livraria"><i class="bi bi-book"></i></span><span>Livraria</span></li></a>
@@ -524,5 +498,101 @@
         </script>
 
         @stack('scripts')
+        <script>
+            $(document).ready(function() {
+    function fetchNotifications() {
+        $.ajax({
+            url: '{{ route('notificacoes.index') }}',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                updateNotificationUI(data);
+            },
+            error: function(error) {
+                console.error('Error fetching notifications:', error);
+            }
+        });
+    }
+
+    function formatTimeAgo(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.floor((now - date) / 1000);
+
+        let interval = seconds / 31536000;
+        if (interval > 1) {
+            return Math.floor(interval) + " anos atrás";
+        }
+        interval = seconds / 2592000;
+        if (interval > 1) {
+            return Math.floor(interval) + " meses atrás";
+        }
+        interval = seconds / 86400;
+        if (interval > 1) {
+            return Math.floor(interval) + " dias atrás";
+        }
+        interval = seconds / 3600;
+        if (interval > 1) {
+            return Math.floor(interval) + " horas atrás";
+        }
+        interval = seconds / 60;
+        if (interval > 1) {
+            return Math.floor(interval) + " minutos atrás";
+        }
+        return Math.floor(seconds) + " segundos atrás";
+    }
+
+    function updateNotificationUI(data) {
+        const notifList = $('#notifList');
+        const notifBadge = $('#notifBadge');
+        const notifEmpty = $('#notifEmpty');
+
+        notifList.empty(); // Clear existing notifications
+
+        if (data.count > 0) {
+            notifBadge.text(data.count).removeClass('is-hidden');
+            notifEmpty.hide();
+
+            const summaryMessage = `Você tem ${data.count} novos avisos.`;
+            const summaryHtml = `
+                <a href="{{ route('avisos.painel') }}" class="notif-item">
+                    <div class="notif-icon"><i class="bi bi-envelope"></i></div>
+                    <div class="notif-content">
+                        <h5>Novos Avisos</h5>
+                        <p>${summaryMessage}</p>
+                    </div>
+                </a>
+            `;
+            notifList.append(summaryHtml);
+
+            data.avisos.forEach(function(aviso) {
+                const avisoUrl = `/avisos#aviso-${aviso.id}`;
+                const html = `
+                    <a href="${avisoUrl}" class="notif-item" data-id="${aviso.id}">
+                        <div class="notif-icon"><i class="bi bi-info-circle"></i></div>
+                        <div class="notif-content">
+                            <h5>${aviso.titulo}</h5>
+                            <p>${aviso.mensagem.substring(0, 50)}...</p>
+                            <div class="notif-meta">
+                                <span class="notif-dot"></span>
+                                <span>${formatTimeAgo(aviso.created_at)}</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                notifList.append(html);
+            });
+
+        } else {
+            notifBadge.text('0').addClass('is-hidden');
+            notifEmpty.show();
+        }
+    }
+
+    fetchNotifications();
+
+    setInterval(fetchNotifications, 60000);
+});
+        </script>
     </body>
 </html>

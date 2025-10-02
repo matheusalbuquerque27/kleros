@@ -124,6 +124,11 @@
                 <h2>Fluxo de Frequência</h2>
                 {!! $chartFluxoCultos->container() !!}
             </div>
+
+            <div class="chart-box">
+                <h2>Lançamentos Financeiros</h2>
+                {!! $chartLancamentos->container() !!}
+            </div> <!-- Para deixar ocupar 100% style="grid-column: 1 / -1;" -->
         </div>
     </div>
 </div>
@@ -138,4 +143,5 @@
 {{ $chartFaixaEtaria->script() }}
 {{ $chartFrequenciaCultos->script() }}
 {{ $chartFluxoCultos->script() }}
+{{ $chartLancamentos->script() }}
 @endpush

@@ -11,7 +11,7 @@ class LancamentoFinanceiro extends Model
 
     protected $fillable = [
         'caixa_id',
-        'tipo_contribuicao_id',
+        'tipo_lancamento_id',
         'tipo',
         'valor',
         'descricao',
@@ -28,8 +28,8 @@ class LancamentoFinanceiro extends Model
         return $this->belongsTo(Caixa::class);
     }
 
-    public function tipoContribuicao()
+    public function tipoLancamento()
     {
-        return $this->belongsTo(TipoContribuicao::class);
+        return $this->belongsTo(TipoLancamento::class);
     }
 }

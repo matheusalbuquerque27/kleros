@@ -10,6 +10,7 @@ use App\Charts\VisitantesPorMesChart;
 use App\Charts\MembrosPorSexoChart;
 use App\Charts\CultosFrequenciaChart;
 use App\Charts\CultosFluxoChart;
+use App\Charts\LancamentosFinanceirosChart;
 
 class RelatorioController extends Controller
 {
@@ -18,15 +19,17 @@ class RelatorioController extends Controller
         MembrosPorSexoChart $membrosChartBuilder,
         MembrosPorFaixaEtariaChart $membrosPorFaixaChartBuilder,
         CultosFrequenciaChart $cultosFrequenciaChartBuilder,
-        CultosFluxoChart $cultosFluxoChartBuilder
+        CultosFluxoChart $cultosFluxoChartBuilder,
+        LancamentosFinanceirosChart $lancamentosFinanceirosChartBuilder
     ) {
-        $inicio = Carbon::parse('2025-02-01')->startOfDay();
-        $fim    = Carbon::parse('2025-09-13')->endOfDay();
+        $fim    = Carbon::now()->endOfDay();
+        $inicio = $fim->copy()->subMonths(6)->startOfDay();
 
         // === Visitantes por mês ===
-        $rows = DB::table('visitantes as v')
-            ->whereBetween('v.data_visita', [$inicio, $fim])
-            ->selectRaw("DATE_FORMAT(v.data_visita, '%Y-%m') as ym, COUNT(*) as total_visitantes")
+        $rows = DB::table('cultos as c')
+            ->where('c.congregacao_id', optional(app('congregacao'))->id)
+            ->whereBetween('c.data_culto', [$inicio, $fim])
+            ->selectRaw("DATE_FORMAT(c.data_culto, '%Y-%m') as ym, SUM(c.quant_visitantes) as total_visitantes")
             ->groupBy('ym')
             ->orderBy('ym')
             ->get();
@@ -49,6 +52,7 @@ class RelatorioController extends Controller
 
         // === Membros por sexo ===
         $sexoStats = DB::table('membros')
+            ->where('congregacao_id', optional(app('congregacao'))->id)
             ->selectRaw('sexo, COUNT(*) as total')
             ->groupBy('sexo')
             ->pluck('total', 'sexo');
@@ -60,6 +64,7 @@ class RelatorioController extends Controller
 
         // === Membros por faixa etária (somente ativos) ===
         $faixas = DB::table('membros')
+            ->where('congregacao_id', optional(app('congregacao'))->id)
             ->where('ativo', true) // <-- filtro de ativos
             ->selectRaw("
                 SUM(CASE WHEN TIMESTAMPDIFF(YEAR, data_nascimento, CURDATE()) < 12 THEN 1 ELSE 0 END) as menores_12,
@@ -126,6 +131,9 @@ class RelatorioController extends Controller
         $chartFrequenciaCultos = $cultosFrequenciaChartBuilder->build($labelsCultos, $adultosCulto, $criancasCulto, $visitantesCulto);
         $chartFluxoCultos = $cultosFluxoChartBuilder->build($labelsCultos, $adultosCulto, $criancasCulto, $visitantesCulto);
 
+        // === Lançamentos Financeiros ===
+        $chartLancamentos = $lancamentosFinanceirosChartBuilder->build();
+
         // === Retorna view com os gráficos ===
         return view('relatorios.painel', [
             'chartVisitantes' => $chartVisitantes,
@@ -133,6 +141,7 @@ class RelatorioController extends Controller
             'chartFaixaEtaria' => $chartFaixaEtaria,
             'chartFrequenciaCultos' => $chartFrequenciaCultos,
             'chartFluxoCultos' => $chartFluxoCultos,
+            'chartLancamentos' => $chartLancamentos,
             'inicio'          => $inicio->toDateString(),
             'fim'             => $fim->toDateString(),
         ]);

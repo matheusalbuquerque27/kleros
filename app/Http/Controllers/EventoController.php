@@ -98,7 +98,7 @@ class EventoController extends Controller
             }
         }
         
-        return redirect('/cadastros#eventos')->with('msg', 'Um novo evento foi agendado.');
+        return redirect()->back()->with('msg', 'Um novo evento foi agendado.');
     }
 
     public function search(Request $request) {
