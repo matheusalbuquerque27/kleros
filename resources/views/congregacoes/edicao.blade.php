@@ -91,7 +91,9 @@
                                     <label for="logo" class="btn-line"><i class="bi bi-upload"></i> Upload</label>
                                     <input type="file" name="logo" id="logo" url="">
                                     <input type="hidden" name="logo_acervo" id="logo_acervo">
-                                    <span class="btn-line window_files"><i class="bi bi-hdd"></i> Drive</span>
+                                    @if(module_enabled('drive'))
+                                        <span class="btn-line window_files"><i class="bi bi-hdd"></i> Drive</span>
+                                    @endif
                                 </div>
                             </div>
                             <div class="form-item">
@@ -102,7 +104,9 @@
                                     <label for="banner" class="btn-line"><i class="bi bi-upload"></i> Upload</label>
                                     <input type="file" name="banner" id="banner" url="">
                                     <input type="hidden" name="banner_acervo" id="banner_acervo">
-                                    <span class="btn-line window_files"><i class="bi bi-hdd"></i> Drive</span>
+                                    @if(module_enabled('drive'))
+                                        <span class="btn-line window_files"><i class="bi bi-hdd"></i> Drive</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -233,7 +237,6 @@
     .tab-pane.active {
         display: block;
     }
-
 
     .form-item input:focus, 
     .form-item textarea:focus {

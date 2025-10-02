@@ -53,5 +53,17 @@ class Congregacao extends Model
     public function pais(){
         return $this->BelongsTo(Pais::class, 'pais_id');
     }
+    public function eventos()
+    {
+        return $this->hasMany(Evento::class, 'congregacao_id');
+    }
+    public function cultos()
+    {
+        return $this->hasMany(Culto::class, 'congregacao_id');
+    }
+    public function arquivos()
+    {
+        return $this->hasMany(Arquivo::class, 'congregacao_id');
+    }
 
 }

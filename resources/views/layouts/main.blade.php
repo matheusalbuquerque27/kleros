@@ -188,7 +188,10 @@
                             @endif
                             <a href="{{route('tutoriais.index')}}"><li><span title="Tutoriais"><i class="bi bi-question-octagon"></i></span><span>Tutoriais</span></li></a>
                             <a href="{{route('extensoes.painel')}}"><li><span title="Extensões"><i class="bi bi-nut"></i></span><span>Extensões</span></li></a>
-                            <a href="{{route('configuracoes.atualizar', $congregacao->id)}}"><li><span title="Drive"><i class="bi bi-hdd"></i></span><span>Drive</span></li></a>
+                            @if(module_enabled('drive'))
+                                @php($driveUrl = Route::has('drive.painel') ? route('drive.painel') : url('/drive'))
+                                <a href="{{ $driveUrl }}"><li><span title="Drive"><i class="bi bi-hdd"></i></span><span>Drive</span></li></a>
+                            @endif
                         @else
                             <a href="{{route('agenda.index')}}"><li><span title="Agenda"><i class="bi bi-calendar3"></i></span><span>Agenda</span></li></a>
                             <a href="{{route('noticias.painel')}}"><li><span title="Notícias"><i class="bi bi-newspaper"></i></span><span>Notícias</span></li></a>

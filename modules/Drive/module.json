@@ -1,0 +1,6 @@
+{
+    "name": "Drive",
+    "description": "Gestão de arquivos da congregação com visualização em lista ou ícones.",
+    "provider": "Modules\\Drive\\Providers\\DriveServiceProvider",
+    "enabled": true
+}
