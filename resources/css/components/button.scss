@@ -36,11 +36,11 @@
     font-size: .8em;
     padding: 4px;
     min-width: 100px;
-    margin: 2px;
     /*background-color: #e9f8fd;*/
     background-color: var(--primary-color);
     border: 0;
     border-radius: 20px;
+    color: var(--primary-contrast);
 }
 
 .btn-options:hover {
