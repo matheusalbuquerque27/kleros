@@ -11,9 +11,42 @@ use Illuminate\Support\Facades\Auth;
 class RecadoController extends Controller
 {
 
-    public function historico() {
-        $recados = Recado::all();
-        return view('recados::historico', ['recados' => $recados]);
+    public function historico(Request $request)
+    {
+        $congregacao = app('congregacao');
+
+        $recadosQuery = Recado::query()
+            ->with(['culto', 'membro']);
+
+        if ($congregacao) {
+            $recadosQuery->where('congregacao_id', $congregacao->id);
+        }
+
+        if ($request->filled('culto_id')) {
+            $recadosQuery->where('culto_id', $request->integer('culto_id'));
+        }
+
+        if ($request->filled('mensagem')) {
+            $recadosQuery->where('mensagem', 'like', '%' . $request->mensagem . '%');
+        }
+
+        $recados = $recadosQuery
+            ->orderByDesc('data_recado')
+            ->paginate(10)
+            ->withQueryString();
+
+        $cultos = Culto::query()
+            ->when($congregacao, function ($query) use ($congregacao) {
+                $query->where('congregacao_id', $congregacao->id);
+            })
+            ->orderByDesc('data_culto')
+            ->get(['id', 'data_culto']);
+
+        return view('recados::historico', [
+            'recados' => $recados,
+            'cultos' => $cultos,
+            'congregacao' => $congregacao,
+        ]);
     }
     public function create() {
         $congregacao = app('congregacao');

@@ -30,14 +30,47 @@ class AgendaController extends Controller
 
         $reunioes = Reuniao::select([
             'id',
-            'assunto as title',
-            'data_inicio as start',
-        ])->where('congregacao_id', $congregacao->id)->get();
+            'assunto',
+            'data_inicio',
+        ])->where('congregacao_id', $congregacao->id)->get()
+            ->map(function ($reuniao) {
+                return [
+                    'id' => 'reuniao-' . $reuniao->id,
+                    'title' => $reuniao->assunto,
+                    'start' => Carbon::parse($reuniao->data_inicio)->toIso8601String(),
+                    'color' => '#eb8b1e',
+                    'backgroundColor' => '#eb8b1e',
+                    'extendedProps' => [
+                        'type' => 'reuniao',
+                        'editUrl' => route('reunioes.form_editar', $reuniao->id),
+                    ],
+                ];
+            });
 
         $cultos = Culto::select([
             'id',
-            'data_culto as start',
-        ])->where('congregacao_id', $congregacao->id)->get();
+            'data_culto',
+            'preletor',
+        ])->where('congregacao_id', $congregacao->id)->get()
+            ->map(function ($culto) {
+                $title = 'Culto';
+
+                if (! empty($culto->preletor)) {
+                    $title .= ' - ' . $culto->preletor;
+                }
+
+                return [
+                    'id' => 'culto-' . $culto->id,
+                    'title' => $title,
+                    'start' => Carbon::parse($culto->data_culto)->toDateString(),
+                    'color' => '#4caf50',
+                    'backgroundColor' => '#4caf50',
+                    'extendedProps' => [
+                        'type' => 'culto',
+                        'editUrl' => route('cultos.form_editar', $culto->id),
+                    ],
+                ];
+            });
 
         $aniversarios = Membro::select([
             'id',
@@ -55,9 +88,14 @@ class AgendaController extends Controller
 
             return [
                 'id' => 'birthday-' . $membro->id,
-                    'title' => '<i class="bi bi-cake2"></i> ' . $membro->nome,
+                'title' => '<i class="bi bi-cake2"></i> ' . $membro->nome,
                 'start' => $data->toDateString(),
                 'color' => '#d4a017',
+                'backgroundColor' => '#d4a017',
+                'extendedProps' => [
+                    'type' => 'aniversario',
+                    'editUrl' => null,
+                ],
             ];
         });
 
@@ -69,29 +107,29 @@ class AgendaController extends Controller
         ])->where('congregacao_id', $congregacao->id)
             ->get()
             ->map(function ($evento) {
+                $start = Carbon::parse($evento->data_inicio);
+                $end = null;
+
+                if ($evento->data_encerramento) {
+                    $endDate = Carbon::parse($evento->data_encerramento);
+
+                    if ($endDate->greaterThan($start)) {
+                        $end = $endDate->copy()->addDay()->toDateString();
+                    }
+                }
+
             return [
-                'id' => $evento->id,
+                'id' => 'evento-' . $evento->id,
                 'title' => $evento->title,
-                'start' => Carbon::parse($evento->data_inicio)->toDateString(),
-                'end' => $evento->data_encerramento
-                    ? Carbon::parse($evento->data_encerramento)->addDay()->toDateString()
-                    : null,
+                'start' => $start->toIso8601String(),
+                'end' => $end,
                 'color' => '#2196f3',
+                'backgroundColor' => '#2196f3',
+                'extendedProps' => [
+                    'type' => 'evento',
+                    'editUrl' => route('eventos.form_editar', $evento->id),
+                ],
             ];
-        });
-
-        $reunioes = $reunioes->map(function ($item) {
-            $item->color = '#eb8b1e';
-            $item->backgroundColor = '#eb8b1e';
-
-            return $item;
-        });
-
-        $cultos = $cultos->map(function ($item) {
-            $item->title = 'Culto';
-            $item->color = '#4caf50';
-
-            return $item;
         });
 
         $todosEventos = $cultos

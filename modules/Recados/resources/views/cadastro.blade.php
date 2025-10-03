@@ -18,7 +18,7 @@
                 </div>
                 <div class="form-options">
                     <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> Registrar Recado</button>
-                    <a href="/visitantes/adicionar"><button type="button" class="btn"><i class="bi bi-x-circle"></i> Cancelar</button></a>
+                    <button type="button" class="btn" onclick="window.history.back();"><i class="bi bi-x-circle"></i> Cancelar</button>
                 </div>
             </div>
         </form>

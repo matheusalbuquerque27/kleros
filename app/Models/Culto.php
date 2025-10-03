@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Culto extends Model
 {
+    protected $fillable = [
+        'evento_id',
+        'data_culto',
+        'preletor_id',
+    ];
+
     protected $casts = [
         'data_culto' => 'datetime',
     ];

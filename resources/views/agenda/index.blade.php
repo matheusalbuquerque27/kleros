@@ -66,7 +66,17 @@
                 }
             },
             eventClick: function(info) {
-                alert('Evento: ' + info.event.title.replace(/<[^>]+>/g, '') + '\nInício: ' + info.event.start.toLocaleString());
+                info.jsEvent.preventDefault();
+
+                const { editUrl } = info.event.extendedProps || {};
+
+                if (editUrl) {
+                    abrirJanelaModal(editUrl);
+                    return;
+                }
+
+                const plainTitle = info.event.title.replace(/<[^>]+>/g, '');
+                alert('Evento: ' + plainTitle + '\nInício: ' + info.event.start.toLocaleString());
             }
         });
 

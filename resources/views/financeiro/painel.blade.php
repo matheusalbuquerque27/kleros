@@ -46,7 +46,11 @@
                 <input type="date" name="data_fim" id="data_fim" value="{{ request('data_fim') }}">
             </div>
             <div class="search-panel-item">
-                <button class="" onclick="abrirJanelaModal('{{ route('financeiro.lancamentos.form_criar', ['caixa' => request('caixa') ?: optional($caixas->first())->id]) }}')"><i class="bi bi-plus-circle"></i> Lançar</button>
+                <button type="button" class="" id="btn_novo_lancamento"
+                    data-base-url="{{ route('financeiro.lancamentos.form_criar', ['caixa' => '__CAIXA__']) }}"
+                    data-default-caixa="{{ optional($caixas->first())->id }}">
+                    <i class="bi bi-plus-circle"></i> Lançar
+                </button>
                 <button class="" onclick="abrirJanelaModal('{{ route('financeiro.tipos.form_criar') }}')"><i class="bi bi-plus-circle"></i> Tipo de lançamento</button>
                 <button class="" onclick="abrirJanelaModal('{{ route('financeiro.caixas.form_criar') }}')"><i class="bi bi-plus-circle"></i> Novo caixa</button>
                 <button class="" id="btn_limpar"><i class="bi bi-eraser"></i> Limpar</button>
@@ -129,6 +133,21 @@
 
         $('#btn_limpar').on('click', function () {
             window.location.href = window.location.pathname;
+        });
+
+        $('#btn_novo_lancamento').on('click', function () {
+            const baseUrl = this.dataset.baseUrl;
+            const selectedCaixa = $('#caixa').val();
+            const defaultCaixa = this.dataset.defaultCaixa;
+            const caixaId = selectedCaixa || defaultCaixa;
+
+            if (!caixaId) {
+                alert('Selecione ou cadastre um caixa antes de lançar.');
+                return;
+            }
+
+            const url = baseUrl.replace('__CAIXA__', caixaId);
+            abrirJanelaModal(url);
         });
     });
 </script>

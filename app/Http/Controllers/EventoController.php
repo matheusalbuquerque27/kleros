@@ -135,4 +135,55 @@ class EventoController extends Controller
         $grupos = Agrupamento::where('tipo', 'grupo')->get();
         return view('eventos/includes/form_editar', ['evento' => $evento, 'grupos' => $grupos]);
     }
+
+    public function update(Request $request, $id)
+    {
+        $evento = Evento::where('congregacao_id', $this->congregacao->id)->findOrFail($id);
+
+        $request->validate([
+            'titulo' => 'required',
+            'data_inicio' => 'required',
+        ], [
+            '*.required' => 'Título e Data de início são obrigatórios'
+        ]);
+
+        $evento->titulo = $request->titulo;
+        $evento->agrupamento_id = $request->grupo_id ?: null;
+        $evento->descricao = $request->descricao;
+        $evento->recorrente = $request->evento_recorrente == "1" ? true : false;
+        $evento->local = $request->local;
+        $evento->requer_inscricao = $request->requer_inscricao == "1" ? true : false;
+        $evento->data_inicio = $request->data_inicio;
+
+        $dataInicioObj = new DateTime($request->data_inicio);
+        $dataEncerramentoObj = ($request->data_encerramento != null)
+            ? new DateTime($request->data_encerramento)
+            : null;
+
+        $evento->data_encerramento = ($request->data_encerramento != null
+            && $dataEncerramentoObj > $dataInicioObj)
+            ? $request->data_encerramento
+            : $request->data_inicio;
+
+        $evento->save();
+
+        $geracaoCultos = $request->geracao_cultos == "1" ? true : false;
+
+        if ($geracaoCultos && ! $evento->recorrente) {
+            $datas = pegarDiasDeIntervaloDatas($evento->data_inicio, $evento->data_encerramento);
+
+            foreach ($datas as $dia) {
+                $evento->culto()->firstOrCreate(
+                    ['data_culto' => $dia],
+                    [
+                        'congregacao_id' => $this->congregacao->id,
+                        'preletor' => 'A definir',
+                        'quant_visitantes' => 0,
+                    ]
+                );
+            }
+        }
+
+        return redirect()->back()->with('msg', 'Evento atualizado com sucesso.');
+    }
 }
