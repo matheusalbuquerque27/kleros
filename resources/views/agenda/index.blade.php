@@ -61,9 +61,24 @@
             events: "{{ route('agenda.eventos.json') }}",
             eventDidMount: function(info) {
                 const titleEl = info.el.querySelector('.fc-event-title');
-                if (titleEl) {
-                    titleEl.innerHTML = info.event.title;
+                if (!titleEl) {
+                    return;
                 }
+
+                const type = info.event.extendedProps ? info.event.extendedProps.type : null;
+                const iconMap = {
+                    culto: 'bi-bell',
+                    evento: 'bi-calendar-event'
+                };
+
+                let titleHtml = info.event.title;
+                const iconClass = iconMap[type];
+
+                if (iconClass && !/^<i\b/i.test(titleHtml.trim())) {
+                    titleHtml = '<i class="bi ' + iconClass + '"></i> ' + titleHtml;
+                }
+
+                titleEl.innerHTML = titleHtml;
             },
             eventClick: function(info) {
                 info.jsEvent.preventDefault();
