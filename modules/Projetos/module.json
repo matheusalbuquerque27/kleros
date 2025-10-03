@@ -1,0 +1,6 @@
+{
+    "name": "Projetos",
+    "description": "Gestão de projetos colaborativos da congregação.",
+    "provider": "Modules\\Projetos\\Providers\\ProjetosServiceProvider",
+    "enabled": true
+}

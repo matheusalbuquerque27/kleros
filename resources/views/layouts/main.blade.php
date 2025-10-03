@@ -177,7 +177,9 @@
                             <a href="{{route('podcasts.painel')}}"><li><span title="Podcasts"><i class="bi bi-mic-fill"></i></span><span>Podcasts</span></li></a>
                             <a href="{{route('livraria.index')}}"><li><span title="Livraria"><i class="bi bi-book"></i></span><span>Livraria</span></li></a>
                             <a href="{{route('relatorios.painel')}}"><li><span title="Relatórios"><i class="bi bi-pie-chart"></i></span><span>Relatórios</span></li></a>
-                            <a href="{{route('relatorios.painel')}}"><li><span title="Projetos"><i class="bi bi-clipboard2-data"></i></span><span>Projetos</span></li></a>
+                            @if(module_enabled('projetos') && Route::has('projetos.painel'))
+                                <a href="{{ route('projetos.painel') }}"><li><span title="Projetos"><i class="bi bi-kanban"></i></span><span>Projetos</span></li></a>
+                            @endif
                             <a href="{{route('livraria.index')}}"><li><span title="Ação Social"><i class="bi bi-box2-heart"></i></span><span>Ação Social</span></li></a>
                             <a href="{{route('pesquisas.painel')}}"><li><span title="Pesquisas"><i class="bi bi-bar-chart"></i></span><span>Pesquisas</span></li></a>
                             @if(module_enabled('biblia'))
@@ -273,19 +275,58 @@
 
         <!--Função para controle da janela flutuante-->
         <script>
-            function abrirJanelaModal(url) {
+            function abrirJanelaModal(url, options = {}) {
+                const container = document.getElementById('conteudoModal');
+                const modal = document.getElementById('janelaModal');
+                const { iframe = false, title = 'Visualização' } = options;
+
+                if (iframe) {
+                    container.innerHTML = '';
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'modal-iframe-wrapper';
+
+                    const iframeEl = document.createElement('iframe');
+                    iframeEl.src = url;
+                    iframeEl.title = title;
+                    iframeEl.loading = 'lazy';
+                    iframeEl.style.width = '100%';
+                    iframeEl.style.height = '80vh';
+                    iframeEl.style.border = '0';
+
+                    wrapper.appendChild(iframeEl);
+                    container.appendChild(wrapper);
+                    modal.style.display = 'flex';
+                    return;
+                }
+
+                container.innerHTML = '';
+
                 fetch(url)
-                    .then(response => response.text())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erro ao carregar o conteúdo.');
+                        }
+
+                        return response.text();
+                    })
                     .then(html => {
-                        const container = document.getElementById('conteudoModal');
                         container.innerHTML = html;
-                        document.getElementById('janelaModal').style.display = 'flex';
+                        modal.style.display = 'flex';
 
                         initModalScripts(container);
+                    })
+                    .catch(() => {
+                        container.innerHTML = '';
+                        const message = document.createElement('p');
+                        message.textContent = 'Não foi possível carregar o conteúdo.';
+                        container.appendChild(message);
+                        modal.style.display = 'flex';
                     });                
             }
 
             function fecharJanelaModal() {
+                const container = document.getElementById('conteudoModal');
+                container.innerHTML = '';
                 document.getElementById('janelaModal').style.display = 'none';
             }      
         </script>

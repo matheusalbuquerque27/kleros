@@ -1,45 +1,45 @@
-<div class="container">
-    <h1>Cadastrar Visitante</h1>
-    <div class="info">
-        <h3>Visitante</h3>
-        <form action="/visitantes" method="post">
-            @csrf
-            <div class="form-control">
-                <div class="form-item">
-                    <label for="Nome">Nome: </label>
-                    <input type="text" name="nome" placeholder="Nome completo" required>
-                </div>
-                <div class="form-item">
-                    <label for="telefone">Telefone/Celular: </label>
-                    <input type="tel" name="telefone" id="telefone" placeholder="(00)00000-0000" required>
-                </div>
-                <div class="form-item">
-                    <label for="data_visita">Data de visita: </label>
-                    <input type="date" name="data_visita" value="{{date("Y-m-d")}}" placeholder="Data de visita" required>
-                </div>
-                <div class="form-item">
-                    <label for="situacao">Situação: </label>
-                    <select name="situacao" id="">
-                        <option value="">Situação do visitante: </option>
-                        @foreach ($situacao_visitante as $item)
-                        <option value="{{$item->id}}">{{$item->titulo}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-item">
-                    <label for="observacoes">Observações: </label>
-                    <textarea name="observacoes" placeholder="Observações importantes"></textarea>
-                </div>
-                <div class="form-options">
-                    <button class="btn mg-top-10" type="submit"><i class="bi bi-plus-circle"></i> Salvar Dados</button>
-                    <a href="/visitantes/historico"><button class="btn mg-top-10" type="button"><i class="bi bi-card-list"></i> Histórico</button></a>
-                    <button type="button" onclick="fecharJanelaModal()" class="btn mg-top-10"><i class="bi bi-x-circle"></i> Cancelar</button></a>
-                </div>
+<h1>Cadastrar Visitante</h1>
+<div class="info">
+    <h3>Registro</h3>
+    <form action="/visitantes" method="post">
+        @csrf
+        <div class="form-control">
+            <div class="form-item">
+                <label for="visitante-nome">Nome completo</label>
+                <input type="text" id="visitante-nome" name="nome" value="{{ old('nome') }}" placeholder="Nome do visitante" required>
             </div>
-        </form>
-        @if(module_enabled('recados'))
-            <a href="/recados/adicionar"><button type="button" class="float-btn"><i class="bi bi-chat-left-dots"></i></button></a>
-        @endif
-        <div class="clear"></div>
-    </div>
+            <div class="form-item">
+                <label for="visitante-telefone">Telefone/Celular</label>
+                <input type="tel" id="visitante-telefone" name="telefone" value="{{ old('telefone') }}" placeholder="(00) 00000-0000" required>
+            </div>
+            <div class="form-item">
+                <label for="visitante-data">Data da visita</label>
+                <input type="date" id="visitante-data" name="data_visita" value="{{ old('data_visita', now()->format('Y-m-d')) }}" required>
+            </div>
+            <div class="form-item">
+                <label for="visitante-situacao">Situação</label>
+                <select name="situacao" id="visitante-situacao" required>
+                    <option value="">Selecione a situação do visitante</option>
+                    @foreach ($situacao_visitante as $item)
+                        <option value="{{ $item->id }}" @selected(old('situacao') == $item->id)>{{ $item->titulo }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-item">
+                <label for="visitante-observacoes">Observações</label>
+                <textarea id="visitante-observacoes" name="observacoes" placeholder="Observações importantes">{{ old('observacoes') }}</textarea>
+            </div>
+            <div class="form-options">
+                <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> Salvar Dados</button>
+                <a href="/visitantes/historico" class="btn"><i class="bi bi-card-list"></i> Histórico</a>
+                <button type="button" class="btn" onclick="fecharJanelaModal()"><i class="bi bi-x-circle"></i> Cancelar</button>
+            </div>
+        </div>
+    </form>
+
+    @if(module_enabled('recados'))
+        <a href="/recados/adicionar" class="float-btn" title="Enviar recado"><i class="bi bi-chat-left-dots"></i></a>
+    @endif
+
+    <div class="clear"></div>
 </div>

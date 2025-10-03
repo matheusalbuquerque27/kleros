@@ -23,11 +23,11 @@
                 <div class="form-square">
                     <div>
                         <input type="radio" id="especifico" name="evento_recorrente" value="0" checked>
-                        <label for="especifico">Específico (cadastro individual)</label>
+                        <label for="especifico">Específico <small>Ocorrerá apenas uma vez</small></label>
                     </div>
                     <div>
                         <input type="radio" id="recorrente" name="evento_recorrente" value="1">
-                        <label for="recorrente">Recorrente (cadastro único)</label>
+                        <label for="recorrente">Recorrente <small>Ocorrerá repetidamente</small></label>
                     </div>
                 </div>
             </div>

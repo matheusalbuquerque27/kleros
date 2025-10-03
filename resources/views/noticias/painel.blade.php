@@ -24,55 +24,7 @@
                         <div class="noticia-desc">
                             {!! substr(strip_tags($noticia['descricao'] ?? ''), 0, 200) !!}...
                         </div>
-                        <a href="{{ $noticia['link'] }}" target="_blank" class="noticia-link">
-                            Ler mais
-                        </a>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-        <h3>Atualidades</h3>
-        <div class="noticias-container">
-            <div class="noticias-grid">
-                @foreach ($noticias['gospel+'] ?? [] as $noticia)
-                    <div class="noticia-card">
-                        @if (!empty($noticia['media_url']))
-                            <img src="{{ $noticia['media_url'] }}" alt="" class="noticia-img">
-                        @endif
-                        <a href="{{ $noticia['link'] }}" target="_blank" class="noticia-title">
-                            {{ $noticia['titulo'] }}
-                        </a>
-                        <div class="noticia-date">
-                            {{ $noticia['publicado_em'] }}
-                        </div>
-                        <div class="noticia-desc">
-                            {!! substr(strip_tags($noticia['descricao'] ?? ''), 0, 200) !!}...
-                        </div>
-                        <a href="{{ $noticia['link'] }}" target="_blank" class="noticia-link">
-                            Ler mais
-                        </a>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-        <h3>Missões Nacionais</h3>
-        <div class="noticias-container">
-            <div class="noticias-grid">
-                @foreach ($noticias['missoesnacionais'] ?? [] as $noticia)
-                    <div class="noticia-card">
-                        @if (!empty($noticia['media_url']))
-                            <img src="{{ $noticia['audio_url'] }}" alt="" class="noticia-img">
-                        @endif
-                        <a href="{{ $noticia['link'] }}" target="_blank" class="noticia-title">
-                            {{ $noticia['titulo'] }}
-                        </a>
-                        <div class="noticia-date">
-                            {{ $noticia['publicado_em'] }}
-                        </div>
-                        <div class="noticia-desc">
-                            {!! substr(strip_tags($noticia['descricao'] ?? ''), 0, 200) !!}...
-                        </div>
-                        <a href="{{ $noticia['link'] }}" target="_blank" class="noticia-link">
+                        <a href="{{ $noticia['link'] }}" target="_blank" rel="noopener noreferrer" class="noticia-link" onclick='abrirJanelaModal(@json($noticia['link']), { iframe: true, title: @json($noticia['titulo'] ?? 'Notícia') }); return false;'>
                             Ler mais
                         </a>
                     </div>

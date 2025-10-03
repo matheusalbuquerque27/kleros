@@ -45,7 +45,7 @@
             @foreach ($eventos as $item)
             <div class="list-item" onclick="abrirJanelaModal('{{route('eventos.form_editar', $item->id)}}')">
                 <div class="item item-1">
-                    <p>{{$item->data_inicio}}</p>
+                    <p><i class="bi bi-calendar-event"></i> {{$item->data_inicio}}</p>
                 </div>
                 <div class="item item-1">
                     <p>{{$item->titulo}}</p>
