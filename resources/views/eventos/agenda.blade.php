@@ -40,8 +40,8 @@
             </div>
         </div>
         <div class="options-menu" id="eventosAgendaOptions" hidden>
-            <button type="button" class="options-menu__item" data-action="print"><i class="bi bi-printer"></i> Imprimir</button>
-            <button type="button" class="options-menu__item" data-action="back"><i class="bi bi-arrow-return-left"></i> Voltar</button>
+            <button type="button" class="btn" data-action="print"><i class="bi bi-printer"></i> Imprimir</button>
+            <button type="button" class="btn" data-action="back"><i class="bi bi-arrow-return-left"></i> Voltar</button>
         </div>
     </div>
     <div class="list">

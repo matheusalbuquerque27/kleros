@@ -173,6 +173,33 @@ export function initModalScripts(container) {
         }
         form.dataset.escalaInitialized = 'true';
 
+        const cultoSelect = form.querySelector('select#culto_id');
+        const dataHoraGroup = form.querySelector('[data-escala-datahora]');
+        const dataHoraInput = dataHoraGroup ? dataHoraGroup.querySelector('input[name="data_hora"]') : null;
+
+        if (dataHoraInput) {
+            dataHoraInput.disabled = false;
+        }
+
+        if (cultoSelect && dataHoraGroup) {
+            const toggleDataHora = () => {
+                const hasCulto = Boolean((cultoSelect.value || '').trim());
+
+                dataHoraGroup.style.display = hasCulto ? 'none' : '';
+
+                if (dataHoraInput) {
+                    dataHoraInput.disabled = hasCulto;
+                }
+
+                if (dataHoraGroup instanceof HTMLElement) {
+                    dataHoraGroup.setAttribute('aria-hidden', hasCulto ? 'true' : 'false');
+                }
+            };
+
+            toggleDataHora();
+            cultoSelect.addEventListener('change', toggleDataHora);
+        }
+
         const itemsContainer = form.querySelector('[data-escala-items]');
         const addButton = form.querySelector('[data-escala-add]');
         const template = form.querySelector('#escala-item-template');

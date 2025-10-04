@@ -49,7 +49,7 @@
                     @endif
                 </div>
 
-                <div class="form-item">
+                <div class="form-item" data-escala-datahora>
                     <label for="data_hora">Data e hora:</label>
                     <input type="datetime-local" name="data_hora" id="data_hora" value="{{ old('data_hora') }}">
                 </div>

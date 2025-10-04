@@ -69,7 +69,7 @@
                 const iconMap = {
                     culto: 'bi-bell',
                     evento: 'bi-calendar-event',
-                    reuniao: 'bi-people',
+                    reuniao: 'bi-people-fill',
                 };
 
                 let titleHtml = info.event.title;
