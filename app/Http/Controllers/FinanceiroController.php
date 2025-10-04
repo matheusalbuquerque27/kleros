@@ -179,6 +179,45 @@ class FinanceiroController extends Controller
         return view('financeiro.painel', compact('caixas', 'tiposLancamento', 'lancamentos'));
     }
 
+    public function exportLancamentos(Request $request)
+    {
+        $lancamentos = $this->buildLancamentosQuery($request)
+            ->with(['caixa', 'tipoLancamento'])
+            ->orderByDesc('data_lancamento')
+            ->orderByDesc('id')
+            ->get();
+
+        $filename = 'lancamentos_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        $callback = function () use ($lancamentos) {
+            $handle = fopen('php://output', 'w');
+            if ($handle === false) {
+                return;
+            }
+
+            fwrite($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($handle, ['Data', 'Caixa', 'Descrição', 'Tipo', 'Categoria', 'Valor'], ';');
+
+            foreach ($lancamentos as $lancamento) {
+                fputcsv($handle, [
+                    optional($lancamento->data_lancamento)->format('Y-m-d'),
+                    optional($lancamento->caixa)->nome ?? '—',
+                    $lancamento->descricao ?? '',
+                    ucfirst($lancamento->tipo),
+                    optional($lancamento->tipoLancamento)->nome ?? '—',
+                    number_format($lancamento->valor, 2, '.', ''),
+                ], ';');
+            }
+
+            fclose($handle);
+        };
+
+        return response()->streamDownload($callback, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
     protected function buildLancamentosQuery(Request $request)
     {
         $congregacaoId = app('congregacao')->id;

@@ -19,9 +19,13 @@
             </div>
             <div class="search-panel-item">
                 <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
-                <button class="imprimir"><i class="bi bi-printer"></i> Imprimir</button>
-                <button class="" onclick="window.history.back()"><i class="bi bi-arrow-return-left"></i> Voltar</button>
+                <button class="" type="button" id="btn_exportar_visitantes" data-export-url="{{ route('visitantes.export') }}"><i class="bi bi-file-arrow-up"></i> Exportar</button>
+                <button class="options-menu__trigger" type="button" data-options-target="visitantesHistoricoOptions"><i class="bi bi-three-dots-vertical"></i> Opções</button>
             </div>
+        </div>
+        <div class="options-menu" id="visitantesHistoricoOptions" hidden>
+            <button type="button" class="options-menu__item" data-action="print"><i class="bi bi-printer"></i> Imprimir</button>
+            <button type="button" class="options-menu__item" data-action="back"><i class="bi bi-arrow-return-left"></i> Voltar</button>
         </div>
     </div>
     
@@ -116,13 +120,32 @@
 <script>
     $(document).ready(function(){
 
-        $('#nome').keydown(function(){
+        $('#nome').on('keydown', function(){
             pesquisarVisitantes();
         });
 
-        $('.imprimir').click(function(event) {
+        $('#btn_filtrar').on('click', function(event) {
             event.preventDefault();
-            window.print();
+            pesquisarVisitantes();
+        });
+
+        $('#btn_exportar_visitantes').on('click', function(event) {
+            event.preventDefault();
+
+            const url = $(this).data('exportUrl');
+            const params = new URLSearchParams();
+            const nome = $('#nome').val();
+            const dataVisita = $('#data_visita').val();
+
+            if (nome) {
+                params.append('nome', nome);
+            }
+            if (dataVisita) {
+                params.append('data_visita', dataVisita);
+            }
+
+            const finalUrl = params.toString() ? `${url}?${params.toString()}` : url;
+            window.location.href = finalUrl;
         });
     })
 </script>

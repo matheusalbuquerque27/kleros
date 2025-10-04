@@ -81,6 +81,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::post('/membros', [MembroController::class, 'store'])->name('membros.store');
     Route::get('/membros/adicionar', [MembroController::class, 'adicionar'])->name('membros.adicionar'); 
     Route::get('/membros/painel', [MembroController::class, 'painel'])->name('membros.painel');
+    Route::get('/membros/export', [MembroController::class, 'export'])->name('membros.export');
     Route::get('/membros/{id}', [MembroController::class, 'editar'])->name('membros.editar');
     Route::post('/membros/search', [MembroController::class, 'search'])->name('membros.search');
     Route::get('/membros/exibir/{id}', [MembroController::class, 'show']);
@@ -91,6 +92,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::post('/visitantes', [VisitanteController::class, 'store']);
     Route::get('/visitantes/adicionar', [VisitanteController::class, 'create'])->name('visitantes.adicionar');
     Route::get('/visitantes/historico', [VisitanteController::class, 'historico'])->name('visitantes.historico');
+    Route::get('/visitantes/export', [VisitanteController::class, 'export'])->name('visitantes.export');
     Route::post('/visitantes/search', [VisitanteController::class, 'search']);
     Route::get('/visitantes/{id}', [VisitanteController::class, 'exibir'])->name('visitantes.exibir');
     Route::get('/visitantes/editar/{id}', [VisitanteController::class, 'form_editar'])->name('visitantes.form_editar');
@@ -227,6 +229,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::post('/financeiro/lancamentos', [FinanceiroController::class, 'storeLancamento'])->name('financeiro.lancamentos.store');
     Route::get('/financeiro/lancamentos/{id}/editar', [FinanceiroController::class, 'formLancamentoEditar'])->name('financeiro.lancamentos.form_editar');
     Route::put('/financeiro/lancamentos/{id}', [FinanceiroController::class, 'updateLancamento'])->name('financeiro.lancamentos.update');
+    Route::get('/financeiro/lancamentos/export', [FinanceiroController::class, 'exportLancamentos'])->name('financeiro.lancamentos.export');
     Route::get('/financeiro/painel', [FinanceiroController::class, 'painel'])->name('financeiro.painel');
     Route::get('/financeiro/caixas/novo', [FinanceiroController::class, 'formCaixa'])->name('financeiro.caixas.form_criar');
 

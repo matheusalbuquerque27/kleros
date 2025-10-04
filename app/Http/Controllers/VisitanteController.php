@@ -9,6 +9,7 @@ use App\Models\Visitante;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Membro;
+use Illuminate\Support\Carbon;
 
 
 class VisitanteController extends Controller
@@ -50,23 +51,82 @@ class VisitanteController extends Controller
 
     public function historico() {
 
-        $visitantes = Visitante::paginate(10);
+        $visitantes = Visitante::where('congregacao_id', app('congregacao')->id)
+            ->orderByDesc('data_visita')
+                ->paginate(10);
 
         return view('visitantes/historico', ['visitantes' => $visitantes]);
     }
 
     public function search(Request $request) {
         
-        $nome = '%'. $request->nome .'%';
-        $data_visita = $request->data_visita;
+        $query = Visitante::where('congregacao_id', app('congregacao')->id);
 
-        $visitantes = Visitante::whereDate('data_visita', $data_visita)->orWhere('nome','LIKE', $nome)->get();
-        $visitantes = $visitantes->isEmpty() ? '' : $visitantes;
+        if ($request->filled('data_visita')) {
+            $query->whereDate('data_visita', $request->data_visita);
+        }
 
-        $view = view('visitantes/includes/visitantes_search', ['visitantes' => $visitantes])->render();
+        if ($request->filled('nome')) {
+            $query->where('nome', 'LIKE', '%' . $request->nome . '%');
+        }
+
+        $visitantes = $query->orderByDesc('data_visita')->get();
+        $visitantesForView = $visitantes->isEmpty() ? '' : $visitantes;
+
+        $view = view('visitantes/includes/visitantes_search', ['visitantes' => $visitantesForView])->render();
 
         return response()->json(['view' => $view]);
 
+    }
+
+    public function export(Request $request)
+    {
+        $query = Visitante::where('congregacao_id', app('congregacao')->id)
+            ->with('sit_visitante')
+            ->orderByDesc('data_visita');
+
+        if ($request->filled('data_visita')) {
+            $query->whereDate('data_visita', $request->input('data_visita'));
+        }
+
+        if ($request->filled('nome')) {
+            $query->where('nome', 'LIKE', '%' . $request->input('nome') . '%');
+        }
+
+        $visitantes = $query->get();
+
+        $filename = 'visitantes_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        $callback = function () use ($visitantes) {
+            $handle = fopen('php://output', 'w');
+            if ($handle === false) {
+                return;
+            }
+
+            fwrite($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($handle, ['Nome', 'Data da visita', 'Telefone', 'Situação', 'Observações'], ';');
+
+            foreach ($visitantes as $visitante) {
+                $dataVisita = $visitante->data_visita
+                    ? Carbon::parse($visitante->data_visita)->format('Y-m-d')
+                    : '';
+
+                fputcsv($handle, [
+                    $visitante->nome,
+                    $dataVisita,
+                    $visitante->telefone,
+                    optional($visitante->sit_visitante)->titulo ?? 'Não informado',
+                    $visitante->observacoes,
+                ], ';');
+            }
+
+            fclose($handle);
+        };
+
+        return response()->streamDownload($callback, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 
     public function exibir($id) {

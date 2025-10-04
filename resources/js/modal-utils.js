@@ -521,4 +521,9 @@ export function initModalScripts(container) {
 
         renderList();
     }
+
+    // Inicializa scripts para botões de menu nos paineis 
+    if (typeof window !== 'undefined' && typeof window.initOptionsMenus === 'function') {
+        window.initOptionsMenus(container || document);
+    }
 }

@@ -93,17 +93,72 @@ class MembroController extends Controller
 
     public function search(Request $request) {
 
-        $filtro = $request->filtro;
-        $chave = '%'. $request->chave .'%';
-        
-        $membros = Membro::where('congregacao_id', app('congregacao')->id)
-        ->where($filtro, 'LIKE', $chave)->get();
+        $allowedFilters = ['nome', 'telefone', 'email'];
+        $filter = $request->input('filtro', 'nome');
+        $keyword = $request->input('chave');
+
+        $query = Membro::where('congregacao_id', app('congregacao')->id);
+
+        if ($keyword !== null && $keyword !== '') {
+            $column = in_array($filter, $allowedFilters, true) ? $filter : 'nome';
+            $query->where($column, 'LIKE', '%' . $keyword . '%');
+        }
+
+        $membros = $query->orderBy('nome')->get();
 
         // Renderiza a view com os resultados
         $view = view('membros/includes/painel_search', ['membros' => $membros])->render();
 
         // Retorna a view renderizada como parte da resposta JSON
         return response()->json(['view' => $view]);
+    }
+
+    public function export(Request $request)
+    {
+        $allowedFilters = ['nome', 'telefone', 'email'];
+        $filter = $request->input('filtro');
+        $keyword = $request->input('chave');
+
+        $query = Membro::where('congregacao_id', $this->congregacao->id)
+            ->with('ministerio')
+            ->orderBy('nome');
+
+        if ($filter && in_array($filter, $allowedFilters, true) && $keyword !== null && $keyword !== '') {
+            $query->where($filter, 'LIKE', '%' . $keyword . '%');
+        }
+
+        $membros = $query->get();
+
+        $filename = 'membros_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        $callback = function () use ($membros) {
+            $handle = fopen('php://output', 'w');
+            if ($handle === false) {
+                return;
+            }
+
+            // BOM UTF-8 to help spreadsheet tools recognise encoding
+            fwrite($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($handle, ['Nome', 'Telefone', 'Endereço', 'Número', 'Bairro', 'Ministério'], ';');
+
+            foreach ($membros as $membro) {
+                fputcsv($handle, [
+                    $membro->nome,
+                    $membro->telefone,
+                    $membro->endereco,
+                    $membro->numero,
+                    $membro->bairro,
+                    optional($membro->ministerio)->titulo ?? 'Não informado',
+                ], ';');
+            }
+
+            fclose($handle);
+        };
+
+        return response()->streamDownload($callback, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 
     public function show($id) {

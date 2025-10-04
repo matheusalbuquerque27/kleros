@@ -26,9 +26,14 @@
                 </div>
                 <div class="search-panel-item">
                     <button id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
-                    <a href="/membros/adicionar"><button type="button"><i class="bi bi-plus-circle"></i> Novo</button></a>
-                    <button class="imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
+                    <a href="/membros/adicionar"><button type="button"><i class="bi bi-plus-circle"></i> Adicionar</button></a>
+                    <button id="btn_exportar" type="button" data-export-url="{{ route('membros.export') }}"><i class="bi bi-file-arrow-up"></i> Exportar</button>
+                    <button class="options-menu__trigger" type="button" data-options-target="membrosPainelOptions"><i class="bi bi-three-dots-vertical"></i> Opções</button>
                 </div>
+            </div>
+            <div class="options-menu" id="membrosPainelOptions" hidden>
+                <button type="button" class="options-menu__item" data-action="print"><i class="bi bi-printer"></i> Imprimir</button>
+                <button type="button" class="options-menu__item" data-action="back"><i class="bi bi-arrow-return-left"></i> Voltar</button>
             </div>
         </form>
     </div>
@@ -103,10 +108,24 @@
             
         })
 
-        $('.imprimir').click(function(event) {
+        $('#btn_exportar').on('click', function(event) {
             event.preventDefault();
-            window.print();
-        })
+
+            const url = $(this).data('exportUrl');
+            const filtro = $('#filtro').val();
+            const chave = $('#chave').val();
+
+            const params = new URLSearchParams();
+            if (filtro) {
+                params.append('filtro', filtro);
+            }
+            if (chave) {
+                params.append('chave', chave);
+            }
+
+            const finalUrl = params.toString() ? `${url}?${params.toString()}` : url;
+            window.location.href = finalUrl;
+        });
     })
 
 </script>

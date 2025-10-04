@@ -36,9 +36,12 @@
             <div class="search-panel-item">
                 <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
                 <a onclick="abrirJanelaModal('{{route('eventos.form_criar')}}')"><button><i class="bi bi-plus-circle"></i> Adicionar</button></a>
-                <button class="imprimir"><i class="bi bi-printer"></i> Imprimir</button>
-                <a href="/cadastros#eventos"><button class=""><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
+                <button class="options-menu__trigger" type="button" data-options-target="eventosAgendaOptions"><i class="bi bi-three-dots-vertical"></i> Opções</button>
             </div>
+        </div>
+        <div class="options-menu" id="eventosAgendaOptions" hidden>
+            <button type="button" class="options-menu__item" data-action="print"><i class="bi bi-printer"></i> Imprimir</button>
+            <button type="button" class="options-menu__item" data-action="back"><i class="bi bi-arrow-return-left"></i> Voltar</button>
         </div>
     </div>
     <div class="list">
@@ -111,11 +114,6 @@
 
             }).catch((err) => {console.log(err)})
             
-        });
-
-        $('.imprimir').click(function(event) {
-            event.preventDefault();
-            window.print();
         });
     })
 

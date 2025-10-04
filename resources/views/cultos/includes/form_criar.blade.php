@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            <div class="form-options">
+            <div class="form-options center">
                 <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> Registrar Culto</button>
                 <button type="button" class="btn" onclick="window.history.back()"><i class="bi bi-arrow-return-left"></i> Voltar</button>
             </div>

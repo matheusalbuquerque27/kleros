@@ -32,7 +32,7 @@
             </div>
             <div class="search-panel-item">
                 <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
-                <button class="" onclick="abrirJanelaModal('{{route('departamentos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo</button>
+                <button class="" onclick="abrirJanelaModal('{{route('departamentos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Adicionar</button>
                 <button class="" onclick="window.history.back()"><i class="bi bi-arrow-return-left"></i> Voltar</button>
             </div>
         </div>
