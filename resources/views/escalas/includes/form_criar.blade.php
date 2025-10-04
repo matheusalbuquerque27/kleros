@@ -32,17 +32,21 @@
 
                 <div class="form-item">
                     <label for="culto_id">Vincular culto:</label>
-                    <select name="culto_id" id="culto_id" class="select2" data-placeholder="Selecione um culto agendado">
-                        <option value="">Nenhum culto vinculado</option>
-                        @foreach($cultosAgendados as $cultoOp)
-                            @php
-                                $dataCulto = $cultoOp->data_culto ? \Illuminate\Support\Carbon::parse($cultoOp->data_culto)->format('d/m/Y H:i') : null;
-                            @endphp
-                            <option value="{{ $cultoOp->id }}" @selected($cultoSelecionado == $cultoOp->id)>
-                                {{ $dataCulto ?? 'Data não informada' }} - {{ $cultoOp->preletor ?? 'Culto' }}
-                            </option>
-                        @endforeach
-                    </select>
+                    @if($cultosAgendados->isEmpty())
+                        <p class="hint">Nenhum culto agendado para vincular.</p>
+                    @else
+                        <select name="culto_id" id="culto_id" class="select2" data-placeholder="Selecione um culto agendado" data-search-placeholder="Pesquise por data ou preletor">
+                            <option></option>
+                            @foreach($cultosAgendados as $cultoOp)
+                                @php
+                                    $dataCulto = $cultoOp->data_culto ? \Illuminate\Support\Carbon::parse($cultoOp->data_culto)->format('d/m/Y H:i') : null;
+                                @endphp
+                                <option value="{{ $cultoOp->id }}" @selected($cultoSelecionado == $cultoOp->id)>
+                                    {{ $dataCulto ?? 'Data não informada' }} - {{ $cultoOp->preletor ?? 'Culto' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @endif
                 </div>
 
                 <div class="form-item">
