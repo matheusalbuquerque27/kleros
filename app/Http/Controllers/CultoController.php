@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Culto;
 use App\Models\Evento;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CultoController extends Controller
@@ -59,7 +60,9 @@ class CultoController extends Controller
 
         $culto->save();
 
-        return redirect()->to(url()->previous())->with('msg', 'Um novo culto foi agendado.');
+        $data_formatada = Carbon::parse($culto->data_culto)->format('d/m');
+
+        return redirect()->to(url()->previous())->with('msg', "Um novo culto foi agendado para o dia {$data_formatada}.");
 
     }
 

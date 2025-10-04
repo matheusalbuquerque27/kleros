@@ -28,11 +28,11 @@ class EventoController extends Controller
 
     public function agenda() {
 
-        $eventos = Evento::whereDate('data_inicio', '>=', date('Y-m-d'))->paginate(10);
+        $eventos = Evento::where('congregacao_id', $this->congregacao->id)->whereDate('data_inicio', '>=', date('Y-m-d'))->paginate(10);
         
         $eventos = $eventos->isEmpty() ? '' : $eventos;
 
-        $grupos = Agrupamento::where('tipo', 'grupo')->get();
+        $grupos = Agrupamento::where('congregacao_id', $this->congregacao->id)->where('tipo', 'grupo')->get();
         $congregacao = app('congregacao');
 
         return view('eventos/agenda', ['eventos' => $eventos, 'grupos' => $grupos, 'congregacao' => $congregacao]);
@@ -103,24 +103,39 @@ class EventoController extends Controller
 
     public function search(Request $request) {
 
-        $origin = $request->origin;
+        $origin = $request->input('origin');
 
-        if($origin == 'historico'){
-            $data_inicial = $request->data_inicial;
-            $data_final = $request->data_final;
+        $query = Evento::with('grupo')
+            ->where('congregacao_id', $this->congregacao->id)
+            ->where('recorrente', false);
 
-            $eventos = Evento::where('recorrente', false)->whereDate('data_inicio', '<=', date('Y/m/d'))->whereDate('data_inicio', '>=', $data_inicial)->whereDate('data_inicio', '<=', $data_final)->get();
-            $eventos = $eventos->isEmpty() ? '' : $eventos;
+        if ($origin === 'historico') {
+            $query->whereDate('data_inicio', '<', now()->toDateString());
 
-        } else if($origin == 'agenda'){
-            $titulo = $request->titulo;
-            $grupo_id = $request->grupo;
+            if ($request->filled('data_inicial')) {
+                $query->whereDate('data_inicio', '>=', $request->input('data_inicial'));
+            }
 
-            $eventos = Evento::where('recorrente', false)->whereDate('data_inicio', '>=', date('Y/m/d'))->where('titulo', $titulo)->orWhere('grupo_id', $grupo_id)->get();
-            $eventos = $eventos->isEmpty() ? '' : $eventos;
+            if ($request->filled('data_final')) {
+                $query->whereDate('data_inicio', '<=', $request->input('data_final'));
+            }
+        } else {
+            // agenda padrão: eventos futuros
+            $query->whereDate('data_inicio', '>=', now()->toDateString());
+
+            if ($request->filled('titulo')) {
+                $query->where('titulo', $request->input('titulo'));
+            }
+
+            if ($request->filled('grupo')) {
+                $query->where('agrupamento_id', $request->input('grupo'));
+            }
         }
 
-        $view = view('eventos/eventos_search', ['eventos' => $eventos,  'origin' => $origin])->render();
+        $eventosCollection = $query->orderBy('data_inicio')->get();
+        $eventos = $eventosCollection->isEmpty() ? '' : $eventosCollection;
+
+        $view = view('eventos/eventos_search', ['eventos' => $eventos, 'origin' => $origin])->render();
 
         return response()->json(['view' => $view]);
     }

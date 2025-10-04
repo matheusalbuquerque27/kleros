@@ -7,7 +7,7 @@
 <div class="container">
     <h1>Próximos Eventos</h1>
     <div class="info nao-imprimir">
-        <h3>Pesquisar: </h3>
+        <h3>Pesquisar</h3>
         <div class="search-panel">
             <div class="search-panel-item">
                 <label>Nome do evento: </label>
