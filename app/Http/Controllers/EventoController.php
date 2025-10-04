@@ -167,23 +167,6 @@ class EventoController extends Controller
 
         $evento->save();
 
-        $geracaoCultos = $request->geracao_cultos == "1" ? true : false;
-
-        if ($geracaoCultos && ! $evento->recorrente) {
-            $datas = pegarDiasDeIntervaloDatas($evento->data_inicio, $evento->data_encerramento);
-
-            foreach ($datas as $dia) {
-                $evento->culto()->firstOrCreate(
-                    ['data_culto' => $dia],
-                    [
-                        'congregacao_id' => $this->congregacao->id,
-                        'preletor' => 'A definir',
-                        'quant_visitantes' => 0,
-                    ]
-                );
-            }
-        }
-
         return redirect()->back()->with('msg', 'Evento atualizado com sucesso.');
     }
 }

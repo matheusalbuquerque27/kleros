@@ -68,7 +68,8 @@
                 const type = info.event.extendedProps ? info.event.extendedProps.type : null;
                 const iconMap = {
                     culto: 'bi-bell',
-                    evento: 'bi-calendar-event'
+                    evento: 'bi-calendar-event',
+                    reuniao: 'bi-people',
                 };
 
                 let titleHtml = info.event.title;

@@ -29,6 +29,10 @@
     background-color: var(--terciary-color);
 }
 
+.fc .fc-event {
+    cursor: pointer;
+}
+
 .control-btn {
     display: flex;
     flex-direction: row;

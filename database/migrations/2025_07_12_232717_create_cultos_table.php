@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cultos', function (Blueprint $table) {
             $table->id();
-            $table->date('data_culto');
+            $table->dateTime('data_culto');
             $table->string('preletor')->nullable();
             $table->string('tema_sermao')->nullable();
             $table->string('texto_base')->nullable();
