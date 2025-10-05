@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Agrupamento;
 use App\Models\Membro;
 use App\Models\Reuniao;
+use App\Services\AvisoService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReuniaoController extends Controller
 {
@@ -80,6 +83,62 @@ class ReuniaoController extends Controller
 
         $reuniao->agrupamentos()->sync($agrupamentos);
         $reuniao->membros()->sync($membros);
+
+        $reuniao->load('agrupamentos', 'membros');
+
+        $dataInicio = Carbon::parse($reuniao->data_inicio);
+        $dataFim = $reuniao->data_fim ? Carbon::parse($reuniao->data_fim) : null;
+
+        $detalhes = [
+            'Data: ' . $dataInicio->format('d/m/Y'),
+            'Horário: ' . $dataInicio->format('H:i'),
+            'Tipo: ' . ucfirst($reuniao->tipo),
+            'Acesso: ' . ($reuniao->privado ? 'Reservada aos convidados' : 'Aberta aos membros da congregação'),
+            'Formato: ' . ($reuniao->online ? 'Online' : 'Presencial'),
+        ];
+
+        if ($dataFim && $dataFim->greaterThan($dataInicio)) {
+            $detalhes[] = 'Término previsto: ' . $dataFim->format('d/m/Y H:i');
+        }
+
+        if (!$reuniao->online && $reuniao->local) {
+            $detalhes[] = 'Local: ' . $reuniao->local;
+        }
+
+        if ($reuniao->online && $reuniao->link_online) {
+            $detalhes[] = 'Link da reunião: ' . $reuniao->link_online;
+        }
+
+        if (!empty($agrupamentos)) {
+            $nomesGrupos = $reuniao->agrupamentos->pluck('nome')->all();
+            if (!empty($nomesGrupos)) {
+                $detalhes[] = 'Grupos convidados: ' . implode(', ', $nomesGrupos);
+            }
+        }
+
+        if (!empty($membros)) {
+            $detalhes[] = 'Convites individuais: ' . count($membros) . ' membro(s)';
+        }
+
+        if ($reuniao->descricao) {
+            $detalhes[] = 'Pauta: ' . $reuniao->descricao;
+        }
+
+        $mensagemReuniao = 'Uma nova reunião foi agendada: ' . $reuniao->assunto . "\n\n"
+            . implode("\n", array_filter($detalhes))
+            . "\n\nConfirme sua presença e organize-se para participar.";
+
+        $paraTodos = !$reuniao->privado && empty($agrupamentos) && empty($membros);
+
+        AvisoService::enviar([
+            'titulo' => 'Reunião: ' . $reuniao->assunto,
+            'mensagem' => $mensagemReuniao,
+            'prioridade' => 'importante',
+            'para_todos' => $paraTodos,
+            'grupos' => $agrupamentos,
+            'membros' => $membros,
+            'criado_por' => Auth::id(),
+        ]);
 
         return redirect('/cadastros#reunioes')->with('msg', 'Reunião agendada com sucesso.');
     }

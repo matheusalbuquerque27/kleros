@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 
 class Membro extends Model
 {
@@ -73,6 +74,41 @@ class Membro extends Model
         return $this->belongsToMany(Aviso::class, 'aviso_membro', 'membro_id', 'aviso_id')
             ->withPivot('lido')
             ->withTimestamps();
+    }
+
+    /**
+     * Retorna todos os avisos disponíveis para o membro considerando seus públicos.
+     */
+    public function avisosVisiveis(): Collection
+    {
+        $this->loadMissing('agrupamentos');
+
+        $congregacao = app('congregacao');
+
+        $avisosParaTodos = Aviso::where('congregacao_id', $congregacao->id)
+            ->where('para_todos', true)
+            ->get();
+
+        $avisosIndividuais = $this->avisos()
+            ->where('congregacao_id', $congregacao->id)
+            ->get();
+
+        $grupoIds = $this->agrupamentos->pluck('id')->toArray();
+
+        $avisosPorGrupos = Aviso::where('congregacao_id', $congregacao->id)
+            ->whereNotNull('destinatarios_agrupamentos')
+            ->get()
+            ->filter(function ($aviso) use ($grupoIds) {
+                return is_array($aviso->destinatarios_agrupamentos)
+                    && count(array_intersect($grupoIds, $aviso->destinatarios_agrupamentos)) > 0;
+            });
+
+        return $avisosParaTodos
+            ->merge($avisosIndividuais)
+            ->merge($avisosPorGrupos)
+            ->unique('id')
+            ->sortByDesc('created_at')
+            ->values();
     }
     /**
      * Scope para filtrar membros pela congregação atual

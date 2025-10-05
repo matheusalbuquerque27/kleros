@@ -8,6 +8,8 @@ use App\Models\Membro;
 use App\Models\Agrupamento;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AvisoMembro;
+use Illuminate\Http\JsonResponse;
+use App\Services\AvisoService;
 
 class AvisoController extends Controller
 {
@@ -29,68 +31,37 @@ class AvisoController extends Controller
         $membro = $user->membro;
         $congregacao = app('congregacao');
 
-        // 1) avisos para todos
-        $avisosParaTodos = Aviso::where('congregacao_id', $congregacao->id)
-            ->where('para_todos', true)
-            ->get();
+        $avisos = $membro->avisosVisiveis();
 
-        // 2) avisos individuais
-        $avisosIndividuais = $membro->avisos()
-            ->where('congregacao_id', $congregacao->id)
-            ->get();
+        $avisos->load('criador.membro.ministerio');
 
-        // 3) avisos por grupos
-        $grupoIds = $membro->agrupamentos->pluck('id')->toArray();
-        $avisosPorGrupos = Aviso::where('congregacao_id', $congregacao->id)
-            ->whereNotNull('destinatarios_agrupamentos')
+        $leituras = AvisoMembro::whereIn('aviso_id', $avisos->pluck('id'))
+            ->where('membro_id', $membro->id)
             ->get()
-            ->filter(function ($aviso) use ($grupoIds) {
-                return is_array($aviso->destinatarios_agrupamentos)
-                    && count(array_intersect($grupoIds, $aviso->destinatarios_agrupamentos)) > 0;
-            });
+            ->keyBy('aviso_id');
 
-        // juntar tudo
-        $avisos = $avisosParaTodos
-            ->merge($avisosIndividuais)
-            ->merge($avisosPorGrupos)
-            ->unique('id')
-            ->values();
+        $avisos->transform(function ($aviso) use ($leituras) {
+            $aviso->is_lido = optional($leituras->get($aviso->id))->lido ?? false;
+            return $aviso;
+        });
 
         return view('avisos.painel', compact('avisos', 'membro', 'congregacao'));
     }
 
     public function store(Request $request)
     {
-        $aviso = new Aviso();
-        $aviso->congregacao_id = app('congregacao')->id;
-        $aviso->titulo = $request->titulo;
-        $aviso->mensagem = $request->mensagem;
-        $aviso->para_todos = $request->destinatarios;
-        $aviso->status = 'ativo';
-        $aviso->prioridade = $request->prioridade;
-        $aviso->criado_por = Auth::id();   
-        $aviso->data_inicio = now();
-        if ($request->data_fim) {
-            $aviso->data_fim = $request->data_fim;
-        } else {
-            $aviso->data_fim = null;
-        }
+        $paraTodos = (bool) $request->input('destinatarios', true);
 
-        $aviso->destinatarios_agrupamentos = $request->has('grupos') 
-        ? $request->grupos
-        : null;
-
-        $aviso->save();
-
-        if ($request->has('membros')) {
-        foreach ($request->membros as $membroId) {
-            AvisoMembro::create([
-                'aviso_id'  => $aviso->id,
-                'membro_id' => $membroId,
-                'lido'      => false,
-            ]);
-        }
-    }
+        AvisoService::enviar([
+            'titulo' => $request->input('titulo'),
+            'mensagem' => $request->input('mensagem'),
+            'prioridade' => $request->input('prioridade', 'normal'),
+            'para_todos' => $paraTodos,
+            'grupos' => $paraTodos ? [] : $request->input('grupos', []),
+            'membros' => $paraTodos ? [] : $request->input('membros', []),
+            'data_fim' => $request->input('data_fim') ?: null,
+            'criado_por' => Auth::id(),
+        ]);
 
         return redirect()
             ->route('avisos.painel')
@@ -101,5 +72,73 @@ class AvisoController extends Controller
         $grupos = Agrupamento::all();
         $membros = Membro::all();
         return view('avisos/includes/form_criar', compact('membros', 'grupos'));    
+    }
+
+    public function show(Aviso $aviso): JsonResponse
+    {
+        $user = Auth::user();
+
+        if (!$user || !$user->membro) {
+            abort(403, 'Usuário não tem membro associado');
+        }
+
+        $membro = $user->membro;
+        $congregacao = app('congregacao');
+
+        $membro->loadMissing('agrupamentos');
+
+        abort_unless($aviso->congregacao_id === $congregacao->id, 403);
+        abort_unless($this->membroPodeVerAviso($aviso, $membro), 403);
+
+        $this->marcarAvisoComoLido($aviso, $membro);
+
+        $aviso->load('criador.membro.ministerio');
+
+        $criador = optional($aviso->criador);
+        $criadorMembro = optional($criador->membro);
+        $ministerio = optional($criadorMembro->ministerio);
+
+        return response()->json([
+            'id' => $aviso->id,
+            'titulo' => $aviso->titulo,
+            'mensagem' => $aviso->mensagem,
+            'prioridade' => $aviso->prioridade,
+            'criado_em' => optional($aviso->created_at)->toIso8601String(),
+            'enviado_por' => trim(collect([
+                $ministerio->sigla,
+                $criadorMembro->nome ? primeiroEUltimoNome($criadorMembro->nome) : null,
+            ])->filter()->implode(' ')),
+            'lido' => true,
+        ]);
+    }
+
+    protected function membroPodeVerAviso(Aviso $aviso, Membro $membro): bool
+    {
+        if ($aviso->para_todos) {
+            return true;
+        }
+
+        if ($aviso->membros()->where('membro_id', $membro->id)->exists()) {
+            return true;
+        }
+
+        $destinatarios = $aviso->destinatarios_agrupamentos;
+        if (is_array($destinatarios) && !empty($destinatarios)) {
+            $grupoIds = $membro->agrupamentos->pluck('id')->toArray();
+            return count(array_intersect($destinatarios, $grupoIds)) > 0;
+        }
+
+        return false;
+    }
+
+    protected function marcarAvisoComoLido(Aviso $aviso, Membro $membro): void
+    {
+        AvisoMembro::updateOrCreate(
+            [
+                'aviso_id' => $aviso->id,
+                'membro_id' => $membro->id,
+            ],
+            ['lido' => true]
+        );
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('dominios', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('congregacao_id')->constrained('congregacoes')->onDelete('cascade');
+            $table->foreignId('congregacao_id')->nullable()->constrained('congregacoes')->onDelete('cascade');
             $table->string('dominio')->unique(); // Ex: adjerusalemilha.kleros.com ou www.adjerusalemilha.com.br
             $table->boolean('ativo')->default(true);
             $table->timestamps();

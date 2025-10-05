@@ -206,6 +206,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
     Route::get('/avisos', [AvisoController::class, 'avisosDoMembro'])->name('avisos.painel')->middleware('auth');
     Route::post('/avisos', [AvisoController::class, 'store'])->name('avisos.store')->middleware(['auth','role:gestor']);
     Route::get('/avisos/novo', [AvisoController::class, 'form_criar'])->name('avisos.form_criar')->middleware(['auth','role:gestor']);
+    Route::get('/avisos/{aviso}', [AvisoController::class, 'show'])->name('avisos.show')->middleware('auth');
 
     Route::get('/arquivos/imagens', [ArquivoController::class, 'form_imagens'])->name('arquivos.imagens')->middleware(['auth','role:gestor']);
     Route::post('/arquivos', [ArquivoController::class, 'store'])->name('arquivos.store')->middleware(['auth','role:gestor']);
