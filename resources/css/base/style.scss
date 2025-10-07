@@ -2,194 +2,232 @@
     padding: 0;
     margin: 0;
     font-family: var(--text-font);
+    box-sizing: border-box;
 }
 
 body {
-    background-color: var(--background-color);
+    background: radial-gradient(circle at top, rgba(255, 255, 255, 0.05) 0%, transparent 55%),
+        var(--background-color);
     color: var(--text-color);
-    height: 100%;
-    margin: 0;
-    padding: 0;
+    min-height: 100vh;
 }
 
 .layout-wrapper {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.08) 100%);
 }
 
 .content {
-    flex: 1; /* Ocupa todo o espaço disponível */
+    flex: 1;
 }
 
-/*Config do header*/
-
+/* Header */
 header {
     z-index: 999;
+    backdrop-filter: blur(12px);
 }
 
 header nav {
     display: flex;
     width: 100%;
-    border-bottom: 2px solid var(--secondary-color);
-    height: 80px;
     align-items: center;
+    padding: 0 12px;
+    min-height: 78px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-header nav .nav-logo img{
+header nav .nav-logo img {
     width: 100px;
-    padding: 4px 10px;
+    padding: 6px 0;
+    transition: transform 0.2s ease;
 }
 
-header nav .nav-logo img:hover{
+header nav .nav-logo img:hover {
     cursor: pointer;
+    transform: translateY(-1px);
 }
 
 header nav .nav-menu {
     width: 100%;
     align-items: center;
     display: flex;
+    justify-content: center;
 }
 
-header nav .nav-menu ul{
+header nav .nav-menu ul {
     list-style: none;
+    width: 100%;
+    display: flex;
     justify-content: space-around;
     align-items: center;
-    height: 100%;
+    padding: 0 12px;
 }
 
 header nav .nav-menu ul a {
     text-decoration: none;
     color: var(--background-contrast);
-}
-
-header nav .nav-menu ul li{
-    padding: 4px;
-    font-size: 1.18rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    transition: color 0.2s ease;
 }
 
 header nav .nav-menu ul li:hover {
     cursor: pointer;
-    transform: scale(1.02);
+    color: var(--secondary-color);
 }
 
-/*Parte do body*/
-
+/* Body */
 main {
-    display:flex;
+    display: flex;
     flex-direction: row;
 }
 
 .container {
-    margin-top: 25px;
-    padding: 15px 10px;
-    font-size: 1.14rem;
-    min-height: 400px;
+    padding: clamp(18px, 2vw, 32px);
+    font-size: 1.05rem;
+    min-height: 380px;
     width: 100%;
-    overflow-x: hidden;
+    border-radius: 24px;
+    // background: rgba(255, 255, 255, 0.04);
+    // border: 1px solid rgba(255, 255, 255, 0.05);
+    // box-shadow: 0 18px 36px rgba(17, 24, 39, 0.25);
 }
 
 h1 {
-    font-weight: 500;
+    font-weight: 600;
     text-align: center;
-    font-size: 1.5em;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    margin-bottom: clamp(18px, 3vw, 32px);
 }
 
-/*Cards*/
+/* Cards */
+
 .card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: clamp(12px, 2vw, 20px);
+    margin-bottom: clamp(18px, 3vw, 28px);
+}
+
+.card-container .list-item {
+    grid-column: 1 / -1;
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 12px 16px;
+    box-shadow: 0 10px 20px rgba(17, 24, 39, 0.18);
 }
 
 .card {
     position: relative;
-    padding: 15px;
-    min-width: 180px;
-    flex: 1;
-    border: 1px solid var(--secondary-color);
-    box-shadow: 1px 1px;
-    border-radius: var(--border-style);
-    margin-bottom: 10px;
+    padding: clamp(16px, 2.5vw, 22px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.18);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.card-date{
-    font-weight: 500;
+.card-date {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--secondary-color);
 }
 
 .card-title {
-    font-size: 1.3em;
+    font-size: 1.2rem;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
+    font-weight: 600;
 }
 
 .card-owner {
-    background-color: var(--secondary-color);
-    color: var(--secondary-contrast);
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--text-color);
     width: fit-content;
-    padding: 5px;
-    margin-bottom: 5px;
-    border-radius: 5px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .card-edit {
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 16px;
+    right: 16px;
     cursor: pointer;
+    color: var(--text-color);
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
 }
 
-/*Div Info*/
+.card-edit:hover {
+    opacity: 1;
+}
+
+/* Info blocks */
 .info {
-    padding: 15px;
+    padding: clamp(16px, 2vw, 20px) 0;
 }
 
 .info h3 {
-    font-size: 1.1em;
-    margin-bottom: 20px;
-    border-bottom: 2px solid var(--secondary-color);
+    font-size: 1.12rem;
+    margin-bottom: clamp(16px, 2.5vw, 24px);
+    font-weight: 600;
+    color: var(--text-color);
 }
 
 .info h4 {
-    margin-bottom: 10px;
-   
+    margin-bottom: 12px;
 }
 
 .info_item {
     position: relative;
-    border-radius: var(--border-style);
-    padding: 25px 50px;
-    min-width: 20%;
-    flex: 0 0 1;
-    background-color:var(--primary-color);
+    border-radius: 18px;
+    padding: clamp(18px, 3vw, 26px);
+    min-width: 220px;
+    flex: 1 1 220px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: var(--primary-contrast);
-    box-shadow: 1px 1px;
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.22);
 }
 
 .info_item .info-edit {
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 16px;
+    right: 16px;
     cursor: pointer;
+    opacity: 0.75;
+    transition: opacity 0.2s ease;
 }
 
-/* Home - Recados */
+.info_item .info-edit:hover {
+    opacity: 1;
+}
+
+/* Recados */
 #recados .card-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
 }
 
 #recados .card-recado {
     background: linear-gradient(140deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0)), var(--primary-color);
     border: none;
     border-left: 5px solid var(--secondary-color);
-    border-radius: 18px;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
-    padding: 22px 24px;
+    border-radius: 20px;
+    box-shadow: 0 18px 32px rgba(15, 23, 42, 0.2);
+    padding: clamp(20px, 3vw, 26px);
     min-height: 120px;
     color: var(--primary-contrast);
     display: flex;
@@ -418,7 +456,7 @@ h1 {
 Esta lista está dividida em cinco colunas, sendo cada uma de 20% da width
 */
 .list {
-    width: 96%;
+    width: 100%;
     margin: 25px auto;
     display: flex;
     flex-direction: column;

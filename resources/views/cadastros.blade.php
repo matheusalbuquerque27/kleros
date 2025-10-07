@@ -6,7 +6,6 @@
 
 
 <div class="container">
-   
     <h1>Cadastros</h1>
     <div class="info" id="cultos">
         <h3>Cultos</h3>
@@ -56,11 +55,11 @@
                         </div>
                         <div class="item-15">
                             <button type="button" class="btn-options" onclick="window.location.href='{{ route('escalas.painel', ['tipo' => $tipo->id]) }}'"><i class="bi bi-list-task"></i> Ver escalas</button>
-                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{ route('escalas.tipos.form_editar', $tipo->id) }}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{ route('escalas.tipos.form_editar', $tipo->id) }}')"><i class="bi bi-pencil-square"></i></button>
                             <form id="delete-tipo-{{ $tipo->id }}" action="{{ route('escalas.tipos.destroy', $tipo->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este tipo de escala?')"><i class="bi bi-trash"></i> Excluir</button>
+                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este tipo de escala?')"><i class="bi bi-trash"></i></button>
                             </form>
                         </div>
                     </div>
@@ -181,7 +180,7 @@
         <a href="/visitantes/historico"><button class="btn mg-top-10"><i class="bi bi-card-list"></i> Histórico de visitantes</button></a>
     </div>
 
-    <div class="info" id="grupos">
+    <div class="info" id="grupos_da_congregacao">
         <h3>Grupos</h3>
 
         <div class="card-container">
@@ -198,11 +197,11 @@
                         </div>
                         <div class="item-15">
                             <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
-                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{route('grupos.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{route('grupos.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i></button>
                             <form id="delete-grupo-{{$item->id}}" action="{{ route('grupos.destroy', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este grupo?')"><i class="bi bi-trash"></i> Excluir</button>
+                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este grupo?')"><i class="bi bi-trash"></i></button>
                             </form>
                         </div>
                     </div>
@@ -214,7 +213,7 @@
             @endif
         </div>
         <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('grupos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo Grupo</button>
-        <button id="grupos" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
+        <button id="grupos-imprimir" class="imprimir btn mg-top-10" data-action="0" data-reference="grupos"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
 
     <div class="info" id="departamentos">
@@ -232,11 +231,11 @@
                         </div>
                         <div class="item-15">
                             <a href="/departamentos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Equipe</button></a>
-                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{route('departamentos.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{route('departamentos.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i></button>
                             <form id="delete-departamento-{{$item->id}}" action="{{ route('departamentos.destroy', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este departamento?')"><i class="bi bi-trash"></i> Excluir</button>
+                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este departamento?')"><i class="bi bi-trash"></i></button>
                             </form>
                         </div>
                     </div>
@@ -248,7 +247,7 @@
             @endif
         </div>
         <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('departamentos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo departamento</button>
-        <button class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
+        <button id="departamentos-imprimir" class="imprimir btn mg-top-10" data-action="0" data-reference="departamentos"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
 
     @if($congregacao->config->agrupamentos == 'setor')
@@ -275,11 +274,11 @@
                             <small class="hint"><b>Relacionados:</b> {{ $relacionados->implode(', ') ?: 'Nenhum agrupamento vinculado.' }}</small>
                         </div>
                         <div class="item-15">
-                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{ route('setores.form_editar', $setor->id) }}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{ route('setores.form_editar', $setor->id) }}')" title="Editar"><i class="bi bi-pencil-square"></i></button>
                             <form id="delete-setor-{{ $setor->id }}" action="{{ route('setores.destroy', $setor->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este setor?')"><i class="bi bi-trash"></i> Excluir</button>
+                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este setor?')" title="Excluir"><i class="bi bi-trash"></i></button>
                             </form>
                         </div>
                     </div>
@@ -291,7 +290,7 @@
             @endif
         </div>
         <button class="btn mg-top-10" onclick="abrirJanelaModal('{{ route('setores.form_criar') }}')"><i class="bi bi-plus-circle"></i> Novo Setor</button>
-        <button class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
+        <button id="setores-imprimir" class="imprimir btn mg-top-10" data-action="0" data-reference="setores"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
     @endif
 
@@ -309,11 +308,11 @@
                         </div>
                         <div class="item-15">
                             <a href="/ministerios/lista/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Membros</button></a>
-                            <button type="button" onclick="abrirJanelaModal('{{route('ministerios.form_editar', $item->id)}}')" class="btn-options"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <button type="button" onclick="abrirJanelaModal('{{route('ministerios.form_editar', $item->id)}}')" class="btn-options"><i class="bi bi-pencil-square" title="Editar"></i></button>
                             <form id="delete-ministerio-{{$item->id}}" action="{{ route('ministerios.destroy', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este ministério?')"><i class="bi bi-trash"></i> Excluir</button>
+                                <button type="button" class="btn-options danger" onclick="handleSubmit(event, this.form, 'Deseja realmente excluir este ministério?')" title="Excluir"><i class="bi bi-trash"></i></button>
                             </form>
                         </div>
                     </div>
@@ -325,7 +324,7 @@
             @endif
         </div>
         <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('ministerios.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo ministério</button>
-        <button id="ministerios" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
+        <button id="ministerios-imprimir" class="imprimir btn mg-top-10" data-action="0" data-reference="ministerios"><i class="bi bi-printer"></i> Imprimir lista</button>
     </div>
 
     <div class="info" id="controle-financeiro">
@@ -365,11 +364,11 @@
                     <div class="item-15">
                         <div class="form-options">
                             <a href="{{route('financeiro.painel')}}"><button type="button" class="btn-options"><i class="bi bi-list"></i> Gerenciar</button></a>
-                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{ route('financeiro.caixas.form_editar', $caixa->id) }}')"><i class="bi bi-pencil-square"></i> Editar</button>
+                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{ route('financeiro.caixas.form_editar', $caixa->id) }}')"><i class="bi bi-pencil-square" title="Editar"></i></button>
                             <form action="{{ route('financeiro.caixas.destroy', $caixa->id) }}" method="POST" onsubmit="return handleSubmit(event, this, 'Excluir o caixa {{ $caixa->nome }}? Todos os lançamentos serão removidos.')" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn-options danger"><i class="bi bi-trash"></i> Excluir</button>
+                                <button type="submit" class="btn-options danger"><i class="bi bi-trash" title="Excluir"></i></button>
                             </form>
                         </div>
                     </div>
@@ -401,7 +400,7 @@
                             <div class="card-description">{{$item->descricao}}</div>
                         </div>
                         <div class="item-15">
-                            <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Ver</button></a>
+                            <a href=""><button type="button" class="btn-options"><i class="bi bi-eye"></i> Ver</button></a>
                             <form id="delete-curso-{{$item->id}}" action="{{ route('cursos.destroy', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
@@ -418,7 +417,7 @@
         </div>
 
         <button class="btn mg-top-10" onclick="abrirJanelaModal('{{route('cursos.form_criar')}}')"><i class="bi bi-plus-circle"></i> Novo curso</button>
-        <button id="cursos" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir lista</button>
+        <button id="cursos-imprimir" class="imprimir btn mg-top-10" data-action="0" data-reference="cursos"><i class="bi bi-printer"></i> Imprimir lista</button>
         
     </div>
     @endif
@@ -430,7 +429,7 @@
         <div class="card-container">
             @if(count($celulas) > 0)
                 @foreach ($celulas as $item)
-                    <div class="alterlist">
+                    <div class="list-item">
                         <div class="item-15">
                             <div class="card-title"><i class="bi bi-cup-hot"></i> {{$item->identificacao}}</div>
                             <div class="card-description"><b>Liderança: </b>{{optional($item->lider)->nome}} @if($item->colider) | @endif {{optional($item->colider)->nome}}</div>
@@ -444,6 +443,7 @@
                         </div>
                         <div class="item-15">
                             <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Ver</button></a>
+                            <button type="button" class="btn-options" onclick="abrirJanelaModal('{{route('celulas.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i> Editar</button>
                             <form id="delete-celula-{{$item->id}}" action="{{ route('grupos.destroy', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
@@ -462,10 +462,12 @@
         @if(module_enabled('celulas') && Route::has('celulas.form_criar'))
             <button class="btn mg-top-10" onclick="abrirJanelaModal('{{ route('celulas.form_criar') }}')"><i class="bi bi-plus-circle"></i> Nova Célula</button>
         @endif
-        <button id="celulas" class="imprimir btn mg-top-10" data-action="0"><i class="bi bi-printer"></i> Imprimir relatório</button>
+        <button id="celulas-imprimir" class="imprimir btn mg-top-10" data-action="0" data-reference="celulas"><i class="bi bi-printer"></i> Imprimir relatório</button>
     </div>
     @endif
-@include('noticias.includes.destaques', ['destaques' => $destaques])
+    
+    @include('noticias.includes.destaques', ['destaques' => $destaques])
+    
 </div>{{--container--}}
 
 
@@ -478,7 +480,7 @@
         $(document).ready(function(){
             $('.imprimir').click(function() {
                 const printData = $(this).attr('data-action');
-                const reference = $(this).attr('id');
+                const reference = $(this).data('reference'); // Usando data-attribute
                 window.open(`/${reference}/imprimir/${printData}`, '_blank');
             });
         });

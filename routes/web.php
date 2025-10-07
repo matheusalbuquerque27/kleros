@@ -29,8 +29,15 @@ use App\Http\Controllers\PesquisaController;
 use App\Http\Controllers\SetorController;
 use App\Http\Controllers\FinanceiroController;
 use App\Http\Controllers\NotificacaoController;
+use App\Http\Controllers\SiteController;
+
 
 Route::domain('kleros.local')->group(function () {
+    
+    Route::get('/', [SiteController::class, 'home'])->name('site.home');
+    Route::redirect('/local', '/');
+    Route::view('/contato', 'site.contato')->name('site.contato');
+    Route::view('/demo', 'site.demo')->name('site.demo');
     
     Route::get('/login', [AdminController::class, 'login'])->name('admin.login');
     Route::post('/login', [AdminController::class, 'authenticate'])->name('admin.authenticate');
@@ -47,6 +54,7 @@ Route::domain('kleros.local')->group(function () {
     
     //Rotas de cadastro
     Route::get('/congregacoes', [CongregacaoController::class, 'index'])->name('congregacoes.index');
+    Route::post('/congregacoes', [CongregacaoController::class, 'store'])->name('congregacoes.store');
     Route::get('/checkin/denominacao', [DenominacaoController::class, 'create'])->name('denominacoes.create');
     Route::get('/checkin', [CongregacaoController::class, 'create'])->name('congregacoes.cadastro');
     Route::get('/config/{id}', [CongregacaoController::class, 'config'])->name('congregacoes.config');

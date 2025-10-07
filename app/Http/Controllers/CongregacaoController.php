@@ -24,9 +24,17 @@ class CongregacaoController extends Controller
 
     public function create()
     {
-        $denominacoes = Denominacao::all();
+        $denominacoes = Denominacao::orderBy('nome')->get();
+        $estados = Estado::orderBy('nome')->get();
+        $cidades = Cidade::orderBy('nome')->get();
+        $paises = Pais::orderBy('nome')->get();
 
-        return view('congregacoes.cadastro', ['denominacoes' => $denominacoes]);
+        return view('congregacoes.cadastro', [
+            'denominacoes' => $denominacoes,
+            'estados' => $estados,
+            'cidades' => $cidades,
+            'paises' => $paises,
+        ]);
     }
 
     public function store(Request $request)
@@ -41,10 +49,17 @@ class CongregacaoController extends Controller
             '*.required' => 'Nome, Endereço e Telefone são obrigatórios'
         ]);
 
+        $congregacao->denominacao_id = $request->igreja;
         $congregacao->identificacao = $request->nome;
+        $congregacao->nome_curto = $request->nome_curto;
         $congregacao->endereco = $request->endereco;
         $congregacao->telefone = $request->telefone;
         $congregacao->email = $request->email;
+        $congregacao->cnpj = $request->cnpj;
+        $congregacao->ativa = true;
+        $congregacao->cidade_id = $request->cidade;
+        $congregacao->estado_id = $request->estado;
+        $congregacao->pais_id = $request->pais;
         $congregacao->created_at = now();
         $congregacao->updated_at = now();
 

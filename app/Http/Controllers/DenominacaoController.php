@@ -34,7 +34,6 @@ class DenominacaoController extends Controller
         ]);
 
         $denominacao->nome = $request->nome;
-        $denominacao->nome_curto = $request->nome_curto;
         $denominacao->base_doutrinaria = $request->base_doutrinaria;
         $denominacao->ativa = true;
         $denominacao->ministerios_eclesiasticos = $request->ministerios_eclesiasticos;

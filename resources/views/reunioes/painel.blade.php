@@ -8,7 +8,7 @@
     <h1>Quadro de Reuniões</h1>
     <div class="info">
         <h3>Agendadas</h3>
-        <div class="info nao-imprimir">
+        <div class="nao-imprimir">
             <div class="search-panel">
                 <div class="search-panel-item">
                     <label>Assunto: </label>

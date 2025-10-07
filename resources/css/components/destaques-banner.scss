@@ -1,9 +1,11 @@
 .destaques-banner {
-    width: 100%;
+    width: 78dvw;
     background: var(--terciary-color);
     padding: 0.75rem 1rem;
-    margin-top: 40px;
     box-sizing: border-box;
+    border-radius: var(--border-style);
+    overflow: hidden;
+    margin: 0 auto 40px auto;
 }
 
 .swiper {
@@ -18,8 +20,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 420px;
-    height: 100px; /* Levemente maior */
+    max-width: 100%; /* antes era 420px */
+    height: 110px; /* Garante que todos os slides tenham a mesma altura */
     box-sizing: border-box;
     overflow: hidden;
 }
@@ -37,13 +39,15 @@
 }
 
 .slide-title {
-    font-size: 1rem;
+    font-size: .95rem;
     font-weight: 600;
     color: #333;
     line-height: 1.2;
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* Limita o título a no máximo 2 linhas */
+    max-height: 100%;
 }
 
 .slide-date {

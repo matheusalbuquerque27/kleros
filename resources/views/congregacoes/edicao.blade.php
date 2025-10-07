@@ -27,15 +27,15 @@
                             </div>
                             <div class="form-item">
                                 <label for="cnpj">CNPJ</label>
-                                <input type="text" name="cnpj" id="cnpj" value="{{$congregacao->cnpj}}">
+                                <input type="text" name="cnpj" id="cnpj" value="{{$congregacao->cnpj}}" placeholder="00.000.000/0000-00">
                             </div>
                             <div class="form-item">
                                 <label for="email">Email</label>
-                                <input type="email" name="email" id="email" value="{{$congregacao->email}}" autocomplete="email">
+                                <input type="email" name="email" id="email" value="{{$congregacao->email}}" autocomplete="email" placeholder="myemail@domain.com">
                             </div>
                             <div class="form-item">
                                 <label for="telefone">Telefone</label>
-                                <input type="tel" name="telefone" id="telefone" value="{{$congregacao->telefone}}">
+                                <input type="tel" name="telefone" id="telefone" value="{{$congregacao->telefone}}" placeholder="(00) 00000-0000">
                             </div>
                         </div>
                         <h3>Localização</h3>

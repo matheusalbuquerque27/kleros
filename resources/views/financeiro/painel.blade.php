@@ -35,8 +35,6 @@
                     @endforeach
                 </select>
             </div>
-        </div>
-        <div class="search-panel">
             <div class="search-panel-item">
                 <label for="data_inicio">De:</label>
                 <input type="date" name="data_inicio" id="data_inicio" value="{{ request('data_inicio') }}">

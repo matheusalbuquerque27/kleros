@@ -76,7 +76,7 @@
                                 <a href="{{ route('cadastros.index') }}"><li><i class="bi bi-journals"></i> Cadastros</li></a>
                                 <a href="{{ route('visitantes.adicionar') }}"><li><i class="bi bi-people-fill"></i> Visitantes</li></a>
                             @else
-                                <a href="{{ route('index') }}"><li><i class="bi bi-kanban"></i> Visão Geral</li></a>
+                                <a href="{{ route('index') }}"><li><i class="bi bi-kanban"></i> Controle</li></a>
                                 <a href="{{ route('agenda.index') }}"><li><i class="bi bi-calendar3"></i> Agenda</li></a>
                                 <a href="{{ route('noticias.painel') }}"><li><i class="bi bi-newspaper"></i> Notícias</li></a>
                                 <a href="#"><li><i class="bi bi-collection"></i> Programações</li></a>
@@ -156,7 +156,7 @@
                         <span title="Menu Principal" id="btn-menu"><i class="bi bi-list"></i></span>
                     </div>
                     <ul class="menu-content">
-                        <a href="{{route('index')}}"><li><span title="Visão Geral"><i class="bi bi-kanban"></i></span><span>Visão Geral</span></li></a>
+                        <a href="{{route('index')}}"><li><span title="Controle"><i class="bi bi-kanban"></i></span><span>Controle</span></li></a>
                         @role('gestor')
                             <a href="{{route('membros.painel')}}"><li><span title="Membros"><i class="bi bi-people"></i></span><span>Membros</span></li></a>
                             <a href="{{route('agenda.index')}}"><li><span title="Agenda"><i class="bi bi-calendar3"></i></span><span>Agenda</span></li></a>
@@ -352,7 +352,13 @@
                         768: { slidesPerView: 3 },
                         1024: { slidesPerView: 4 },
                     },
+                    observer: true,
+                    observeParents: true,
+                    watchSlidesProgress: true,
+                    watchSlidesVisibility: true,
                 });
+
+                setTimeout(() => swiper.update(), 300);
             });
         </script>
 

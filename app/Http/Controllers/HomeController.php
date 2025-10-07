@@ -8,6 +8,10 @@ use App\Models\Evento;
 use App\Models\Membro;
 use App\Models\Recado;
 use App\Models\Visitante;
+use App\Models\Agrupamento;
+use App\Models\Celula;
+use App\Models\Setor;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -101,7 +105,10 @@ class HomeController extends Controller
             $visitantes = '';
         }
 
-        $visitas_count = Visitante::where('congregacao_id', $congregacao->id)->whereMonth('data_visita', Carbon::now()->month)->count();
+        $visitas_count = Visitante::where('congregacao_id', $congregacao->id)
+            ->whereMonth('data_visita', Carbon::now()->month)
+            ->whereYear('data_visita', Carbon::now()->year)
+            ->count();
 
         /*Esta parte verifica se há membros fazendo aniversário neste mês
 
@@ -114,9 +121,67 @@ class HomeController extends Controller
             $aniversariantes = '';
         }
 
-        $membros_count = Membro::where('congregacao_id', $congregacao->id)->where('ativo', true)->count();
+        $membros_count = Membro::where('congregacao_id', $congregacao->id)
+            ->where('ativo', true)
+            ->count();
 
+        $membrosTotal = Membro::where('congregacao_id', $congregacao->id)->count();
+        $membrosNovosMes = Membro::where('congregacao_id', $congregacao->id)
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
 
-        return view('home', ['visitantes' => $visitantes, 'culto_hoje' => $culto_hoje, 'recados' => $recados, 'eventos' => $eventos, 'aniversariantes' => $aniversariantes, 'congregacao' => $congregacao, 'usuario' => $usuario, 'membros_count' => $membros_count, 'visitas_count' => $visitas_count]);
+        $membrosEmGrupos = DB::table('agrupamentos_membros')
+            ->join('agrupamentos', 'agrupamentos.id', '=', 'agrupamentos_membros.agrupamento_id')
+            ->where('agrupamentos.congregacao_id', $congregacao->id)
+            ->where('agrupamentos.tipo', 'grupo')
+            ->distinct('agrupamentos_membros.membro_id')
+            ->count('agrupamentos_membros.membro_id');
+
+        $visitantesHistorico = Visitante::where('congregacao_id', $congregacao->id)->count();
+
+        $gruposCount = Agrupamento::where('congregacao_id', $congregacao->id)
+            ->where('tipo', 'grupo')
+            ->count();
+        $celulasCount = Celula::where('congregacao_id', $congregacao->id)->count();
+        $departamentosCount = Agrupamento::where('congregacao_id', $congregacao->id)
+            ->where('tipo', 'departamento')
+            ->count();
+        $setoresCount = Setor::where('congregacao_id', $congregacao->id)->count();
+
+        $gruposDestaque = Agrupamento::where('congregacao_id', $congregacao->id)
+            ->where('tipo', 'grupo')
+            ->withCount('integrantes')
+            ->orderByDesc('integrantes_count')
+            ->take(6)
+            ->get();
+
+        $dashboardStats = [
+            'membros_total' => $membrosTotal,
+            'membros_ativos' => $membros_count,
+            'membros_novos' => $membrosNovosMes,
+            'membros_em_grupos' => $membrosEmGrupos,
+            'membros_sem_grupo' => max($membros_count - $membrosEmGrupos, 0),
+            'visitantes_mes' => $visitas_count,
+            'visitantes_total' => $visitantesHistorico,
+            'grupos_total' => $gruposCount,
+            'celulas_total' => $celulasCount,
+            'departamentos_total' => $departamentosCount,
+            'setores_total' => $setoresCount,
+            'cultos_proximos' => is_countable($culto_hoje) ? count($culto_hoje) : 0,
+            'eventos_proximos' => is_countable($eventos) ? count($eventos) : 0,
+        ];
+
+        return view('home', [
+            'visitantes' => $visitantes,
+            'culto_hoje' => $culto_hoje,
+            'recados' => $recados,
+            'eventos' => $eventos,
+            'aniversariantes' => $aniversariantes,
+            'congregacao' => $congregacao,
+            'usuario' => $usuario,
+            'dashboardStats' => $dashboardStats,
+            'gruposDestaque' => $gruposDestaque,
+        ]);
     }
 }
