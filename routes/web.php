@@ -47,7 +47,8 @@ Route::domain('kleros.local')
     Route::post('/congregacoes', [CongregacaoController::class, 'store'])->name('congregacoes.store');
     Route::get('/checkin/denominacao', [DenominacaoController::class, 'create'])->name('denominacoes.create');
     Route::get('/checkin', [CongregacaoController::class, 'create'])->name('congregacoes.cadastro');
-    Route::get('/config/{id}', [CongregacaoController::class, 'config'])->name('congregacoes.config');
+    Route::get('/configuracoes/{congregacao}', [CongregacaoController::class, 'config'])->name('congregacoes.config');
+    Route::post('/configuracoes/{congregacao}', [CongregacaoController::class, 'salvarConfig'])->name('congregacoes.config.salvar');
 });
 
 Route::domain('admin.local')->group(function () {
