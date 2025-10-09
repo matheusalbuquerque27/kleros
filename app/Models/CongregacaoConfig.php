@@ -15,7 +15,8 @@ class CongregacaoConfig extends Model
         'tema_id',
         'congregacao_id',
         'agrupamentos',
-        'celulas'
+        'celulas',
+        'language',
     ];
 
     protected $casts = [

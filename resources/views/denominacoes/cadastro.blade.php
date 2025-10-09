@@ -1,8 +1,13 @@
 @extends('layouts.site')
 
-@section('title', 'Cadastre sua denominação — Kleros')
+@section('title', __('denominations.meta.title'))
+@section('meta_description', __('site.meta.description'))
 
 @section('content')
+@php
+    $identity = trans('denominations.identity');
+    $ministries = trans('denominations.ministries');
+@endphp
 <style>
     #base_doutrinaria {
         background: rgba(255, 255, 255, 0.08);
@@ -23,25 +28,28 @@
 </style>
 <div class="min-h-screen bg-[#1a1821] text-[#f4f3f6] font-[Segoe_UI,Roboto,system-ui,-apple-system,Arial,sans-serif]">
     <header class="sticky top-0 z-40 bg-[#1a1821]/95 border-b border-white/10">
-        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
             <a href="{{ route('site.home') }}" class="flex items-center gap-3">
                 <img src="{{ asset('images/kleros-logo.svg') }}" alt="Kleros" class="h-8 w-auto">
                 <div class="leading-tight">
                     <span class="font-semibold text-lg">Kleros</span>
-                    <span class="block text-xs text-white/60">Ecossistema para Igrejas</span>
+                    <span class="block text-xs text-white/60">{{ __('denominations.header.tagline') }}</span>
                 </div>
             </a>
-            <a href="{{ route('congregacoes.cadastro') }}" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/20 hover:border-white/40 text-sm">
-                Já tem a denominação? Cadastre a congregação
-            </a>
+            <div class="flex items-center gap-3">
+                @include('site.partials.language-switcher', ['formClass' => 'hidden sm:block', 'selectId' => 'locale-denominations'])
+                <a href="{{ route('congregacoes.cadastro') }}" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/20 hover:border-white/40 text-sm">
+                    {{ __('denominations.header.link_label') }}
+                </a>
+            </div>
         </div>
     </header>
 
     <main class="max-w-4xl mx-auto px-4 py-16">
-        <div class="text-center md:text-left">
-            <span class="uppercase tracking-[0.2em] text-xs text-white/50">Check-in denominacional</span>
-            <h1 class="mt-3 text-3xl md:text-4xl font-semibold">Cadastre sua denominação</h1>
-            <p class="mt-4 text-white/70 text-base md:text-lg">Informe os dados principais para que possamos organizar suas igrejas e habilitar os recursos do Kleros para toda a rede.</p>
+        <div class="text-center md:text-left space-y-3">
+            <span class="uppercase tracking-[0.2em] text-xs text-white/50">{{ __('denominations.hero.badge') }}</span>
+            <h1 class="text-3xl md:text-4xl font-semibold">{{ __('denominations.hero.title') }}</h1>
+            <p class="text-white/70 text-base md:text-lg">{{ __('denominations.hero.description') }}</p>
         </div>
 
         <div class="mt-8 space-y-4">
@@ -66,18 +74,18 @@
             @csrf
             <div class="space-y-6">
                 <div>
-                    <h2 class="text-xl font-semibold">Identidade denominacional</h2>
-                    <p class="text-white/60 text-sm mt-2">Esses dados aparecerão para todas as congregações vinculadas.</p>
+                    <h2 class="text-xl font-semibold">{{ $identity['title'] }}</h2>
+                    <p class="text-white/60 text-sm mt-2">{{ $identity['subtitle'] }}</p>
                 </div>
-                <div class="grid md:grid-cols-1">
+                <div class="grid md:grid-cols-1 gap-5">
                     <label class="block">
-                        <span class="text-sm font-medium text-white/80">Nome completo</span>
-                        <input type="text" name="nome" id="nome" placeholder="Nome oficial da denominação" required class="mt-2 w-full rounded-xl bg-white/10 border border-white/15 px-4 py-3 text-white placeholder-white/40 focus:border-[#6449a2] focus:outline-none focus:ring-2 focus:ring-[#6449a2]/40">
+                        <span class="text-sm font-medium text-white/80">{{ $identity['fields']['name']['label'] }}</span>
+                        <input type="text" name="nome" id="nome" placeholder="{{ $identity['fields']['name']['placeholder'] }}" required class="mt-2 w-full rounded-xl bg-white/10 border border-white/15 px-4 py-3 text-white placeholder-white/40 focus:border-[#6449a2] focus:outline-none focus:ring-2 focus:ring-[#6449a2]/40">
                     </label>
-                    <label class="block md:col-span-2">
-                        <span class="text-sm font-medium text-white/80">Base doutrinária</span>
+                    <label class="block">
+                        <span class="text-sm font-medium text-white/80">{{ $identity['fields']['doctrine']['label'] }}</span>
                         <select name="base_doutrinaria" id="base_doutrinaria" required class="mt-2 w-full rounded-xl bg-white/10 border border-white/15 px-4 py-3 text-white focus:border-[#6449a2] focus:outline-none focus:ring-2 focus:ring-[#6449a2]/40">
-                            <option value="">Selecione a tradição/confissão</option>
+                            <option value="">{{ $identity['fields']['doctrine']['placeholder'] }}</option>
                             @foreach ($bases_doutrinarias as $base)
                                 <option value="{{ $base->id }}">{{ $base->nome }}</option>
                             @endforeach
@@ -88,27 +96,31 @@
 
             <div class="space-y-6">
                 <div>
-                    <h2 class="text-xl font-semibold">Estrutura ministerial</h2>
-                    <p class="text-white/60 text-sm mt-2">Liste os ministérios ou cargos utilizados (ex.: Pastor, Presbítero, Diácono). Eles serão sugeridos ao cadastrar congregações.</p>
+                    <h2 class="text-xl font-semibold">{{ $ministries['title'] }}</h2>
+                    <p class="text-white/60 text-sm mt-2">{{ $ministries['subtitle'] }}</p>
                 </div>
                 <div class="space-y-4">
                     <label class="block">
-                        <span class="text-sm font-medium text-white/80">Adicione os ministérios e pressione ENTER</span>
-                        <input type="text" id="ministerio_input" placeholder="Digite o ministério e pressione ENTER" class="mt-2 w-full rounded-xl bg-white/10 border border-white/15 px-4 py-3 text-white placeholder-white/40 focus:border-[#6449a2] focus:outline-none focus:ring-2 focus:ring-[#6449a2]/40">
+                        <span class="text-sm font-medium text-white/80">{{ $ministries['fields']['add'] }}</span>
+                        <input type="text" id="ministerio_input" placeholder="{{ $ministries['fields']['placeholder'] }}" class="mt-2 w-full rounded-xl bg-white/10 border border-white/15 px-4 py-3 text-white placeholder-white/40 focus:border-[#6449a2] focus:outline-none focus:ring-2 focus:ring-[#6449a2]/40">
                     </label>
                     <input type="hidden" name="ministerios_eclesiasticos" id="ministerios_eclesiasticos">
                     <div class="min-h-[3rem] rounded-xl border border-dashed border-white/20 bg-white/5 p-3">
                         <div id="tags_container" class="flex flex-wrap gap-2 text-sm"></div>
-                        <p class="text-xs text-white/40 mt-2">Clique em um item para removê-lo.</p>
+                        <p class="text-xs text-white/40 mt-2">{{ $ministries['fields']['helper'] }}</p>
                     </div>
                 </div>
             </div>
 
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p class="text-xs text-white/50">Ao continuar você autoriza a equipe Kleros a entrar em contato para validar as informações.</p>
+                <p class="text-xs text-white/50">{{ __('denominations.consent') }}</p>
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <a href="{{ route('congregacoes.cadastro') }}" class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-white/15 text-sm font-medium text-white/80 hover:border-white/40">Ir para cadastro de congregações</a>
-                    <button type="submit" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[#6449a2] hover:bg-[#584091] text-sm font-semibold shadow-lg shadow-[#6449a2]/30 transition">Salvar e continuar</button>
+                    <a href="{{ route('congregacoes.cadastro') }}" class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-white/15 text-sm font-medium text-white/80 hover:border-white/40">
+                        {{ __('denominations.header.to_congregations') }}
+                    </a>
+                    <button type="submit" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[#6449a2] hover:bg-[#584091] text-sm font-semibold shadow-lg shadow-[#6449a2]/30 transition">
+                        {{ __('denominations.buttons.submit') }}
+                    </button>
                 </div>
             </div>
         </form>
@@ -123,7 +135,7 @@
     const hidden = document.getElementById('ministerios_eclesiasticos');
     const tags = [];
 
-    input.addEventListener('keydown', function(e) {
+    input?.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && input.value.trim() !== '') {
             e.preventDefault();
             tags.push(input.value.trim());
@@ -132,6 +144,10 @@
     });
 
     function renderTags() {
+        if (!container || !hidden) {
+            return;
+        }
+
         container.innerHTML = '';
         hidden.value = JSON.stringify(tags);
         tags.forEach((tag, idx) => {

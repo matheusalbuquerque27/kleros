@@ -3,139 +3,149 @@
 @section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
+@php
+    $members = trans('members');
+    $common = $members['common'];
+    $cadastro = $members['cadastro'];
+@endphp
 
 @if ($errors->any())
     <div class="msg">
         <div class="error">
             <ul>
-                {{$errors->first()}}
+                <li>{{ $errors->first() }}</li>
             </ul>
         </div>
     </div>
 @endif
 
 <div class="container">
-    <h1>Novo membro</h1>
-    <form action="/membros" method="post">
+    <h1>{{ $cadastro['title'] }}</h1>
+    <form action="{{ route('membros.store') }}" method="post">
         @csrf
         <div class="form-control">
             <div class="form-block">
-                <h3>Informações básicas</h3>
+                <h3>{{ $cadastro['sections']['basic'] }}</h3>
                 <div class="form-item">
-                    <label for="Nome">Nome: </label>
-                    <input type="text" name="nome" id="nome" placeholder="Nome completo" value="{{ old('nome') }}">
+                    <label for="nome">{{ $common['fields']['name'] }}:</label>
+                    <input type="text" name="nome" id="nome" placeholder="{{ $common['placeholders']['name'] }}" value="{{ old('nome') }}">
                 </div>
                 <div class="form-item">
-                    <label for="rg">RG: </label>
-                    <input type="text" name="rg" id="rg" placeholder="RG" value="{{ old('rg') }}">
+                    <label for="rg">{{ $common['fields']['rg'] }}:</label>
+                    <input type="text" name="rg" id="rg" placeholder="{{ $common['placeholders']['rg'] }}" value="{{ old('rg') }}">
                 </div>
                 <div class="form-item">
-                    <label for="cpf">CPF: </label>
-                    <input type="text" name="cpf" id="cpf" placeholder="CPF" value="{{ old('cpf') }}">
+                    <label for="cpf">{{ $common['fields']['cpf'] }}:</label>
+                    <input type="text" name="cpf" id="cpf" placeholder="{{ $common['placeholders']['cpf'] ?? $common['fields']['cpf'] }}" value="{{ old('cpf') }}">
                 </div>
                 <div class="form-item">
-                    <label for="data_nascimento">Data de nascimento: </label>
+                    <label for="data_nascimento">{{ $common['fields']['birthdate'] }}:</label>
                     <input type="date" name="data_nascimento" id="data_nascimento" value="{{ old('data_nascimento') }}">
                 </div>
                 <div class="form-item">
-                    <label for="sexo">Sexo: </label>
+                    <label for="sexo">{{ $common['fields']['gender'] }}:</label>
                     <select name="sexo" id="sexo">
-                        <option value="M" {{ old('sexo') == 'M' ? 'selected' : '' }}>Masculino</option>
-                        <option value="F" {{ old('sexo') == 'F' ? 'selected' : '' }}>Feminino</option>
+                        <option value="M" @selected(old('sexo') == 'M')>{{ $common['gender']['male'] }}</option>
+                        <option value="F" @selected(old('sexo') == 'F')>{{ $common['gender']['female'] }}</option>
                     </select>
                 </div>
                 <div class="form-item">
-                    <label for="telefone">Telefone: </label>
-                    <input type="tel" id="telefone" name="telefone" placeholder="(00)00000-0000" value="{{ old('telefone') }}">
+                    <label for="telefone">{{ $common['fields']['phone'] }}:</label>
+                    <input type="tel" id="telefone" name="telefone" placeholder="{{ $common['placeholders']['phone'] }}" value="{{ old('telefone') }}">
                 </div>
                 <div class="form-item">
-                    <label for="email">Email: </label>
-                    <input type="tel" id="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
+                    <label for="email">{{ $common['fields']['email'] }}:</label>
+                    <input type="email" id="email" name="email" placeholder="{{ $common['placeholders']['email'] }}" value="{{ old('email') }}">
                 </div>
                 <div class="form-item">
-                    <label for="estado_civil">Estado civil: </label>
+                    <label for="estado_civil">{{ $common['fields']['marital_status'] }}:</label>
                     <select name="estado_civil" id="estado_civil">
                         @foreach ($estado_civil as $item)
-                            <option value="{{$item->id}}">{{$item->titulo}}</option>
+                            <option value="{{ $item->id }}" @selected(old('estado_civil') == $item->id)>{{ $item->titulo }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="form-item">
-                    <label for="escolaridade">Escolaridade: </label>
+                    <label for="escolaridade">{{ $common['fields']['education'] }}:</label>
                     <select name="escolaridade" id="escolaridade">
                         @foreach ($escolaridade as $item)
-                            <option value="{{$item->id}}">{{$item->titulo}}</option>
+                            <option value="{{ $item->id }}" @selected(old('escolaridade') == $item->id)>{{ $item->titulo }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="form-item">
-                    <label for="profissao">Profissão: </label>
-                    <input type="text" name="profissao" id="profissao" placeholder="Profissão" value="{{ old('profissao') }}">
+                    <label for="profissao">{{ $common['fields']['profession'] }}:</label>
+                    <input type="text" name="profissao" id="profissao" placeholder="{{ $common['placeholders']['profession'] ?? $common['fields']['profession'] }}" value="{{ old('profissao') }}">
                 </div>
             </div>
+
             <div class="form-block">
-                <h3>Informações de endereço</h3>
+                <h3>{{ $cadastro['sections']['address'] }}</h3>
                 <div class="form-item">
-                    <label for="endereco">Endereço: </label>
-                    <input type="text" name="endereco" id="endereco" placeholder="Endereço" value="{{ old('endereco') }}">
+                    <label for="endereco">{{ $common['fields']['address'] }}:</label>
+                    <input type="text" name="endereco" id="endereco" placeholder="{{ $common['placeholders']['address'] }}" value="{{ old('endereco') }}">
                 </div>
                 <div class="form-item">
-                    <label for="numero">Número: </label>
-                    <input type="text" name="numero" id="numero" placeholder="Número" value="{{ old('numero') }}">
+                    <label for="numero">{{ $common['fields']['number'] }}:</label>
+                    <input type="text" name="numero" id="numero" placeholder="{{ $common['placeholders']['number'] }}" value="{{ old('numero') }}">
                 </div>
                 <div class="form-item">
-                    <label for="complemento">Complemento: </label>
-                    <input type="text" name="complemento" id="complemento" placeholder="Complemento" value="{{ old('complemento') }}">
+                    <label for="complemento">{{ $common['fields']['complement'] }}:</label>
+                    <input type="text" name="complemento" id="complemento" placeholder="{{ $common['placeholders']['complement'] }}" value="{{ old('complemento') }}">
                 </div>
                 <div class="form-item">
-                    <label for="bairro">Bairro: </label>
-                    <input type="text" name="bairro" id="bairro" placeholder="Bairro" value="{{ old('bairro') }}">
+                    <label for="bairro">{{ $common['fields']['district'] }}:</label>
+                    <input type="text" name="bairro" id="bairro" placeholder="{{ $common['placeholders']['district'] }}" value="{{ old('bairro') }}">
                 </div>
                 <div class="form-item">
-                    <label for="cep">CEP: </label>
-                    <input type="text" name="cep" id="cep" placeholder="00000-000" value="{{ old('bairro') }}">
+                    <label for="cep">{{ $common['fields']['postal_code'] }}:</label>
+                    <input type="text" name="cep" id="cep" placeholder="{{ $common['placeholders']['postal_code'] }}" value="{{ old('cep') }}">
                 </div>
             </div>
+
             <div class="form-block">
-                <h3>Informações específicas</h3>
+                <h3>{{ $cadastro['sections']['specifics'] }}</h3>
                 <div class="form-item">
-                    <label for="data_batismo">Data de Batismo: </label>
-                    <input type="date" name="data_batismo" id="data_batismo" placeholder="Data de batismo" value="{{ old('data_batismo') }}">
+                    <label for="data_batismo">{{ $common['fields']['baptism_date'] }}:</label>
+                    <input type="date" name="data_batismo" id="data_batismo" value="{{ old('data_batismo') }}">
                 </div>
                 <div class="form-item">
-                    <label for="denominacao_origem">Denominação de Origem: </label>
-                    <input type="text" name="denominacao_origem" id="denominacao_origem" placeholder="Denominação de origem" value="{{ old('denominacao_origem') }}">
+                    <label for="denominacao_origem">{{ $common['fields']['origin_denomination'] }}:</label>
+                    <input type="text" name="denominacao_origem" id="denominacao_origem" placeholder="{{ $common['placeholders']['origin_denomination'] ?? $common['fields']['origin_denomination'] }}" value="{{ old('denominacao_origem') }}">
                 </div>
                 <div class="form-item">
-                    <label for="ministerio">Ministério: </label>
+                    <label for="ministerio">{{ $common['fields']['ministry'] }}:</label>
                     <select name="ministerio" id="ministerio">
                         @foreach ($ministerios as $item)
-                            <option value="{{$item->id}}">{{$item->titulo}}</option>
+                            <option value="{{ $item->id }}" @selected(old('ministerio') == $item->id)>{{ $item->titulo }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="form-item">
-                    <label for="data_consagracao">Data de Consagração: </label>
-                    <input type="date" name="data_consagracao" id="data_consagracao" placeholder="Data de consagração" value="{{ old('data_consagracao') }}">
+                    <label for="data_consagracao">{{ $common['fields']['ordination_date'] }}:</label>
+                    <input type="date" name="data_consagracao" id="data_consagracao" value="{{ old('data_consagracao') }}">
                 </div>
             </div>
+
             <div class="form-block">
-                <h3>Filiação</h3>
+                <h3>{{ $cadastro['sections']['family'] }}</h3>
                 <div class="form-item">
-                    <label for="nome_paterno">Nome paterno: </label>
-                    <input type="text" name="nome_paterno" id="nome_paterno" placeholder="Nome paterno" value="{{ old('nome_paterno') }}">
+                    <label for="nome_paterno">{{ $common['fields']['father_name'] }}:</label>
+                    <input type="text" name="nome_paterno" id="nome_paterno" placeholder="{{ $common['placeholders']['father_name'] ?? $common['fields']['father_name'] }}" value="{{ old('nome_paterno') }}">
                 </div>
                 <div class="form-item">
-                    <label for="nome_materno">Nome materno: </label>
-                    <input type="text" name="nome_materno" id="nome_materno" placeholder="Nome materno" value="{{ old('nome_materno') }}">
+                    <label for="nome_materno">{{ $common['fields']['mother_name'] }}:</label>
+                    <input type="text" name="nome_materno" id="nome_materno" placeholder="{{ $common['placeholders']['mother_name'] ?? $common['fields']['mother_name'] }}" value="{{ old('nome_materno') }}">
                 </div>
             </div>
+
             <div class="form-options">
-                <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> Adicionar Membro</button>
-                <a href="/membros/painel"><button type="button" class="btn"><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
+                <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> {{ $common['buttons']['add_member'] }}</button>
+                <a href="{{ route('membros.painel') }}">
+                    <button type="button" class="btn"><i class="bi bi-arrow-return-left"></i> {{ $common['buttons']['back'] }}</button>
+                </a>
             </div>
-        </div><!--form-control-->
+        </div>
     </form>
 </div>
-
 @endsection

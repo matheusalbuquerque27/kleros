@@ -30,8 +30,12 @@ use App\Http\Controllers\SetorController;
 use App\Http\Controllers\FinanceiroController;
 use App\Http\Controllers\NotificacaoController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\LocaleController;
+
+Route::post('/locale', [LocaleController::class, 'update'])->name('locale.update');
 
 Route::domain('kleros.local')
+    ->middleware('setlocale')
     ->group(function () {
     Route::get('/', [SiteController::class, 'home'])->name('site.home');
     Route::view('/contato', 'site.contato')->name('site.contato');
@@ -51,7 +55,7 @@ Route::domain('kleros.local')
     Route::post('/configuracoes/{congregacao}', [CongregacaoController::class, 'salvarConfig'])->name('congregacoes.config.salvar');
 });
 
-Route::domain('admin.local')->group(function () {
+Route::domain('admin.local')->middleware('setlocale')->group(function () {
 
     Route::get('/', fn() => redirect()->route('admin.login'));
     Route::get('/login', [AdminController::class, 'login'])->name('admin.login');
@@ -64,7 +68,7 @@ Route::domain('admin.local')->group(function () {
 
 });
 
-Route::middleware(['web', 'dominio'])->group(function () {
+Route::middleware(['web', 'dominio', 'setlocale'])->group(function () {
 
     Route::get('/login', [HomeController::class, 'login'])->name('login');
     Route::get('/cadastrar', [HomeController::class, 'create'])->name('login.create');
@@ -103,11 +107,11 @@ Route::middleware(['web', 'dominio'])->group(function () {
         Route::put('/membros/{id}', [MembroController::class, 'update'])->name('membros.atualizar');
         Route::delete('/membros/{id}', [MembroController::class, 'destroy'])->name('membros.destroy');
 
-        Route::post('/visitantes', [VisitanteController::class, 'store']);
+        Route::post('/visitantes', [VisitanteController::class, 'store'])->name('visitantes.store');
         Route::get('/visitantes/adicionar', [VisitanteController::class, 'create'])->name('visitantes.adicionar');
         Route::get('/visitantes/historico', [VisitanteController::class, 'historico'])->name('visitantes.historico');
         Route::get('/visitantes/export', [VisitanteController::class, 'export'])->name('visitantes.export');
-        Route::post('/visitantes/search', [VisitanteController::class, 'search']);
+        Route::post('/visitantes/search', [VisitanteController::class, 'search'])->name('visitantes.search');
         Route::get('/visitantes/{id}', [VisitanteController::class, 'exibir'])->name('visitantes.exibir');
         Route::get('/visitantes/editar/{id}', [VisitanteController::class, 'form_editar'])->name('visitantes.form_editar');
         Route::put('/visitantes/{id}', [VisitanteController::class, 'update'])->name('visitantes.update');

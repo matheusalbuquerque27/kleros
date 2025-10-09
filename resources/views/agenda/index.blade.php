@@ -3,41 +3,64 @@
 @section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
+@php
+    $agenda = trans('agenda');
+    $views = $agenda['views'];
+    $schedule = $agenda['schedule'];
+    $eventsLang = $agenda['events'];
+    $localeJs = str_replace('_', '-', app()->getLocale());
+@endphp
 
 <div class="container">
-
-    <h1>Agenda Integrada</h1>
+    <h1>{{ $agenda['title'] }}</h1>
     <div class="info">
-        <h3>Visão Geral</h3>
+        <h3>{{ $agenda['overview'] }}</h3>
         <div class="control-btn">
             <div class="control-btn-group">
-                <h4>Alterar visão</h4>
-                <button class="btn" id="btnVisaoAnual">Visão Anual</button>
-                <button class="btn" id="btnVisaoMensal">Visão Mensal</button>
+                <h4>{{ $views['change'] }}</h4>
+                <button class="btn" id="btnVisaoAnual">{{ $views['annual'] }}</button>
+                <button class="btn" id="btnVisaoMensal">{{ $views['monthly'] }}</button>
             </div>
-            
+
             <div class="control-btn-group">
-                <h4>Agendar</h4>
-                <button onclick="abrirJanelaModal('{{route('eventos.form_criar')}}')" class="btn" id="evento"><i class="bi bi-calendar-event"></i> Evento</button>
-                <button onclick="abrirJanelaModal('{{route('cultos.form_criar')}}')" class="btn" id="culto"><i class="bi bi-bell"></i> Culto</button>
-                <button onclick="abrirJanelaModal('{{route('reunioes.form_criar')}}')" class="btn" id="reuniao"><i class="bi bi-people"></i> Reunião</button>
+                <h4>{{ $schedule['heading'] }}</h4>
+                <button onclick="abrirJanelaModal('{{ route('eventos.form_criar') }}')" class="btn" id="evento">
+                    <i class="bi bi-calendar-event"></i> {{ $schedule['event'] }}
+                </button>
+                <button onclick="abrirJanelaModal('{{ route('cultos.form_criar') }}')" class="btn" id="culto">
+                    <i class="bi bi-bell"></i> {{ $schedule['service'] }}
+                </button>
+                <button onclick="abrirJanelaModal('{{ route('reunioes.form_criar') }}')" class="btn" id="reuniao">
+                    <i class="bi bi-people"></i> {{ $schedule['meeting'] }}
+                </button>
             </div>
         </div>
         <div id="calendar"></div>
     </div>
-    </div>
-
-@endsection
+</div>
 
 @push('scripts')
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const calendarEl = document.getElementById('calendar');
+        if (!calendarEl) {
+            return;
+        }
 
+        const locale = @json($localeJs);
+        const buttonText = {
+            today: @json($views['today']),
+            month: @json($views['month_label']),
+            week: @json($views['week_label']),
+            day: @json($views['day_label']),
+        };
+        const eventLabels = {
+            alertTitle: @json($eventsLang['alert_title']),
+            alertStart: @json($eventsLang['alert_start']),
+        };
 
         const calendar = new FullCalendar.Calendar(calendarEl, {
-            locale: 'pt-br',
+            locale: locale,
             timeZone: 'local',
             initialView: 'dayGridMonth',
             headerToolbar: {
@@ -45,17 +68,12 @@
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-             buttonText: {
-                today: 'Hoje',
-                month: 'Mês',
-                week: 'Semana',
-                day: 'Dia'
-            },
+            buttonText: buttonText,
             views: {
                 multiMonthYear: {
                     type: 'multiMonth',
                     duration: { months: 12 },
-                    buttonText: 'Ano'
+                    buttonText: @json($views['year_label'])
                 }
             },
             events: "{{ route('agenda.eventos.json') }}",
@@ -70,6 +88,7 @@
                     culto: 'bi-bell',
                     evento: 'bi-calendar-event',
                     reuniao: 'bi-people-fill',
+                    aniversario: 'bi-cake2',
                 };
 
                 let titleHtml = info.event.title;
@@ -92,22 +111,21 @@
                 }
 
                 const plainTitle = info.event.title.replace(/<[^>]+>/g, '');
-                alert('Evento: ' + plainTitle + '\nInício: ' + info.event.start.toLocaleString());
+                const start = info.event.start ? info.event.start.toLocaleString(locale) : '';
+                alert(eventLabels.alertTitle + ': ' + plainTitle + '\n' + eventLabels.alertStart + ': ' + start);
             }
         });
 
         calendar.render();
 
-        // Trocar para visão mensal
-        document.getElementById('btnVisaoMensal').addEventListener('click', function () {
+        document.getElementById('btnVisaoMensal')?.addEventListener('click', function () {
             calendar.changeView('dayGridMonth');
         });
 
-        // Trocar para visão anual
-        document.getElementById('btnVisaoAnual').addEventListener('click', function () {
+        document.getElementById('btnVisaoAnual')?.addEventListener('click', function () {
             calendar.changeView('multiMonthYear');
         });
     });
 </script>
-
 @endpush
+@endsection

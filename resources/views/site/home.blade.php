@@ -1,45 +1,70 @@
 @extends('layouts.site')
 
-@section('title', 'Kleros — Ecossistema para Igrejas')
+@section('title', __('site.meta.title'))
+@section('meta_description', __('site.meta.description'))
 
 @section('content')
+@php
+    $currentLocale = app()->getLocale();
+    $missionCards = trans('site.mission.cards');
+    $featureItems = trans('site.features.items');
+    $extensionItems = trans('site.extensions.items');
+    $starterItems = trans('site.pricing.plans.starter.items');
+
+    $subdomainHints = [
+        'pt' => 'suaigreja.kleros.com.br',
+        'en' => 'yourchurch.kleros.com.br',
+        'es' => 'tuiglesia.kleros.com.br',
+    ];
+
+    $subdomainExample = $subdomainHints[$currentLocale] ?? 'yourchurch.kleros.com.br';
+@endphp
 <div class="min-h-screen bg-[#1a1821] text-[#f4f3f6] font-[Segoe_UI,Roboto,system-ui,-apple-system,Arial,sans-serif]">
     {{-- HEADER --}}
     <header class="sticky top-0 z-50 bg-[#1a1821]/90 backdrop-blur border-b border-white/10">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
             <a href="{{ route('site.home') }}" class="flex items-center gap-3">
                 <img src="{{ asset('images/kleros-logo.svg') }}" alt="Kleros" class="h-8 w-auto">
                 <div class="leading-tight">
                     <span class="font-semibold text-lg">Kleros</span>
-                    <span class="block text-xs text-white/60">por Youcan Serviços Empresariais</span>
+                    <span class="block text-xs text-white/60">{{ __('site.header.brand_tagline') }}</span>
                 </div>
             </a>
 
             <nav class="hidden md:flex gap-8 text-sm">
-                <a href="#recursos" class="hover:text-white">Recursos</a>
-                <a href="#extensoes" class="hover:text-white">Extensões</a>
-                <a href="#ecossistema" class="hover:text-white">Ecossistema</a>
-                <a href="#precos" class="hover:text-white">Preço</a>
-                <a href="#faq" class="hover:text-white">FAQ</a>
+                <a href="#recursos" class="hover:text-white">{{ __('site.header.nav.resources') }}</a>
+                <a href="#extensoes" class="hover:text-white">{{ __('site.header.nav.extensions') }}</a>
+                <a href="#proposito" class="hover:text-white">{{ __('site.header.nav.ecosystem') }}</a>
+                <a href="#precos" class="hover:text-white">{{ __('site.header.nav.pricing') }}</a>
+                <a href="#assinar" class="hover:text-white">{{ __('site.header.nav.faq') }}</a>
             </nav>
 
             <div class="flex items-center gap-3">
-                <a href="#demo" class="hidden sm:inline-flex px-4 py-2 rounded-lg border border-white/20 hover:border-white/40 text-sm">Ver demonstração</a>
-                <a href="{{ route('congregacoes.cadastro') }}" class="px-4 py-2 rounded-lg bg-[#6449a2] hover:bg-[#584091] text-sm font-medium shadow-md">Começar agora</a>
+                @include('site.partials.language-switcher', ['formClass' => 'hidden sm:block', 'selectId' => 'locale-home'])
+                <a href="#demo" class="hidden sm:inline-flex px-4 py-2 rounded-lg border border-white/20 hover:border-white/40 text-sm">
+                    {{ __('site.header.demo') }}
+                </a>
+                <a href="{{ route('congregacoes.cadastro') }}" class="px-4 py-2 rounded-lg bg-[#6449a2] hover:bg-[#584091] text-sm font-medium shadow-md">
+                    {{ __('site.header.cta') }}
+                </a>
             </div>
         </div>
     </header>
 
     {{-- HERO --}}
-    <section class="max-w-7xl mx-auto px-4 py-20 grid md:grid-cols-2 gap-10 items-center">
+    <section id="hero" class="max-w-7xl mx-auto px-4 py-20 grid md:grid-cols-2 gap-10 items-center">
         <div>
-            <h1 class="text-4xl md:text-5xl font-bold leading-tight">Unidade que alcança. Gestão que transforma.</h1>
-            <p class="mt-4 text-lg text-white/80">O Kleros é um ecossistema moderno e completo para igrejas: gestão de cultos, eventos, membros, grupos e finanças — com gráficos, agenda, notificações e relatórios. Expanda com extensões e integre sua denominação em uma só plataforma web e mobile.</p>
+            <h1 class="text-4xl md:text-5xl font-bold leading-tight">{{ __('site.hero.title') }}</h1>
+            <p class="mt-4 text-lg text-white/80">{{ __('site.hero.description') }}</p>
             <div class="mt-6 flex flex-wrap gap-3">
-                <a href="{{ route('congregacoes.cadastro') }}" class="inline-flex items-center px-5 py-3 rounded-lg bg-[#6449a2] hover:bg-[#584091] font-medium">Assinar por R$110/mês</a>
-                <a href="#recursos" class="inline-flex items-center px-5 py-3 rounded-lg border border-white/15 hover:border-white/30">Explorar recursos</a>
+                <a href="{{ route('congregacoes.cadastro') }}" class="inline-flex items-center px-5 py-3 rounded-lg bg-[#6449a2] hover:bg-[#584091] font-medium">
+                    {{ __('site.hero.primary_cta') }}
+                </a>
+                <a href="#recursos" class="inline-flex items-center px-5 py-3 rounded-lg border border-white/15 hover:border-white/30">
+                    {{ __('site.hero.secondary_cta') }}
+                </a>
             </div>
-            <p class="mt-3 text-xs text-white/60">Subdomínio imediato: <span class="font-mono">suaigreja.kleros.com.br</span>. Domínio próprio opcional.</p>
+            <p class="mt-3 text-xs text-white/60">{!! __('site.hero.subdomain_hint', ['subdomain' => '<span class="font-mono">' . $subdomainExample . '</span>']) !!}</p>
         </div>
 
         <div class="bg-white/5 border border-white/10 p-5 rounded-2xl">
@@ -54,22 +79,16 @@
     <section id="proposito" class="py-16 border-t border-white/10">
         <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8">
             <div>
-                <h2 class="text-2xl font-semibold">Tecnologia com propósito</h2>
-                <p class="mt-3 text-white/80">Nascido dentro da agência missionária <strong>Globus Dei</strong>, o Kleros destina parte generosa do negócio para apoiar obras e irmãos missionários. Gestão que organiza, integração que aproxima e investimento que alcança.</p>
+                <h2 class="text-2xl font-semibold">{{ __('site.mission.title') }}</h2>
+                <p class="mt-3 text-white/80">{!! __('site.mission.description') !!}</p>
             </div>
             <div class="md:col-span-2 grid sm:grid-cols-3 gap-6">
-                <div class="bg-white/5 p-5 rounded-xl border border-white/10">
-                    <h3 class="font-semibold">Apoio ao campo missionário</h3>
-                    <p class="text-white/80 text-sm mt-2">Seu investimento fortalece frentes missionárias e projetos locais.</p>
-                </div>
-                <div class="bg-white/5 p-5 rounded-xl border border-white/10">
-                    <h3 class="font-semibold">Comunidade mais próxima</h3>
-                    <p class="text-white/80 text-sm mt-2">Conteúdo missionário e conexões entre membros e congregações.</p>
-                </div>
-                <div class="bg-white/5 p-5 rounded-xl border border-white/10">
-                    <h3 class="font-semibold">Ecossistema expandível</h3>
-                    <p class="text-white/80 text-sm mt-2">Extensões instaláveis elevam a gestão local e da denominação.</p>
-                </div>
+                @foreach($missionCards as $card)
+                    <div class="bg-white/5 p-5 rounded-xl border border-white/10">
+                        <h3 class="font-semibold">{{ $card['title'] }}</h3>
+                        <p class="text-white/80 text-sm mt-2">{{ $card['description'] }}</p>
+                    </div>
+                @endforeach
             </div>
         </div>
     </section>
@@ -77,24 +96,14 @@
     {{-- RECURSOS PRINCIPAIS --}}
     <section id="recursos" class="py-16">
         <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-2xl font-semibold">Tudo que sua igreja precisa</h2>
-            <p class="text-white/80 mt-2 max-w-3xl">Gestão de eventos e cultos, membros e visitantes, reuniões, grupos, departamentos, setores e financeiro — com gráficos, agenda, notificações, relatórios e apps web e mobile.</p>
+            <h2 class="text-2xl font-semibold">{{ __('site.features.title') }}</h2>
+            <p class="text-white/80 mt-2 max-w-3xl">{{ __('site.features.description') }}</p>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                @php
-                    $features = [
-                        'Eventos & Cultos' => 'Programação, inscrições, equipes e relatórios.',
-                        'Membros & Visitantes' => 'Cadastro completo e comunicação segmentada.',
-                        'Grupos & Ministérios' => 'Departamentos, setores e times organizados.',
-                        'Financeiro' => 'Entradas, saídas e gráficos de saúde financeira.',
-                        'Agenda & Calendário' => 'Visual semanal e mensal integrado.',
-                        'Relatórios' => 'Indicadores e estatísticas em tempo real.'
-                    ];
-                @endphp
-                @foreach($features as $title => $desc)
+                @foreach($featureItems as $feature)
                     <div class="bg-white/5 p-6 rounded-xl border border-white/10 hover:bg-white/10">
-                        <h3 class="font-semibold">{{ $title }}</h3>
-                        <p class="mt-2 text-white/80 text-sm">{{ $desc }}</p>
+                        <h3 class="font-semibold">{{ $feature['title'] }}</h3>
+                        <p class="mt-2 text-white/80 text-sm">{{ $feature['description'] }}</p>
                     </div>
                 @endforeach
             </div>
@@ -104,10 +113,10 @@
     {{-- EXTENSÕES --}}
     <section id="extensoes" class="py-16 border-t border-white/10">
         <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-2xl font-semibold">Extensões que elevam sua gestão</h2>
-            <p class="text-white/80 mt-2">Instale módulos internos conforme a necessidade da sua igreja — tudo integrado e pronto para uso.</p>
+            <h2 class="text-2xl font-semibold">{{ __('site.extensions.title') }}</h2>
+            <p class="text-white/80 mt-2">{{ __('site.extensions.description') }}</p>
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                @foreach(['Células','Recados no Culto','Gestor de Arquivos','Grupos Esportivos','Livraria (in/out)','Loja de Recursos (em breve)','Gestão de Projetos (em breve)','Pesquisas Internas (em breve)'] as $ext)
+                @foreach($extensionItems as $ext)
                     <div class="bg-white/5 p-6 rounded-xl border border-white/10 hover:bg-white/10">
                         <h3 class="font-semibold">{{ $ext }}</h3>
                     </div>
@@ -119,24 +128,24 @@
     {{-- PREÇO --}}
     <section id="precos" class="py-16 border-t border-white/10">
         <div class="max-w-5xl mx-auto px-4 text-center">
-            <h2 class="text-2xl font-semibold">Preço simples, atendimento personalizado</h2>
-            <p class="text-white/80 mt-2">Plano inicial com tudo que você precisa para começar bem. Escale com extensões quando desejar.</p>
-            <div class="grid md:grid-cols-2 gap-6 mt-10">
+            <h2 class="text-2xl font-semibold">{{ __('site.pricing.title') }}</h2>
+            <p class="text-white/80 mt-2">{{ __('site.pricing.description') }}</p>
+            <div class="grid md:grid-cols-2 gap-6 mt-10 text-left">
                 <div class="bg-white/5 p-8 rounded-xl border border-white/10">
-                    <h3 class="text-lg font-semibold">Plano Inicial</h3>
-                    <p class="text-4xl font-bold mt-2">R$110<span class="text-lg">/mês</span></p>
+                    <h3 class="text-lg font-semibold">{{ __('site.pricing.plans.starter.name') }}</h3>
+                    <p class="text-4xl font-bold mt-2">{{ __('site.pricing.plans.starter.price') }}</p>
                     <ul class="mt-4 text-white/80 space-y-1 text-sm">
-                        <li>✔ Eventos, cultos e membros</li>
-                        <li>✔ Reuniões e grupos</li>
-                        <li>✔ Financeiro e relatórios</li>
-                        <li>✔ Agenda e notificações</li>
-                        <li>✔ Subdomínio imediato</li>
+                        @foreach($starterItems as $item)
+                            <li>✔ {{ $item }}</li>
+                        @endforeach
                     </ul>
                 </div>
                 <div class="bg-white/5 p-8 rounded-xl border border-white/10">
-                    <h3 class="text-lg font-semibold">Sob medida</h3>
-                    <p class="text-white/80 mt-2">Para convenções e redes com múltiplas igrejas.</p>
-                    <a href="#contato" class="inline-block mt-5 px-5 py-3 rounded-lg border border-white/15 hover:border-white/30">Falar com especialista</a>
+                    <h3 class="text-lg font-semibold">{{ __('site.pricing.plans.custom.name') }}</h3>
+                    <p class="text-white/80 mt-2">{{ __('site.pricing.plans.custom.description') }}</p>
+                    <a href="#contato" class="inline-block mt-5 px-5 py-3 rounded-lg border border-white/15 hover:border-white/30">
+                        {{ __('site.pricing.plans.custom.cta') }}
+                    </a>
                 </div>
             </div>
         </div>
@@ -144,18 +153,22 @@
 
     {{-- CTA FINAL --}}
     <section id="assinar" class="py-20 text-center">
-        <h2 class="text-2xl font-semibold">Pronto para organizar e integrar sua igreja?</h2>
-        <p class="text-white/80 mt-3">Assine por R$110/mês e receba seu subdomínio imediatamente.</p>
-        <div class="mt-6 flex justify-center gap-4">
-            <a href="#contato" class="px-5 py-3 rounded-lg bg-[#6449a2] hover:bg-[#584091] font-medium">Falar com a Youcan</a>
-            <a href="#demo" class="px-5 py-3 rounded-lg border border-white/15 hover:border-white/30">Ver demonstração</a>
+        <h2 class="text-2xl font-semibold">{{ __('site.cta.title') }}</h2>
+        <p class="text-white/80 mt-3">{{ __('site.cta.description') }}</p>
+        <div class="mt-6 flex justify-center gap-4 flex-wrap">
+            <a href="#contato" class="px-5 py-3 rounded-lg bg-[#6449a2] hover:bg-[#584091] font-medium">
+                {{ __('site.cta.primary') }}
+            </a>
+            <a href="#demo" class="px-5 py-3 rounded-lg border border-white/15 hover:border-white/30">
+                {{ __('site.cta.secondary') }}
+            </a>
         </div>
     </section>
 
     {{-- RODAPÉ --}}
     <footer class="border-t border-white/10 py-10 text-center text-sm text-white/70">
-        <p>Kleros — Ecossistema para Igrejas. Desenvolvido por <strong>Youcan Serviços Empresariais</strong>.</p>
-        <p class="text-white/40 mt-2">© {{ date('Y') }} Todos os direitos reservados.</p>
+        <p>{!! __('site.footer.legal') !!}</p>
+        <p class="text-white/40 mt-2">{{ __('site.footer.rights', ['year' => date('Y')]) }}</p>
     </footer>
 </div>
 @endsection

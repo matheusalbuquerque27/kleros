@@ -36,12 +36,14 @@ class MembroController extends Controller
         $membro = new Membro;
 
         $request->validate([
-            'nome' => 'required',
-            'telefone' => 'required',
-            'data_nascimento' => 'required'
+            'nome' => ['required', 'string', 'max:255'],
+            'telefone' => ['required', 'string', 'max:100'],
+            'data_nascimento' => ['required', 'date'],
         ], [
-            '*.required' => 'Nome, Telefone e Data de nascimento são obrigatórios'
-        ]);        
+            'nome.required' => __('members.validation.name_required'),
+            'telefone.required' => __('members.validation.phone_required'),
+            'data_nascimento.required' => __('members.validation.birth_required'),
+        ]);
 
         $membro->congregacao_id = $this->congregacao->id;
         $membro->nome = $request->nome;
@@ -64,7 +66,7 @@ class MembroController extends Controller
         $membro->created_at = date('Y-m-d H:i:s');
         $membro->updated_at = date('Y-m-d H:i:s');
 
-        $msg = $request->nome.' se tornou membro da AD Jerusalém.';
+        $msg = __('members.flash.created', ['name' => $request->nome]);
         if($membro->save()){
             $user = new User;
 
@@ -129,7 +131,9 @@ class MembroController extends Controller
 
         $membros = $query->get();
 
-        $filename = 'membros_' . now()->format('Y-m-d_H-i-s') . '.csv';
+        $filename = __('members.export.filename_prefix') . now()->format('Y-m-d_H-i-s') . '.csv';
+        $headers = __('members.export.headers');
+        $notInformed = __('members.common.statuses.not_informed');
 
         $callback = function () use ($membros) {
             $handle = fopen('php://output', 'w');
@@ -140,7 +144,12 @@ class MembroController extends Controller
             // BOM UTF-8 to help spreadsheet tools recognise encoding
             fwrite($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-            fputcsv($handle, ['Nome', 'Telefone', 'Endereço', 'Número', 'Bairro', 'Ministério'], ';');
+            $headers = __('members.export.headers');
+            if (!is_array($headers)) {
+                $headers = ['Nome', 'Telefone', 'Endereço', 'Número', 'Bairro', 'Ministério'];
+            }
+
+            fputcsv($handle, $headers, ';');
 
             foreach ($membros as $membro) {
                 fputcsv($handle, [
@@ -149,7 +158,7 @@ class MembroController extends Controller
                     $membro->endereco,
                     $membro->numero,
                     $membro->bairro,
-                    optional($membro->ministerio)->titulo ?? 'Não informado',
+                    optional($membro->ministerio)->titulo ?? __('members.common.statuses.not_informed'),
                 ], ';');
             }
 
@@ -194,13 +203,13 @@ class MembroController extends Controller
         $membro = Membro::findOrFail($id);
 
         $request->validate([
-            'nome' => 'required',
-            'telefone' => 'required',
-            'data_nascimento' => 'required'
+            'nome' => ['required', 'string', 'max:255'],
+            'telefone' => ['required', 'string', 'max:100'],
+            'data_nascimento' => ['required', 'date'],
         ], [
-            'nome.required' => 'Nome do membro não informado',
-            'telefone.required' => 'Número de telefone não informado',
-            'data_nascimento.required' => 'Data de nascimento não informada'
+            'nome.required' => __('members.validation.name_required'),
+            'telefone.required' => __('members.validation.phone_required'),
+            'data_nascimento.required' => __('members.validation.birth_required'),
         ]);
 
         $membro->nome = $request->nome;
@@ -226,10 +235,10 @@ class MembroController extends Controller
 
         // Salva as alterações
         if ($membro->save()) {
-            return redirect()->route('membros.painel')->with('msg', 'Membro atualizado com sucesso!');
-        } else {
-            return redirect()->back()->withErrors(['msg' => 'Erro ao atualizar membro.']);
+            return redirect()->route('membros.painel')->with('msg', __('members.flash.updated'));
         }
+
+        return redirect()->back()->withErrors(['msg' => __('members.flash.update_error')]);
     }
     
     public function destroy($id) {
@@ -237,12 +246,12 @@ class MembroController extends Controller
        $membro = Membro::find($id);
 
         if (!$membro) {
-            return redirect()->route('membros.excluir')->with('msg-error', 'Membro não encontrado.');
+            return redirect()->route('membros.painel')->with('msg-error', __('members.flash.not_found'));
         }
 
         $membro->delete();
 
-        return redirect()->route('membros.painel')->with('msg', 'Membro excluído com sucesso.');
+        return redirect()->route('membros.painel')->with('msg', __('members.flash.deleted'));
     }
 
     public function perfil() {
@@ -262,7 +271,7 @@ class MembroController extends Controller
         $request->validate([
             'nome' => 'required',
         ], [
-            'nome.required' => 'O nome é obrigatório.',
+            'nome.required' => __('members.validation.name_required'),
         ]);
 
         $membro->nome = $request->nome;
@@ -296,17 +305,17 @@ class MembroController extends Controller
                 $user->save();
 
             } else {
-                return redirect()->back()->with('msg-error', 'A senha atual não confere.');
+                return redirect()->back()->with('msg-error', __('members.flash.password_mismatch'));
             }
         }
 
         // Salva as alterações
         if ($membro->save()) {
 
-            return redirect()->route('perfil')->with('msg', 'Perfil atualizado com sucesso!');
+            return redirect()->route('perfil')->with('msg', __('members.flash.profile_updated'));
 
         } else {
-            return redirect()->back()->with('msg-error',  'Erro ao atualizar perfil.');
+            return redirect()->back()->with('msg-error', __('members.flash.profile_error'));
         }
     }
 }

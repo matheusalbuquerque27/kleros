@@ -7,10 +7,8 @@ use App\Models\Evento;
 use App\Models\SituacaoVisitante;
 use App\Models\Visitante;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Membro;
 use Illuminate\Support\Carbon;
-
 
 class VisitanteController extends Controller
 {
@@ -25,15 +23,16 @@ class VisitanteController extends Controller
     public function store(Request $request) {
 
         $visitante = new Visitante;
-        $msg = $request->nome.' foi cadastrado(a) como visitante!';
 
         $request->validate([
-            'nome' => 'required',
-            'telefone' => 'required',
-            'data_visita' => 'required'
+            'nome' => ['required', 'string', 'max:255'],
+            'telefone' => ['required', 'string', 'max:100'],
+            'data_visita' => ['required', 'date'],
         ], [
-            '*.required' => 'Nome do visitante, Telefone e Data de visita são obrigatórios',
-        ]);    
+            'nome.required' => __('visitors.validation.name_required'),
+            'telefone.required' => __('visitors.validation.phone_required'),
+            'data_visita.required' => __('visitors.validation.date_required'),
+        ]);
 
         $visitante->nome = $request->nome;
         $visitante->telefone = $request->telefone;
@@ -46,7 +45,9 @@ class VisitanteController extends Controller
 
         $visitante->save();
 
-        return redirect()->route('visitantes.adicionar')->with('msg', $msg);    
+        return redirect()
+            ->route('visitantes.adicionar')
+            ->with('msg', __('visitors.flash.created', ['name' => $visitante->nome]));
     }
 
     public function historico() {
@@ -71,9 +72,8 @@ class VisitanteController extends Controller
         }
 
         $visitantes = $query->orderByDesc('data_visita')->get();
-        $visitantesForView = $visitantes->isEmpty() ? '' : $visitantes;
 
-        $view = view('visitantes/includes/visitantes_search', ['visitantes' => $visitantesForView])->render();
+        $view = view('visitantes/includes/visitantes_search', ['visitantes' => $visitantes])->render();
 
         return response()->json(['view' => $view]);
 
@@ -95,7 +95,7 @@ class VisitanteController extends Controller
 
         $visitantes = $query->get();
 
-        $filename = 'visitantes_' . now()->format('Y-m-d_H-i-s') . '.csv';
+        $filename = __('visitors.export.filename_prefix') . now()->format('Y-m-d_H-i-s') . '.csv';
 
         $callback = function () use ($visitantes) {
             $handle = fopen('php://output', 'w');
@@ -105,7 +105,12 @@ class VisitanteController extends Controller
 
             fwrite($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-            fputcsv($handle, ['Nome', 'Data da visita', 'Telefone', 'Situação', 'Observações'], ';');
+            $headers = __('visitors.export.headers');
+            if (!is_array($headers)) {
+                $headers = ['Nome', 'Data da visita', 'Telefone', 'Situação', 'Observações'];
+            }
+
+            fputcsv($handle, $headers, ';');
 
             foreach ($visitantes as $visitante) {
                 $dataVisita = $visitante->data_visita
@@ -116,7 +121,7 @@ class VisitanteController extends Controller
                     $visitante->nome,
                     $dataVisita,
                     $visitante->telefone,
-                    optional($visitante->sit_visitante)->titulo ?? 'Não informado',
+                    optional($visitante->sit_visitante)->titulo ?? __('visitors.common.statuses.not_informed'),
                     $visitante->observacoes,
                 ], ';');
             }
@@ -147,15 +152,16 @@ class VisitanteController extends Controller
     public function update(Request $request, $id) {
 
         $visitante = Visitante::findOrFail($id);
-        $msg = $visitante->nome.' foi atualizado(a) com sucesso!';
 
         $request->validate([
-            'nome' => 'required',
-            'telefone' => 'required',
-            'data_visita' => 'required'
+            'nome' => ['required', 'string', 'max:255'],
+            'telefone' => ['required', 'string', 'max:100'],
+            'data_visita' => ['required', 'date'],
         ], [
-            '*.required' => 'Nome, Telefone e Data de visita são obrigatórios',
-        ]);    
+            'nome.required' => __('visitors.validation.name_required'),
+            'telefone.required' => __('visitors.validation.phone_required'),
+            'data_visita.required' => __('visitors.validation.date_required'),
+        ]);
 
         $visitante->nome = $request->nome;
         $visitante->telefone = $request->telefone;
@@ -166,13 +172,18 @@ class VisitanteController extends Controller
 
         $visitante->save();
 
-        return redirect()->route('visitantes.historico')->with('msg', $msg);
+        return redirect()
+            ->route('visitantes.historico')
+            ->with('msg', __('visitors.flash.updated', ['name' => $visitante->nome]));
     }
 
     public function destroy($id) {
         $visitante = Visitante::findOrFail($id);
         $visitante->delete();
-        return redirect()->route('visitantes.historico')->with('msg', 'Visitante excluído com sucesso.');
+
+        return redirect()
+            ->route('visitantes.historico')
+            ->with('msg', __('visitors.flash.deleted'));
     }
 
     public function tornarMembro(Request $request) {
@@ -186,8 +197,9 @@ class VisitanteController extends Controller
         $membro->updated_at = date('Y-m-d H:i:s');
         $membro->save();
 
-
-        return redirect()->route('membros.editar', $membro->id)->with('msg', $membro->nome.' agora é um membro! Complete os dados cadastrais.');
+        return redirect()
+            ->route('membros.editar', $membro->id)
+            ->with('msg', __('visitors.flash.converted', ['name' => $membro->nome]));
     }
 
 }

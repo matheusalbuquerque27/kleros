@@ -3,6 +3,11 @@
 @section('title', $congregacao->nome_curto . ' | ' . $appName)
 
 @section('content')
+@php
+    $visitors = trans('visitors');
+    $common = $visitors['common'];
+    $page = $visitors['cadastro'];
+@endphp
 
 @if ($errors->any())
     <div class="msg">
@@ -13,49 +18,48 @@
 @endif
 
 <div class="container">
-    <h1>Cadastrar Visitante</h1>
+    <h1>{{ $page['title'] }}</h1>
     <div class="info">
-        <h3>Visitante</h3>
-        <form action="/visitantes" method="post">
+        <h3>{{ $page['section'] }}</h3>
+        <form action="{{ route('visitantes.store') }}" method="post">
             @csrf
             <div class="form-control">
                 <div class="form-item">
-                    <label for="Nome">Nome: </label>
-                    <input type="text" name="nome" placeholder="Nome completo" required>
+                    <label for="visitante-nome">{{ $common['fields']['name'] }}</label>
+                    <input type="text" id="visitante-nome" name="nome" value="{{ old('nome') }}" placeholder="{{ $common['placeholders']['name'] }}" required>
                 </div>
                 <div class="form-item">
-                    <label for="telefone">Telefone/Celular: </label>
-                    <input type="tel" name="telefone" id="telefone" placeholder="(00)00000-0000" required>
+                    <label for="visitante-telefone">{{ $common['fields']['phone'] }}</label>
+                    <input type="tel" id="visitante-telefone" name="telefone" value="{{ old('telefone') }}" placeholder="{{ $common['placeholders']['phone'] }}" required>
                 </div>
                 <div class="form-item">
-                    <label for="data_visita">Data de visita: </label>
-                    <input type="date" name="data_visita" value="{{date("Y-m-d")}}" placeholder="Data de visita" required>
+                    <label for="visitante-data">{{ $common['fields']['visit_date'] }}</label>
+                    <input type="date" id="visitante-data" name="data_visita" value="{{ old('data_visita', now()->format('Y-m-d')) }}" required>
                 </div>
                 <div class="form-item">
-                    <label for="situacao">Situação: </label>
-                    <select name="situacao" id="">
-                        <option value="">Situação do visitante: </option>
+                    <label for="visitante-situacao">{{ $common['fields']['status'] }}</label>
+                    <select name="situacao" id="visitante-situacao" required>
+                        <option value="">{{ $common['placeholders']['search_name'] }}</option>
                         @foreach ($situacao_visitante as $item)
-                        <option value="{{$item->id}}">{{$item->titulo}}</option>
+                            <option value="{{ $item->id }}" @selected(old('situacao') == $item->id)>{{ $item->titulo }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="form-item">
-                    <label for="observacoes">Observações: </label>
-                    <textarea name="observacoes" placeholder="Observações importantes"></textarea>
+                    <label for="visitante-observacoes">{{ $common['fields']['notes'] }}</label>
+                    <textarea id="visitante-observacoes" name="observacoes" placeholder="{{ $common['placeholders']['notes'] }}">{{ old('observacoes') }}</textarea>
                 </div>
                 <div class="form-options">
-                    <button class="btn mg-top-10" type="submit"><i class="bi bi-plus-circle"></i> Salvar Dados</button>
-                    <a href="/visitantes/historico"><button class="btn mg-top-10" type="button"><i class="bi bi-card-list"></i> Histórico</button></a>
-                    <button type="button" onclick="window.history.back()" class="btn mg-top-10"><i class="bi bi-x-circle"></i> Cancelar</button></a>
+                    <button class="btn" type="submit"><i class="bi bi-plus-circle"></i> {{ $common['buttons']['save'] }}</button>
+                    <a href="{{ route('visitantes.historico') }}" class="btn"><i class="bi bi-card-list"></i> {{ $common['buttons']['history'] }}</a>
+                    <button type="button" class="btn" onclick="window.history.back()"><i class="bi bi-x-circle"></i> {{ $common['buttons']['cancel'] }}</button>
                 </div>
             </div>
         </form>
-        @if(module_enabled('recados'))
-            <a href="/recados/adicionar"><button type="button" class="float-btn"><i class="bi bi-chat-left-dots"></i></button></a>
+        @if (module_enabled('recados'))
+            <a href="{{ url('/recados/adicionar') }}" class="float-btn" title="Recados"><i class="bi bi-chat-left-dots"></i></a>
         @endif
         <div class="clear"></div>
     </div>
 </div>
-
 @endsection

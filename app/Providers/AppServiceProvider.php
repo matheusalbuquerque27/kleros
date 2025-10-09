@@ -57,6 +57,8 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('*', function ($view) {
             $view->with('congregacao', app()->bound('congregacao') ? app('congregacao') : null);
+            $view->with('availableLocales', config('locales.labels', []));
+            $view->with('currentLocale', app()->getLocale());
         });
 
         View::composer('noticias.includes.destaques', function ($view) {

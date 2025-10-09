@@ -28,9 +28,9 @@ class DenominacaoController extends Controller
             'base_doutrinaria' => 'required|exists:bases_doutrinarias,id',
             'ministerios_eclesiasticos' => 'required',
         ], [
-            '*.required' => 'É obrigatório preencher todas as informações.',
-            '*.string' => 'O título deve ser uma string válida.',
-            '*.max' => 'O título não pode exceder 255 caracteres.',
+            '*.required' => __('denominations.validation.required'),
+            '*.string' => __('denominations.validation.string'),
+            '*.max' => __('denominations.validation.max'),
         ]);
 
         $denominacao->nome = $request->nome;
@@ -57,9 +57,11 @@ class DenominacaoController extends Controller
             } 
 
         } else {
-            return redirect()->back()->with('error', 'Erro ao cadastrar a denominação.');
+            return redirect()->back()->with('error', __('denominations.alerts.error'));
         }
 
-        return redirect()->route('congregacoes.cadastro')->with('success', 'Denominação cadastrada com sucesso!');
+        return redirect()
+            ->route('congregacoes.cadastro')
+            ->with('success', __('denominations.alerts.success'));
     }
 }

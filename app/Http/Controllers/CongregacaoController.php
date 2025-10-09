@@ -12,10 +12,12 @@ use App\Models\Estado;
 use App\Models\Pais;
 use App\Models\Tema;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Dominio;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class CongregacaoController extends Controller
 {
@@ -43,6 +45,7 @@ class CongregacaoController extends Controller
 
     public function store(Request $request)
     {
+        $supportedLocales = Config::get('locales.supported', []);
         $validated = $request->validate([
             'igreja' => ['required', 'exists:denominacoes,id'],
             'nome' => ['required', 'string', 'max:255'],
@@ -58,13 +61,22 @@ class CongregacaoController extends Controller
             'complemento' => ['nullable', 'string', 'max:120'],
             'bairro' => ['nullable', 'string', 'max:120'],
             'cep' => ['nullable', 'string', 'max:20'],
+            'language' => ['nullable', 'string', Rule::in($supportedLocales)],
         ], [
-            'nome.required' => 'Informe o nome da congregação.',
-            'endereco.required' => 'Informe o endereço da congregação.',
-            'telefone.required' => 'Informe um telefone de contato.',
+            'nome.required' => __('congregations.validation.nome_required'),
+            'endereco.required' => __('congregations.validation.endereco_required'),
+            'telefone.required' => __('congregations.validation.telefone_required'),
         ]);
 
-        $congregacao = DB::transaction(function () use ($validated) {
+        $language = $validated['language']
+            ?? $request->session()->get('app_locale')
+            ?? app()->getLocale();
+
+        if (!in_array($language, $supportedLocales, true)) {
+            $language = Config::get('locales.default', Config::get('app.locale', 'pt'));
+        }
+
+        $congregacao = DB::transaction(function () use ($validated, $language) {
             $congregacao = new Congregacao();
             $congregacao->denominacao_id = $validated['igreja'];
             $congregacao->identificacao = $validated['nome'];
@@ -81,6 +93,7 @@ class CongregacaoController extends Controller
             $congregacao->cidade_id = $validated['cidade'] ?? null;
             $congregacao->estado_id = $validated['estado'] ?? null;
             $congregacao->pais_id = $validated['pais'] ?? null;
+            $congregacao->language = $language;
             $congregacao->save();
 
             $slugCurto = Str::slug($congregacao->nome_curto);
@@ -123,7 +136,7 @@ class CongregacaoController extends Controller
 
         return redirect()
             ->route('congregacoes.config', $congregacao->id)
-            ->with('config_intro', 'Primeira etapa concluída! Personalize a congregação e finalize o cadastro.');
+            ->with('config_intro', __('congregations.config.intro'));
     }
 
     public function config($congregacaoId)
@@ -202,16 +215,30 @@ class CongregacaoController extends Controller
 
         return redirect()
             ->route('congregacoes.config', $congregacao->id)
-            ->with('msg', 'Configurações personalizadas com sucesso! Sua congregação está pronta para começar.');
+            ->with('msg', __('congregations.config.success'));
     }
 
     public function editar($id)
     {
-        $congregacao = app('congregacao');
-        $config = CongregacaoConfig::find($id);
-        $paises = Pais::all();
+        $congregacao = Congregacao::with('config')->findOrFail($id);
+        $config = $congregacao->config ?: CongregacaoConfig::firstOrCreate(['congregacao_id' => $congregacao->id]);
+        $paises = Pais::orderBy('nome')->get();
+        $fontes = ['Roboto', 'Teko', 'Source Sans Pro', 'Oswald', 'Saira'];
+        $supportedLocales = Config::get('locales.supported', ['pt', 'en', 'es']);
+        $localeLabels = Config::get('locales.labels', []);
+        $languageOptions = [];
 
-        return view('congregacoes.edicao', ['config' => $config, 'congregacao' => $congregacao, 'paises' => $paises]);
+        foreach ($supportedLocales as $locale) {
+            $languageOptions[$locale] = $localeLabels[$locale] ?? strtoupper($locale);
+        }
+
+        return view('congregacoes.edicao', [
+            'config' => $config,
+            'congregacao' => $congregacao,
+            'paises' => $paises,
+            'fontes' => $fontes,
+            'languageOptions' => $languageOptions,
+        ]);
     }
 
     public function update(Request $request, $id){
@@ -227,10 +254,20 @@ class CongregacaoController extends Controller
         $congregacao->bairro = $request->bairro;
         $congregacao->cep = $request->cep;
         $congregacao->telefone = $request->telefone;
+        $supportedLocales = Config::get('locales.supported', ['pt', 'en', 'es']);
+        $defaultLocale = Config::get('locales.default', Config::get('app.locale', 'pt'));
+        $language = in_array($request->language, $supportedLocales, true)
+            ? $request->language
+            : $defaultLocale;
+
         $congregacao->cidade_id = $request->cidade;
         $congregacao->estado_id = $request->estado;
         $congregacao->pais_id = $request->pais;
+        $congregacao->language = $language;
         $congregacao->save();
+
+        $request->session()->put('app_locale', $language);
+        app()->setLocale($language);
 
         if ($request->hasFile('logo')) {
             // Salva o arquivo e pega o caminho (ex: 'logos/abcd1234.png')
@@ -300,7 +337,7 @@ class CongregacaoController extends Controller
             'agrupamentos' => $request->agrupamentos,
             'celulas' => $request->celulas,
             'conjunto_cores' => $request->conjunto_cores,
-            'font_family' => $request->fonte,
+            'font_family' => $request->font_family,
             'tema_id' => $request->tema,
         ]);
 

@@ -1,0 +1,132 @@
+<?php
+
+return [
+    'meta' => [
+        'register_title' => 'Congregation check-in — Kleros',
+        'config_title' => 'Configure congregation — Kleros',
+    ],
+    'header' => [
+        'tagline' => 'Ecosystem for Churches',
+        'link_denominations' => 'Need to register the denomination?',
+        'progress' => 'Step 2 of 2 • Final adjustments',
+    ],
+    'cadastro' => [
+        'badge' => 'Institutional check-in',
+        'title' => 'Register your congregation',
+        'description' => 'Fill in the information below to connect your congregation to the Kleros ecosystem and unlock the next rollout steps.',
+        'alerts' => [
+            'success' => 'Congregation registered successfully.',
+        ],
+        'denomination' => [
+            'title' => 'Select your denomination',
+            'subtitle' => 'If your church is not listed yet you can register it :link.',
+            'link' => 'by clicking here',
+            'search_label' => 'Search denomination',
+            'search_placeholder' => 'Type to filter',
+            'selected_label' => 'Selected denomination',
+            'toggle' => 'Change',
+            'empty' => 'No denomination found for this search.',
+        ],
+        'basic' => [
+            'title' => 'Basic information',
+            'subtitle' => 'Tell us how the congregation is identified and how we can reach you.',
+            'fields' => [
+                'nome' => ['label' => 'Identification', 'placeholder' => 'How is the congregation called?'],
+                'nome_curto' => ['label' => 'Short name', 'placeholder' => 'Used for the subdomain and inside the system'],
+                'cnpj' => ['label' => 'Tax ID', 'placeholder' => '00.000.000/0000-00'],
+                'telefone' => ['label' => 'Phone', 'placeholder' => '(00) 00000-0000'],
+                'email' => ['label' => 'Email', 'placeholder' => 'contact@yourchurch.com'],
+                'site' => ['label' => 'Institutional website (optional)', 'placeholder' => 'https://www.yourchurch.com'],
+            ],
+        ],
+        'location' => [
+            'title' => 'Location',
+            'subtitle' => 'This information powers maps, schedules, and location-based communication.',
+            'fields' => [
+                'endereco' => ['label' => 'Address', 'placeholder' => 'Street, avenue or address'],
+                'numero' => ['label' => 'Number', 'placeholder' => 'N/A'],
+                'complemento' => ['label' => 'Complement', 'placeholder' => 'Suite, block or reference'],
+                'bairro' => ['label' => 'District', 'placeholder' => 'Neighborhood or area'],
+                'cep' => ['label' => 'Postal code', 'placeholder' => '00000-000'],
+            ],
+            'selects' => [
+                'pais' => ['label' => 'Country', 'placeholder' => 'Select the country'],
+                'estado' => ['label' => 'State', 'placeholder' => 'Select the state'],
+                'cidade' => ['label' => 'City', 'placeholder' => 'Select the city'],
+            ],
+        ],
+        'consent' => 'By proceeding you agree that the Kleros team may contact you for the next steps.',
+        'buttons' => [
+            'back' => 'Back to start',
+            'submit' => 'Save and continue',
+        ],
+        'js' => [
+            'cta_select' => 'Click to select',
+        ],
+    ],
+    'config' => [
+        'badge' => 'Personalization',
+        'title' => 'Configure your congregation experience',
+        'description' => 'Define visual identity, fonts, modules, and preferences before opening the community dashboard.',
+        'intro' => 'First step completed! Customize the congregation and finish the onboarding.',
+        'success' => 'Settings saved successfully! Your congregation is ready to start.',
+        'next_steps' => [
+            'title' => 'Next steps',
+            'description' => 'You can review the registration or access the dashboard when ready.',
+            'back' => 'Back to registration',
+            'login' => 'Go to login',
+        ],
+        'sections' => [
+            'identity' => [
+                'badge' => 'Visual identity',
+                'title' => 'Files and images',
+                'description' => 'Upload logo and banner to strengthen your congregation brand in every area of the system.',
+                'logo_label' => 'Congregation logo',
+                'logo_placeholder' => 'Select a PNG or SVG file',
+                'banner_label' => 'Login screen banner',
+                'banner_placeholder' => 'Horizontal image (JPG or PNG)',
+                'upload' => 'Upload',
+            ],
+            'colors' => [
+                'badge' => 'Colors and fonts',
+                'title' => 'Pick palette and typography',
+                'description' => 'Set tones that reflect the congregation identity and choose the main interface font.',
+                'fields' => [
+                    'primary' => 'Primary color',
+                    'secondary' => 'Secondary color',
+                    'accent' => 'Accent color',
+                    'font' => 'Text font',
+                    'preview_badge' => 'Preview',
+                    'preview_quote' => '“I can do all things through Him who strengthens me.”',
+                ],
+            ],
+            'modules' => [
+                'badge' => 'Themes and modules',
+                'title' => 'Organize the operational structure',
+                'description' => 'Enable modules and choose the visual theme that will welcome your members.',
+                'grouping' => 'Grouping structure',
+                'grouping_options' => [
+                    'grupo' => 'Groups only',
+                    'departamento' => 'Groups and Departments',
+                    'setor' => 'Groups, Departments and Sectors',
+                ],
+                'cells' => [
+                    'title' => 'Cells and small groups',
+                    'question' => 'Do you want to enable the cells module?',
+                    'active' => 'Enabled',
+                    'inactive' => 'Disabled',
+                ],
+            ],
+        ],
+        'buttons' => [
+            'back' => 'Back to registration',
+            'submit' => 'Finish setup',
+        ],
+        'file_placeholder' => 'Select a file',
+    ],
+    'validation' => [
+        'nome_required' => 'Please provide the congregation name.',
+        'endereco_required' => 'Please provide the congregation address.',
+        'telefone_required' => 'Please provide a contact phone number.',
+    ],
+];
