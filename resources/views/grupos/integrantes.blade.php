@@ -12,13 +12,14 @@
             @csrf
             <div class="search-panel">
                 <div class="search-panel-item">
-                    <label>Outros membros: </label>
-                    <select name="membro" id="nome" placeholder="Nome do membro">
+                    <label>Adicionar membros: </label>
+                    <select name="membro" id="nome" class="select2" data-placeholder="Selecione um membro" data-search-placeholder="Pesquise por membros">
+                        <option value="">Selecione um membro</option>
                         @if ($membros != null)
                             @foreach ($membros as $item)
-                                <option value="{{$item->id}}">{{$item->nome}}</option>
+                                <option value="{{$item->id}}" @selected(old('membro') == $item->id)>{{$item->nome}}</option>
                             @endforeach
-                        @endif                        
+                        @endif
                     </select>
                     <input type="hidden" name="grupo" value="{{$grupo->id}}">
                 </div>
@@ -46,18 +47,27 @@
             </div>
         </div><!--list-item-->
         @foreach ($integrantes as $item)
-            <div class="list-item">
-                <div class="item item-1">
+            <div class="list-item taggable-item">
+                <div class="item item-1 integrante-info">
                     <p>{{$item->nome}}</p>
                 </div>
-                <div class="item item-1">
+                <div class="item item-1 integrante-info">
                     <p>{{$item->telefone}}</p>
                 </div>
-                <div class="item item-2">
+                <div class="item item-2 integrante-info">
                     <p>{{$item->endereco}}, {{$item->numero}} - {{$item->bairro}}</p>
                 </div>
-                <div class="item item-1">
+                <div class="item item-1 integrante-info">
                     <p>{{$item->ministerio?->titulo}}</p>
+                </div>
+                <div class="taggable-actions">
+                    <form action="{{ route('grupos.integrantes.remover', [$grupo->id, $item->id]) }}" method="POST" onsubmit="return handleSubmit(event, this, 'Remover {{$item->nome}} do grupo?') }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" title="Remover integrante">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
                 </div>
             </div><!--list-item-->
         @endforeach

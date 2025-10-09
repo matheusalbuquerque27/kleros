@@ -117,6 +117,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
         Route::delete('/grupos/{id}', [GrupoController::class, 'destroy'])->name('grupos.destroy');
         Route::get('/grupos/integrantes/{id}', [GrupoController::class, 'show'])->name('grupos.integrantes');
         Route::post('/grupos/integrantes', [GrupoController::class, 'addMember']);
+        Route::delete('/grupos/integrantes/{grupo}/{membro}', [GrupoController::class, 'removeMember'])->name('grupos.integrantes.remover');
         Route::get('/grupos/imprimir/{data}', [GrupoController::class, 'print']);
         Route::get('/grupos/novo', [GrupoController::class, 'form_criar'])->name('grupos.form_criar');
         Route::get('/grupos/editar/{id}', [GrupoController::class, 'form_editar'])->name('grupos.form_editar');
@@ -150,6 +151,7 @@ Route::middleware(['web', 'dominio'])->group(function () {
         Route::get('/ministerios/editar/{id}', [MinisterioController::class, 'form_editar'])->name('ministerios.form_editar');
         Route::get('/ministerios/lista/{id}', [MinisterioController::class, 'lista'])->name('ministerios.lista');
         Route::delete('/ministerios/{id}', [MinisterioController::class, 'destroy'])->name('ministerios.destroy');
+        Route::delete('/ministerios/{ministerio}/membros/{membro}', [MinisterioController::class, 'remover'])->name('ministerios.membros.remover');
         Route::get('/ministerios/imprimir/{data}', [MinisterioController::class, 'print'])->name('ministerios.print');
         Route::put('/ministerios/{id}', [MinisterioController::class, 'update'])->name('ministerios.update');
         Route::put('/ministerios/incluir/{ministerio}', [MinisterioController::class, 'incluir']);

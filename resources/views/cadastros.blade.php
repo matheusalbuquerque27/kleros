@@ -442,7 +442,7 @@
                             </div>
                         </div>
                         <div class="item-15">
-                            <a href="/grupos/integrantes/{{$item->id}}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Ver</button></a>
+                            <a href="{{ route('celulas.integrantes', $item->id) }}"><button type="button" class="btn-options"><i class="bi bi-eye"></i> Ver</button></a>
                             <button type="button" class="btn-options" onclick="abrirJanelaModal('{{route('celulas.form_editar', $item->id)}}')"><i class="bi bi-pencil-square"></i> Editar</button>
                             <form id="delete-celula-{{$item->id}}" action="{{ route('grupos.destroy', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf

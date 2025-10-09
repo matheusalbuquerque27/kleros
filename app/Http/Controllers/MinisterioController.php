@@ -101,4 +101,17 @@ class MinisterioController extends Controller
 
         return redirect()->back()->with('msg', 'Membro incluído com sucesso!');
     }
+
+    public function remover($ministerioId, $membroId)
+    {
+        $ministerio = Ministerio::findOrFail($ministerioId);
+        $membro = Membro::where('ministerio_id', $ministerioId)->findOrFail($membroId);
+
+        $membro->ministerio_id = null;
+        $membro->save();
+
+        return redirect()
+            ->route('ministerios.lista', $ministerio->id)
+            ->with('msg', 'Membro removido do ministério com sucesso!');
+    }
 }

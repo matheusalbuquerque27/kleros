@@ -60,6 +60,63 @@ class CelulaController extends Controller
         return view('celulas::painel', compact('membros', 'celulas', 'celulasMapa', 'googleMapsKey', 'googleMapsMapId'));
     }
 
+    public function integrantes($celulaId)
+    {
+        $congregacao = app('congregacao');
+
+        $celula = Celula::with(['lider', 'colider', 'anfitriao'])
+            ->where('congregacao_id', $congregacao->id)
+            ->findOrFail($celulaId);
+
+        $integrantes = $celula->participantes()
+            ->with('ministerio')
+            ->orderBy('nome')
+            ->paginate(10);
+
+        $membrosDisponiveis = Membro::DaCongregacao()
+            ->orderBy('nome')
+            ->whereDoesntHave('celulas', function ($query) use ($celula) {
+                $query->where('celulas.id', $celula->id);
+            })
+            ->get();
+
+        return view('celulas::integrantes', [
+            'congregacao' => $congregacao,
+            'celula' => $celula,
+            'integrantes' => $integrantes,
+            'membros' => $membrosDisponiveis,
+        ]);
+    }
+
+    public function adicionarParticipante(Request $request)
+    {
+        $congregacaoId = app('congregacao')->id;
+
+        $validated = $request->validate([
+            'membro' => ['required', 'exists:membros,id'],
+            'celula' => ['required', 'exists:celulas,id'],
+        ]);
+
+        $celula = Celula::where('congregacao_id', $congregacaoId)
+            ->findOrFail($validated['celula']);
+
+        $membro = Membro::DaCongregacao()->findOrFail($validated['membro']);
+
+        DB::transaction(function () use ($celula, $membro) {
+            $participantesAtuais = $celula->participantes()->pluck('membro_id')->toArray();
+
+            if (! in_array($membro->id, $participantesAtuais)) {
+                $participantesAtuais[] = $membro->id;
+            }
+
+            $this->sincronizarParticipantesExclusivos($celula, $participantesAtuais);
+        });
+
+        return redirect()
+            ->route('celulas.integrantes', $celula->id)
+            ->with('msg', 'Membro adicionado à célula com sucesso.');
+    }
+
     public function form_criar()
     {
         $membros = Membro::orderBy('nome')->get();

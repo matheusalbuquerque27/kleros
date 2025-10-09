@@ -127,6 +127,16 @@ class GrupoController extends Controller
             ->with('msg', 'Novo membro adicionado ao agrupamento.');
     }
 
+    public function removeMember($grupoId, $membroId)
+    {
+        $agrupamento = Agrupamento::findOrFail($grupoId);
+        $agrupamento->integrantes()->detach($membroId);
+
+        return redirect()
+            ->route('grupos.integrantes', ['id' => $agrupamento->id])
+            ->with('msg', 'Membro removido do grupo.');
+    }
+
     public function destroy(Request $request, $id){
         $grupo = Agrupamento::findOrFail($id);
 

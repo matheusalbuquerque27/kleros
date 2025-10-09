@@ -19,8 +19,8 @@
 
             <div class="search-panel-item">
                 <label for="nome">Outros membros: </label>
-                <select name="membro" id="nome">
-                    <option value="" disabled selected>Selecione um membro</option>
+                <select name="membro" id="nome" class="select2" data-placeholder="Selecione um membro" data-search-placeholder="Pesquise por membros">
+                    <option value="">Selecione um membro</option>
                     @foreach ($naoInclusos ?? [] as $item)
                         <option value="{{ $item->id }}">{{ $item->nome }}</option>
                     @endforeach
@@ -40,9 +40,7 @@
                 <button type="button">
                     <i class="bi bi-printer"></i> Imprimir
                 </button>
-                <a href="/cadastros#ministerios" class="btn btn-secondary">
-                    <i class="bi bi-arrow-return-left"></i> Voltar
-                </a>
+                <button type="button" onclick="window.location.href='/cadastros#ministerios'"><i class="bi bi-arrow-return-left"></i> Voltar</button>
             </div>
         </div>
     </div>
@@ -62,7 +60,7 @@
             </div>
         </div><!--list-item-->
         @foreach ($membros as $item)
-        <div class="list-item">
+        <div class="list-item taggable-item">
             <div class="item item-1">
                 <p>{{$item->nome}}</p>
             </div>
@@ -74,6 +72,15 @@
             </div>
             <div class="item item-1">
                 <p>{{$item->ministerio->titulo}}</p>
+            </div>
+            <div class="taggable-actions">
+                <form action="{{ route('ministerios.membros.remover', [$ministerio->id, $item->id]) }}" method="POST" onsubmit="return handleSubmit(event, this, 'Remover {{$item->nome}} deste ministério?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" title="Remover integrante do ministério">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
             </div>
         </div><!--list-item-->
         @endforeach

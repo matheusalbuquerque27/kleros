@@ -196,3 +196,8 @@
         flex: none; /* Remove a propriedade flex para permitir que o width funcione */
     }
 }
+.form-control .form-item select option,
+.form-control select option {
+    color: #111 !important;
+    background: rgba(210, 213, 218, 0.21) !important;
+}

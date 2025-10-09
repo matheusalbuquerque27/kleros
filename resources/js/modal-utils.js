@@ -102,7 +102,10 @@ export function initModalScripts(container) {
     // --- inicialização do Select2 ---
     if (typeof $ !== 'undefined' && $.fn.select2) {
         const $container = $(container);
-        const $selects = $container.find('select.select2');
+        const isDocumentContainer = container && container.nodeType === 9;
+        const $dropdownParent = isDocumentContainer ? $(container.body || document.body) : $container;
+        const $selectScope = isDocumentContainer ? $dropdownParent : $container;
+        const $selects = $selectScope.find('select.select2');
 
         $selects.each(function () {
             const $select = $(this);
@@ -118,7 +121,7 @@ export function initModalScripts(container) {
                 placeholder: placeholder || undefined,
                 allowClear: Boolean(placeholder),
                 width: '100%',
-                dropdownParent: $container
+                dropdownParent: $dropdownParent
             });
 
             if (searchPlaceholder && $select.data('select2')) {

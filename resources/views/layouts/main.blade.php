@@ -25,6 +25,16 @@
 
         <!-- CSS do Select2 -->
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <style>
+            .select2-dropdown,
+            .select2-container--default .select2-results__option,
+            .select2-container--default .select2-selection__rendered {
+                color: #111 !important;
+            }
+            .select2-container--default .select2-results__option--highlighted {
+                color: #fff !important;
+            }
+        </style>
 
         <!-- Swipper para interações -->
         <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />

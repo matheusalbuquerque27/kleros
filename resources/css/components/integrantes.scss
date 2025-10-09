@@ -1,0 +1,33 @@
+.taggable-item {
+    position: relative;
+}
+
+.taggable-actions {
+    position: absolute;
+    right: -9px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.taggable-actions button {
+    border: none;
+    background: var(--terciary-color);
+    color: var(--terciary-contrast);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    transition: transform 0.2s ease;
+}
+
+.taggable-actions button:hover {
+    transform: translateY(-2px);
+}
