@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'dominio' => \App\Http\Middleware\AcessarCongregacaoPeloDominio::class,
+            'check.session' => \App\Http\Middleware\CheckSession::class,
             'member.activity' => \App\Http\Middleware\LogMemberActivity::class,
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
@@ -20,11 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->web(append: [
-                \App\Http\Middleware\AcessarCongregacaoPeloDominio::class,
-                \App\Http\Middleware\CheckSession::class,
-                \App\Http\Middleware\LogMemberActivity::class,
-            ]);    
-        })
+        ]);  
+
+    })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

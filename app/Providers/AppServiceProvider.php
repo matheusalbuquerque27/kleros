@@ -38,6 +38,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         app()->singleton('modo_admin', function () {
+            return request()->getHost() === 'admin.local';
+        });
+        app()->singleton('site_publico', function () {
             return request()->getHost() === 'kleros.local';
         });
 

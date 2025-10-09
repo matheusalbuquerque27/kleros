@@ -12,6 +12,7 @@ use App\Models\Estado;
 use App\Models\Pais;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Dominio;
 
 class CongregacaoController extends Controller
 {
@@ -70,9 +71,18 @@ class CongregacaoController extends Controller
             Storage::makeDirectory("{$basePath}/uploads");
             Storage::makeDirectory("{$basePath}/documentos");
             Storage::makeDirectory("{$basePath}/imagens");
+
+            $dominio = new Dominio();
+            $dominio->congregacao_id = $congregacao->id;
+            $temp = iconv('UTF-8', 'ASCII//TRANSLIT', $congregacao->nome_curto); // remove acentos
+            $temp = preg_replace('/[^a-z0-9]/', '', strtolower($temp)); // remove tudo que não for letra/número
+            $congregacao->nome_curto = $temp;            
+            $dominio->dominio = $congregacao->nome_curto . '.local';
+            $dominio->ativo = true;
+            $dominio->save();
         }
 
-        return redirect()->route('congregacoes.cadastro')->with('msg', 'Congregação cadastrada com sucesso!');
+        return redirect()->route('congregacoes.cadastro')->with('msg', 'Congregação cadastrada com sucesso! Verifique seu e-mail para acessar o sistema.');
     }
 
     public function config($id)
@@ -95,8 +105,14 @@ class CongregacaoController extends Controller
         
         $congregacao = Congregacao::findOrFail($id);
         $congregacao->identificacao = $request->identificacao;
+        $congregacao->nome_curto = $request->nome_curto;
         $congregacao->cnpj = $request->cnpj;
         $congregacao->email = $request->email;
+        $congregacao->endereco = $request->endereco;
+        $congregacao->numero = $request->numero;
+        $congregacao->complemento = $request->complemento;
+        $congregacao->bairro = $request->bairro;
+        $congregacao->cep = $request->cep;
         $congregacao->telefone = $request->telefone;
         $congregacao->cidade_id = $request->cidade;
         $congregacao->estado_id = $request->estado;

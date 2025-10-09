@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -28,8 +29,8 @@ class HomeController extends Controller
     public function login() {
 
         // Verifica se a aplicação está rodando em modo admin
-        if (app('modo_admin')) {
-            return redirect()->route('admin.dashboard');
+        if (!app('site_publico') && !app('modo_admin')) {
+            $this->middleware('auth')->except(['login', 'authenticate']);
         }
 
         return view('login', ['congregacao' => $this->congregacao]);
@@ -51,9 +52,21 @@ class HomeController extends Controller
 
     public function index() {
 
+        Log::debug('Entrou no index', [
+            'host' => request()->getHost(),
+            'site_publico' => app('site_publico'),
+            'auth_middleware_aplicado' => in_array('auth', array_keys(app('router')->getMiddleware())),
+            'usuario_logado' => Auth::check(),
+        ]);
+
         if (app('modo_admin')) {
             // Painel geral da plataforma
             return view('admin.dashboard');
+        }
+
+        if (app('site_publico')) {
+            // Painel geral da plataforma
+            return redirect()->route('site.home');
         }
         
         $congregacao = app('congregacao');

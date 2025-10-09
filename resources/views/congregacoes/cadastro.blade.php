@@ -188,9 +188,27 @@
         </form>
     </main>
 </div>
+
+<!--CDNs do Jquery-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
 @endsection
 
 @push('scripts')
+
+<script>
+    $(document).ready(function(){
+
+        // Exemplo de input : <input type="tel" id="telefone" placeholder="(00) 00000-0000">
+    
+        $('#telefone').mask('(00) 00000-0000');
+        $('#cep').mask('00000-000');
+        $('#cnpj').mask('00.000.000/0000-00');
+        
+    });
+</script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('denominacao_search');

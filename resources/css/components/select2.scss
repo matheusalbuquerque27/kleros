@@ -1,8 +1,12 @@
+/* ====== SELECT2 COM CORES ORIGINAIS DO FORM ====== */
+
 /* container */
 .form-control .form-item .select2-container {
-    width: 70% !important;
-    font-size: 1em;
+    flex: 2 1 30px;
+    width: 100%;
+    font-size: 1rem;
     font-family: var(--text-font) !important;
+    color: var(--text-color);
 }
 
 /* área da seleção */
@@ -10,48 +14,82 @@
 .select2-container--default .select2-selection--single,
 .form-control .form-item 
 .select2-container--default .select2-selection--multiple {
-    border: 1px solid rgba(0, 0, 0, 0.4);
-    border-radius: var(--border-style);
-    background-color: var(--background-color);
-    min-height: 36px;
+    border: 1px solid rgba(24, 24, 24, 0.18);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    min-height: 46px;
     display: flex;
     align-items: center;
-    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+/* foco */
+.form-control .form-item 
+.select2-container--default.select2-container--open .select2-selection--single,
+.form-control .form-item 
+.select2-container--default.select2-container--open .select2-selection--multiple {
+    border-color: var(--secondary-color);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 3px rgba(100, 73, 162, 0.25);
 }
 
 /* texto renderizado */
 .form-control .form-item 
 .select2-container--default .select2-selection__rendered {
-    font-family: var(--text-font) !important;
-    font-size: 1em !important;
-    color: var(--text-color);
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding: 4px 5px;
-}
-
-/* placeholder no SINGLE */
-.form-control .form-item 
-.select2-container--default .select2-selection--single .select2-selection__rendered[title=""] {
-    font-style: italic;
-    color: rgba(0,0,0,0.5) !important;
-}
-
-/* estilo do placeholder no campo de busca interno (multiple) */
-.form-control .form-item 
-.select2-container--default .select2-selection--multiple .select2-search__field::placeholder {
     font-family: var(--text-font);
-    font-size: 1em;
-    color: rgba(0,0,0,0.5);
+    font-size: 1rem;
+    color: var(--text-color);
+    padding: 4px 6px;
+    line-height: 1.4;
+}
+
+/* placeholder */
+.form-control .form-item 
+.select2-container--default .select2-selection__placeholder {
+    color: rgba(0, 0, 0, 0.5);
+    font-style: italic;
+    font-family: var(--text-font) !important;
+}
+
+/* tags (multiple) */
+.form-control .form-item 
+.select2-container--default .select2-selection__choice {
+    background: var(--terciary-color);
+    color: var(--terciary-contrast);
+    border: none;
+    border-radius: 12px;
+    padding: 2px 6px 2px 20px;
+    margin: 2px 4px 2px 0;
+    font-size: 0.9em;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* botão remover (x) */
+.form-control .form-item 
+.select2-container--default .select2-selection__choice__remove {
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--terciary-contrast);
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9em;
+    opacity: 0.75;
+    transition: opacity 0.2s ease;
+}
+.form-control .form-item 
+.select2-container--default .select2-selection__choice__remove:hover {
+    opacity: 1;
 }
 
 /* dropdown */
 .form-control .form-item 
 .select2-container--default .select2-dropdown {
     border: 1px solid rgba(0, 0, 0, 0.4);
-    border-radius: var(--border-style);
-    background-color: var(--background-color);
+    border-radius: 14px;
+    background: var(--background-color);
     color: var(--text-color);
 }
 
@@ -72,52 +110,20 @@
     color: var(--primary-contrast) !important;
 }
 
-/* item selecionado no dropdown */
+/* item selecionado */
 .form-control .form-item 
 .select2-container--default .select2-results__option[aria-selected="true"] {
     background-color: var(--secondary-color) !important;
     color: var(--secondary-contrast) !important;
 }
 
-/* tags (choices) no multiple */
-.form-control .form-item 
-.select2-container--default .select2-selection__choice {
-    background-color: var(--terciary-color) !important;
-    color: var(--terciary-contrast) !important;
-    border: none !important;
-    border-radius: var(--border-style);
-    padding: 2px 6px 2px 20px;
-    margin: 2px 4px 2px 0;
-    font-size: 0.9em;
-    position: relative;
-    white-space: nowrap; /* evita quebra dentro da tag */
-}
-
-/* botão remover (x) */
-.form-control .form-item 
-.select2-container--default .select2-selection__choice__remove {
-    position: absolute;
-    left: 6px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--primary-contrast);
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 0.9em;
-}
-.form-control .form-item 
-.select2-container--default .select2-selection__choice__remove:hover {
-    color: #000;
-}
-
-/* múltiplo deve crescer em altura */
+/* múltiplo cresce em altura */
 .form-control .form-item 
 .select2-container--default .select2-selection--multiple {
-    min-height: 36px;
-    height: auto !important;        /* altura livre */
-    overflow: visible !important;
-    flex-wrap: wrap;                /* quebra em várias linhas */
-    align-items: flex-start;        /* tags de cima para baixo */
+    min-height: 46px;
+    height: auto !important;
+    flex-wrap: wrap;
+    align-items: flex-start;
     padding-bottom: 4px;
 }
 
@@ -132,3 +138,20 @@
     padding: 4px !important;
     box-sizing: border-box;
 }
+
+.form-control .form-item 
+.select2-container--default .select2-search__field {
+  height: 80px !important;
+  min-height: 80px !important;
+  max-height: 160px;
+  resize: vertical;
+  border-radius: 0px !important;
+  font-family: var(--text-font) !important;
+}
+
+.form-control .form-item 
+.select2-container--default .select2-search__field:focus {
+  box-shadow: none !important;
+  background: none !important;
+}
+

@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Dominio;
+use Illuminate\Support\Facades\Auth;
 
 class AcessarCongregacaoPeloDominio
 {
@@ -20,8 +21,11 @@ class AcessarCongregacaoPeloDominio
         $host = $request->getHost();
 
         // Se for o domínio principal, não carregar congregação
-        if ($host === 'kleros.local') {
-            app()->instance('modo_admin', true);
+         if (in_array($host, ['kleros.local', 'admin.local'])) {
+            app()->instance('modo_admin', $host === 'admin.local');
+            app()->instance('site_publico', $host === 'kleros.local');
+            app()->instance('congregacao', null);
+            Auth::shouldUse('web'); // garante sessão padrão
             return $next($request);
         }
 
@@ -31,11 +35,13 @@ class AcessarCongregacaoPeloDominio
             ->first();
 
         if (!$dominio) {
-            abort(404, 'Congregação não encontrada para este domínio.');
+            // 🔁 Redireciona para site principal se o domínio não existir
+            return redirect()->away('http://kleros.local');
         }
 
         app()->instance('congregacao', $dominio->congregacao);
         app()->instance('modo_admin', false);
+        app()->instance('site_publico', false);
 
         return $next($request);
     }
