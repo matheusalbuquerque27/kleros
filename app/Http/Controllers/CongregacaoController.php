@@ -11,13 +11,20 @@ use App\Models\Cidade;
 use App\Models\Estado;
 use App\Models\Pais;
 use App\Models\Tema;
+use App\Models\Membro;
+use App\Models\User;
+use App\Mail\CongregacaoGestorBoasVindas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use App\Models\Dominio;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class CongregacaoController extends Controller
 {
@@ -52,7 +59,7 @@ class CongregacaoController extends Controller
             'nome_curto' => ['nullable', 'string', 'max:255'],
             'endereco' => ['required', 'string', 'max:255'],
             'telefone' => ['required', 'string', 'max:50'],
-            'email' => ['nullable', 'email', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'cnpj' => ['nullable', 'string', 'max:32'],
             'cidade' => ['nullable', 'exists:cidades,id'],
             'estado' => ['nullable', 'exists:estados,id'],
@@ -62,10 +69,20 @@ class CongregacaoController extends Controller
             'bairro' => ['nullable', 'string', 'max:120'],
             'cep' => ['nullable', 'string', 'max:20'],
             'language' => ['nullable', 'string', Rule::in($supportedLocales)],
+            'gestor_nome' => ['required', 'string', 'max:255'],
+            'gestor_telefone' => ['required', 'string', 'max:50'],
+            'gestor_data_nascimento' => ['required', 'date'],
+            'gestor_cpf' => ['required', 'string', 'max:20'],
         ], [
             'nome.required' => __('congregations.validation.nome_required'),
             'endereco.required' => __('congregations.validation.endereco_required'),
             'telefone.required' => __('congregations.validation.telefone_required'),
+            'email.required' => __('congregations.validation.email_required'),
+            'email.unique' => __('congregations.validation.email_unique'),
+            'gestor_nome.required' => __('congregations.validation.gestor_nome_required'),
+            'gestor_telefone.required' => __('congregations.validation.gestor_telefone_required'),
+            'gestor_data_nascimento.required' => __('congregations.validation.gestor_data_nascimento_required'),
+            'gestor_cpf.required' => __('congregations.validation.gestor_cpf_required'),
         ]);
 
         $language = $validated['language']
@@ -125,6 +142,57 @@ class CongregacaoController extends Controller
                     'celulas' => false,
                 ]
             );
+
+            $gestorNascimento = Carbon::parse($validated['gestor_data_nascimento']);
+
+            $previousCongregacao = app()->bound('congregacao') ? app('congregacao') : null;
+            app()->instance('congregacao', $congregacao);
+
+            $membroGestor = new Membro();
+            $membroGestor->congregacao_id = $congregacao->id;
+            $membroGestor->nome = $validated['gestor_nome'];
+            $membroGestor->telefone = $validated['gestor_telefone'];
+            $membroGestor->cpf = preg_replace('/\D+/', '', $validated['gestor_cpf']);
+            $membroGestor->data_nascimento = $gestorNascimento;
+            $membroGestor->email = $validated['email'];
+            $membroGestor->ativo = true;
+            $membroGestor->save();
+
+            if ($previousCongregacao) {
+                app()->instance('congregacao', $previousCongregacao);
+            } else {
+                app()->forgetInstance('congregacao');
+            }
+
+            $usuarioGestor = new User();
+            $usuarioGestor->name = '';
+            $usuarioGestor->email = $validated['email'];
+            $usuarioGestor->password = Hash::make(Str::random(32));
+            $usuarioGestor->congregacao_id = $congregacao->id;
+            $usuarioGestor->denominacao_id = $validated['igreja'];
+            $usuarioGestor->membro_id = $membroGestor->id;
+            $usuarioGestor->save();
+
+            if (! $usuarioGestor->hasRole('gestor')) {
+                $usuarioGestor->assignRole('gestor');
+            }
+
+            $nomePartes = preg_split('/\s+/', trim($membroGestor->nome)) ?: [];
+            $primeiroNome = $nomePartes[0] ?? 'gestor';
+            $ultimoNome = $nomePartes[count($nomePartes) - 1] ?? $primeiroNome;
+
+            $normalizar = static function (string $valor): string {
+                $ascii = Str::lower(Str::ascii($valor));
+                $limpo = preg_replace('/[^a-z0-9]/', '', $ascii ?? '');
+
+                return $limpo !== '' ? $limpo : 'gestor';
+            };
+
+            $primeiroSegmento = $normalizar($primeiroNome);
+            $ultimoSegmento = $normalizar($ultimoNome);
+
+            $usuarioGestor->name = "{$primeiroSegmento}.{$ultimoSegmento}{$usuarioGestor->id}";
+            $usuarioGestor->save();
 
             return $congregacao;
         });
@@ -213,9 +281,51 @@ class CongregacaoController extends Controller
         $config->celulas = (bool) ($validated['celulas'] ?? false);
         $config->save();
 
+        $messageKey = 'congregations.config.success';
+
+        if (! $congregacao->gestor_notificado_em) {
+            $gestorUser = User::query()
+                ->where('congregacao_id', $congregacao->id)
+                ->role('gestor')
+                ->orderBy('id')
+                ->first();
+
+            if ($gestorUser) {
+                $temporaryPassword = Str::random(12);
+                $gestorUser->password = Hash::make($temporaryPassword);
+                $gestorUser->save();
+
+                $gestorUser->loadMissing('membro');
+                $congregacao->loadMissing('denominacao', 'cidade', 'estado');
+
+                try {
+                    Mail::to($gestorUser->email)->send(
+                        new CongregacaoGestorBoasVindas(
+                            $congregacao,
+                            $gestorUser,
+                            $gestorUser->membro,
+                            $temporaryPassword
+                        )
+                    );
+
+                    $congregacao->gestor_notificado_em = now();
+                    $congregacao->save();
+                } catch (\Throwable $exception) {
+                    Log::error('Falha ao enviar e-mail de boas-vindas ao gestor.', [
+                        'congregacao_id' => $congregacao->id,
+                        'gestor_user_id' => $gestorUser->id,
+                        'exception' => $exception->getMessage(),
+                    ]);
+                    $messageKey = 'congregations.config.success_no_email';
+                }
+            } else {
+                $messageKey = 'congregations.config.success_no_email';
+            }
+        }
+
         return redirect()
             ->route('congregacoes.config', $congregacao->id)
-            ->with('msg', __('congregations.config.success'));
+            ->with('msg', __($messageKey));
     }
 
     public function editar($id)

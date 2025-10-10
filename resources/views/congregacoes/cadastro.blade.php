@@ -7,6 +7,8 @@
 @php
     $texts = trans('congregations.cadastro');
     $basicFields = $texts['basic']['fields'];
+    $managerSection = $texts['manager'] ?? null;
+    $managerFields = $managerSection['fields'] ?? [];
     $locationFields = $texts['location']['fields'];
     $locationSelects = $texts['location']['selects'];
     $selectedPais = old('pais') ?? optional($paises->firstWhere('nome', 'Brasil'))->id;
@@ -127,6 +129,59 @@
                     @endforeach
                 </div>
             </div>
+            @if($managerSection)
+            <div class="space-y-6">
+                <div>
+                    <h2 class="text-xl font-semibold">{{ $managerSection['title'] }}</h2>
+                    <p class="text-white/60 text-sm mt-2">{{ $managerSection['subtitle'] }}</p>
+                </div>
+                <div class="grid gap-5 md:grid-cols-2">
+                    <label class="block md:col-span-2">
+                        <span class="text-sm font-medium text-white/80">{{ $managerFields['nome']['label'] ?? '' }}</span>
+                        <input
+                            type="text"
+                            id="gestor_nome"
+                            name="gestor_nome"
+                            value="{{ old('gestor_nome') }}"
+                            placeholder="{{ $managerFields['nome']['placeholder'] ?? '' }}"
+                            class="mt-2 w-full rounded-xl bg-white/10 border border-white/15 px-4 py-3 text-white placeholder-white/40 focus:border-[#6449a2] focus:outline-none focus:ring-2 focus:ring-[#6449a2]/40"
+                            required>
+                    </label>
+                    <label class="block">
+                        <span class="text-sm font-medium text-white/80">{{ $managerFields['telefone']['label'] ?? '' }}</span>
+                        <input
+                            type="text"
+                            id="gestor_telefone"
+                            name="gestor_telefone"
+                            value="{{ old('gestor_telefone') }}"
+                            placeholder="{{ $managerFields['telefone']['placeholder'] ?? '' }}"
+                            class="mt-2 w-full rounded-xl bg-white/10 border border-white/15 px-4 py-3 text-white placeholder-white/40 focus:border-[#6449a2] focus:outline-none focus:ring-2 focus:ring-[#6449a2]/40"
+                            required>
+                    </label>
+                    <label class="block">
+                        <span class="text-sm font-medium text-white/80">{{ $managerFields['data_nascimento']['label'] ?? '' }}</span>
+                        <input
+                            type="date"
+                            id="gestor_data_nascimento"
+                            name="gestor_data_nascimento"
+                            value="{{ old('gestor_data_nascimento') }}"
+                            class="mt-2 w-full rounded-xl bg-white/10 border border-white/15 px-4 py-3 text-white placeholder-white/40 focus:border-[#6449a2] focus:outline-none focus:ring-2 focus:ring-[#6449a2]/40"
+                            required>
+                    </label>
+                    <label class="block">
+                        <span class="text-sm font-medium text-white/80">{{ $managerFields['cpf']['label'] ?? '' }}</span>
+                        <input
+                            type="text"
+                            id="gestor_cpf"
+                            name="gestor_cpf"
+                            value="{{ old('gestor_cpf') }}"
+                            placeholder="{{ $managerFields['cpf']['placeholder'] ?? '' }}"
+                            class="mt-2 w-full rounded-xl bg-white/10 border border-white/15 px-4 py-3 text-white placeholder-white/40 focus:border-[#6449a2] focus:outline-none focus:ring-2 focus:ring-[#6449a2]/40"
+                            required>
+                    </label>
+                </div>
+            </div>
+            @endif
 
             <div class="space-y-6">
                 <div>
@@ -192,8 +247,10 @@
 <script>
     $(document).ready(function(){
         $('#telefone').mask('(00) 00000-0000');
+        $('#gestor_telefone').mask('(00) 00000-0000');
         $('#cep').mask('00000-000');
         $('#cnpj').mask('00.000.000/0000-00');
+        $('#gestor_cpf').mask('000.000.000-00');
     });
 </script>
 

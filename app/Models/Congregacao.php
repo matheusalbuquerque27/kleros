@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Congregacao extends Model
 {
     protected $table = 'congregacoes';
+    protected $casts = [
+        'gestor_notificado_em' => 'datetime',
+    ];
 
     public function config()
     {

@@ -268,7 +268,7 @@ Route::middleware(['web', 'dominio', 'setlocale'])->group(function () {
         Route::get('/notificacoes', [NotificacaoController::class, 'index'])->name('notificacoes.index')->middleware('auth');
 
         Route::get('/assinaturas', [AssinaturaController::class, 'index'])->name('assinaturas.index')->middleware(['auth','role:gestor']);
-        Route::get('/assinaturas/novo', [\AssinaturaController::class, 'form_criar'])->name('assinaturas.form_criar')->middleware(['auth','role:gestor']);
+        Route::get('/assinaturas/novo', [AssinaturaController::class, 'form_criar'])->name('assinaturas.form_criar')->middleware(['auth','role:gestor']);
 
     });
 });

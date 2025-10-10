@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Congregacao;
 use App\Models\Escolaridade;
 use App\Models\EstadoCiv;
 use App\Models\Membro;
