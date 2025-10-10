@@ -44,7 +44,7 @@
                 @csrf
                 <div class="form-group">
                     <label for="name">Usuário:</label>
-                    <input type="text" name="name" id="name" required>
+                    <input type="text" name="name" id="name" value="{{ old('name') }}" required autofocus>
                 </div>
                 <div class="form-group">
                     <label for="password">Senha:</label>
@@ -53,13 +53,16 @@
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Entrar</button>
                 </div>
-                @if (session('error'))
-                    <div class="alert alert-danger center">
-                        {{ session('error') }}
-                    </div>
-                @endif
+                <div class="form-group">
+                    @if ($errors->has('user'))
+                        <div class="alert-error">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            <span>{{ $errors->first('user') }}</span>
+                        </div>
+                    @endif
+                </div>
                 <div class="form-group center" style="margin-top: 20px;">
-                    <a href="#" class="link-standard">Esqueci a senha</a>
+                    <a href="{{ route('password.request') }}" class="link-standard">Esqueci a senha</a>
                 </div>
             </form>
         </div>
@@ -67,5 +70,3 @@
 </body>
 
 </html>
-
-

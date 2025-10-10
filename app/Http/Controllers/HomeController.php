@@ -47,7 +47,10 @@ class HomeController extends Controller
             return redirect()->route('index');
         }
 
-        return redirect()->back()->withErrors(['user' => 'Credenciais inválidas.']);
+        return redirect()
+            ->back()
+            ->withInput($request->only('name'))
+            ->withErrors(['user' => 'Usuário ou senha inválidos. Tente novamente.']);
     }
 
     public function index() {

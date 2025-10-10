@@ -36,6 +36,13 @@
     color: #333;
 }
 
+#login .login-container .login-hint {
+    margin: 0 auto 16px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
 #login .login-container label {
     display: block;
     margin-bottom: 6px;
@@ -43,13 +50,32 @@
 }
 
 #login .login-container input[type="text"],
-#login .login-container input[type="password"] {
+#login .login-container input[type="password"],
+#login .login-container input[type="email"],
+#login .login-container input[type="number"],
+#login .login-container input[type="tel"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 18px;
     border: 1px solid #ccc;
-    border-radius: var(--border-style);
+    border-radius: 12px;
     font-size: 1em;
+}
+
+#login .login-container .alert-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #530b0b;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+#login .login-container .alert-error i {
+    font-size: 1.1rem;
 }
 
 #login .login-container button {
@@ -73,4 +99,3 @@
     background-color: var(--secondary-color);
     color: var(--secondary-contrast);
 }
-

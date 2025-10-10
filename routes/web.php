@@ -31,6 +31,8 @@ use App\Http\Controllers\FinanceiroController;
 use App\Http\Controllers\NotificacaoController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\AssinaturaController;
 
 Route::post('/locale', [LocaleController::class, 'update'])->name('locale.update');
 
@@ -73,12 +75,14 @@ Route::middleware(['web', 'dominio', 'setlocale'])->group(function () {
     Route::get('/login', [HomeController::class, 'login'])->name('login');
     Route::get('/cadastrar', [HomeController::class, 'create'])->name('login.create');
     Route::post('/cadastrar', [HomeController::class, 'store'])->name('login.store');
-    Route::get('/recuperar-senha', [HomeController::class, 'forgotPassword'])->name('login.forgot');
-    Route::post('/recuperar-senha', [HomeController::class, 'sendResetLink'])->name('login.sendResetLink');
-    Route::get('/recuperar-senha/{token}', [HomeController::class, 'resetPassword'])->name('login.reset');
-    Route::post('/recuperar-senha/{token}', [HomeController::class, 'updatePassword'])->name('login.updatePassword');
     Route::post('/login', [HomeController::class, 'authenticate']);
     Route::get('/logout', function () {Auth::logout();return redirect()->route('login');})->name('logout');
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'showEmailForm'])->name('password.request');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendCode'])->name('password.sendCode');
+    Route::get('/verify-code', [ForgotPasswordController::class, 'showCodeForm'])->name('password.verifyForm');
+    Route::post('/verify-code', [ForgotPasswordController::class, 'verifyCode'])->name('password.verify');
+    Route::get('/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('password.resetForm');
+    Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
 
     Route::middleware(['auth','check.session','member.activity'])->group(function () {
 
@@ -262,6 +266,9 @@ Route::middleware(['web', 'dominio', 'setlocale'])->group(function () {
         Route::put('/extensoes/{module}', [ExtensoesController::class, 'update'])->name('extensoes.update')->middleware(['auth','role:gestor']);
 
         Route::get('/notificacoes', [NotificacaoController::class, 'index'])->name('notificacoes.index')->middleware('auth');
+
+        Route::get('/assinaturas', [AssinaturaController::class, 'index'])->name('assinaturas.index')->middleware(['auth','role:gestor']);
+        Route::get('/assinaturas/novo', [\AssinaturaController::class, 'form_criar'])->name('assinaturas.form_criar')->middleware(['auth','role:gestor']);
 
     });
 });
