@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\Rule;
 
 class EscalaController extends Controller
 {
@@ -20,7 +21,7 @@ class EscalaController extends Controller
     {
         $congregacao = app('congregacao');
 
-        $tiposEscala = TipoEscala::orderBy('nome')->get();
+        $tiposEscala = TipoEscala::where('congregacao_id', $congregacao->id)->orderBy('nome')->get();
         $membros = Membro::where('congregacao_id', $congregacao->id)
             ->orderBy('nome')
             ->get();
@@ -83,7 +84,7 @@ class EscalaController extends Controller
             })
             ->firstOrFail();
 
-        $tiposEscala = TipoEscala::orderBy('nome')->get();
+        $tiposEscala = TipoEscala::where('congregacao_id', $congregacaoId)->orderBy('nome')->get();
         $membros = Membro::where('congregacao_id', $congregacaoId)
             ->orderBy('nome')
             ->get();
@@ -116,7 +117,7 @@ class EscalaController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        $tiposEscala = TipoEscala::orderBy('nome')->get();
+        $tiposEscala = TipoEscala::where('congregacao_id', $congregacao->id)->orderBy('nome')->get();
 
         return view('escalas.painel', [
             'congregacao' => $congregacao,
@@ -186,14 +187,16 @@ class EscalaController extends Controller
 
     public function form_tipo_editar(int $id)
     {
-        $tipo = TipoEscala::findOrFail($id);
+        $congregacaoId = app('congregacao')->id;
+        $tipo = TipoEscala::where('congregacao_id', $congregacaoId)->findOrFail($id);
 
         return view('escalas.includes.form_tipo', compact('tipo'));
     }
 
     public function update_tipo(Request $request, int $id)
     {
-        $tipo = TipoEscala::findOrFail($id);
+        $congregacaoId = app('congregacao')->id;
+        $tipo = TipoEscala::where('congregacao_id', $congregacaoId)->findOrFail($id);
 
         $data = $this->validateTipoEscala($request, $tipo->id);
 
@@ -204,7 +207,8 @@ class EscalaController extends Controller
 
     public function destroy_tipo(int $id)
     {
-        $tipo = TipoEscala::findOrFail($id);
+        $congregacaoId = app('congregacao')->id;
+        $tipo = TipoEscala::where('congregacao_id', $congregacaoId)->findOrFail($id);
 
         $tipo->delete();
 
@@ -234,6 +238,7 @@ class EscalaController extends Controller
 
     protected function validateEscala(Request $request, ?int $escalaId = null): array
     {
+        $congregacaoId = app('congregacao')->id;
         $messages = [
             'tipo_escala_id.required' => 'Selecione um tipo de escala.',
             'tipo_escala_id.exists' => 'Tipo de escala inválido.',
@@ -244,7 +249,10 @@ class EscalaController extends Controller
 
         $data = $request->validate([
             'culto_id' => 'nullable|exists:cultos,id',
-            'tipo_escala_id' => 'required|exists:tipos_escala,id',
+            'tipo_escala_id' => [
+                'required',
+                Rule::exists('tipos_escala', 'id')->where('congregacao_id', $congregacaoId),
+            ],
             'data_hora' => 'nullable|date',
             'local' => 'nullable|string|max:255',
             'observacoes' => 'nullable|string',
@@ -286,13 +294,15 @@ class EscalaController extends Controller
 
     protected function validateTipoEscala(Request $request, ?int $id = null): array
     {
-        $nomeRule = 'required|string|max:255|unique:tipos_escala,nome';
+        $congregacaoId = app('congregacao')->id;
+        $nomeRule = Rule::unique('tipos_escala', 'nome')
+            ->where(fn ($query) => $query->where('congregacao_id', $congregacaoId));
         if ($id !== null) {
-            $nomeRule .= ',' . $id;
+            $nomeRule->ignore($id);
         }
 
         $data = $request->validate([
-            'nome' => $nomeRule,
+            'nome' => ['required', 'string', 'max:255', $nomeRule],
             'ativo' => 'nullable|boolean',
         ]);
 
@@ -302,13 +312,19 @@ class EscalaController extends Controller
             $data['ativo'] = true;
         }
 
+        $data['congregacao_id'] = $congregacaoId;
+
         return $data;
     }
 
     protected function validateEscalaFilters(Request $request): array
     {
+        $congregacaoId = app('congregacao')->id;
         return $request->validate([
-            'tipo' => 'nullable|exists:tipos_escala,id',
+            'tipo' => [
+                'nullable',
+                Rule::exists('tipos_escala', 'id')->where('congregacao_id', $congregacaoId),
+            ],
             'data_inicio' => 'nullable|date',
             'data_fim' => 'nullable|date|after_or_equal:data_inicio',
         ]);

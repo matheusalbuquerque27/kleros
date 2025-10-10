@@ -107,7 +107,7 @@ class CadastroController extends Controller
             ->limit(3)
             ->get();
 
-        $tiposEscala = TipoEscala::orderBy('nome')->get();
+        $tiposEscala = TipoEscala::where('congregacao_id', $congregacaoId)->orderBy('nome')->get();
 
         $noticias = Cache::get('noticias_feed') ?? [];
         $destaques = array_slice($noticias['guiame'] ?? [], 0, 9);

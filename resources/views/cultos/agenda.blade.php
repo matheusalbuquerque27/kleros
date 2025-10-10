@@ -40,6 +40,7 @@
             </div>
         </div>
         <div class="options-menu" id="cultosAgendaOptions" hidden>
+            <button type="button" class="btn" data-action="redirect" data-url="{{ route('cultos.historico') }}"><i class="bi bi-card-list"></i> Histórico</button>
             <button type="button" class="btn" data-action="print"><i class="bi bi-printer"></i> Imprimir</button>
             <button type="button" class="btn" data-action="back"><i class="bi bi-arrow-return-left"></i> Voltar</button>
         </div>

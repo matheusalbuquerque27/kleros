@@ -60,9 +60,14 @@ class CultoController extends Controller
 
         $culto->save();
 
-        $data_formatada = Carbon::parse($culto->data_culto)->format('d/m');
+        $cultoDateTime = Carbon::parse($culto->data_culto);
+        $data_formatada = $cultoDateTime->format('d/m');
 
-        return redirect()->to(url()->previous())->with('msg', "Um novo culto foi agendado para o dia {$data_formatada}.");
+        $message = $cultoDateTime->isPast()
+            ? 'Registro de culto salvo com sucesso.'
+            : "Um novo culto foi agendado para o dia {$data_formatada}.";
+
+        return redirect()->to(url()->previous())->with('msg', $message);
 
     }
 

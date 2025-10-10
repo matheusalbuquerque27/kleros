@@ -492,25 +492,50 @@
 
         <!--Script para a seleção de abas-->
         <script>
-            document.addEventListener("click", function (e) {
-                const tab = e.target.closest(".tab-menu li");
-                if (!tab) return;
-
-                const tabs = tab.parentElement.querySelectorAll("li");
+            function activateTab(tab) {
+                const menu = tab.closest(".tab-menu");
                 const container = tab.closest(".tabs");
+                if (!menu || !container) {
+                    return;
+                }
+
+                const target = tab.getAttribute("data-tab");
+                if (!target) {
+                    return;
+                }
+
+                const tabs = menu.querySelectorAll("li[data-tab]");
                 const panes = container.querySelectorAll(".tab-pane");
 
-                // remove ativos
-                tabs.forEach(t => t.classList.remove("active"));
-                panes.forEach(p => p.classList.remove("active"));
+                tabs.forEach((item) => {
+                    item.classList.toggle("active", item === tab);
+                });
 
-                // adiciona ativo
-                tab.classList.add("active");
-                const target = tab.getAttribute("data-tab");
-                const pane = container.querySelector("#" + target);
-                if (pane) {
-                    pane.classList.add("active");
+                panes.forEach((pane) => {
+                    const isActive = pane.id === target;
+                    pane.classList.toggle("active", isActive);
+                    if (isActive) {
+                        pane.hidden = false;
+                        pane.style.display = "";
+                    } else {
+                        pane.hidden = true;
+                        pane.style.display = "none";
+                    }
+                });
+            }
+
+            document.addEventListener("click", function (event) {
+                const tab = event.target.closest(".tab-menu li[data-tab]");
+                if (!tab) {
+                    return;
                 }
+
+                event.preventDefault();
+                activateTab(tab);
+            });
+
+            document.addEventListener("DOMContentLoaded", () => {
+                document.querySelectorAll(".tab-menu li.active[data-tab]").forEach((tab) => activateTab(tab));
             });
         </script>
 

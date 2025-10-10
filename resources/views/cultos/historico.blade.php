@@ -21,7 +21,7 @@
                 <div class="form-options">
                     <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
                     <button class="imprimir" type="button"><i class="bi bi-printer"></i> Imprimir</button>
-                    <a href="/cadastros#cultos"><button class=""><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
+                    <button class="" onclick="window.history.back()"><i class="bi bi-arrow-return-left"></i> Voltar</button></a>
                 </div>
             </div>
         </div>

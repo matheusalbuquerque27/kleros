@@ -11,6 +11,7 @@ class TipoEscala extends Model
     protected $fillable = [
         'nome',
         'ativo',
+        'congregacao_id',
     ];
 
     protected $casts = [

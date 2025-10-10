@@ -4,6 +4,14 @@ let listenersBound = false;
 const DEFAULT_ACTIONS = {
     print: () => window.print(),
     back: () => window.history.back(),
+    redirect: (button) => {
+        const url = button?.dataset?.url;
+        if (!url) {
+            console.error('options-menu: atributo data-url não encontrado para a ação "redirect".', button);
+            return;
+        }
+        window.location.href = url;
+    },
 };
 
 const escapeSelector = (value) => {
@@ -57,15 +65,20 @@ function closeAll(exceptId = null) {
     });
 }
 
-function handleAction(action) {
+function handleAction(button) {
+    if (!button) {
+        return;
+    }
+
+    const action = button.dataset.action;
     const handler = DEFAULT_ACTIONS[action];
     if (handler) {
-        handler();
+        handler(button);
         return;
     }
 
     const event = new CustomEvent('options-menu:action', {
-        detail: { action },
+        detail: { action, trigger: button },
     });
     document.dispatchEvent(event);
 }
@@ -99,7 +112,7 @@ function bindGlobalListeners() {
                 event.preventDefault();
                 const entry = menuRegistry.get(menu.id);
                 toggleMenu(entry?.menu, entry?.trigger, false);
-                handleAction(actionButton.dataset.action);
+                handleAction(actionButton);
             }
             return;
         }

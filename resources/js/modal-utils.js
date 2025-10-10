@@ -1,4 +1,35 @@
 export function initModalScripts(container) {
+    // --- abas legadas (.tabs / .tab-menu) ---
+    const legacyTabContainers = container.querySelectorAll('.tabs');
+    legacyTabContainers.forEach((tabsContainer) => {
+        const menuItems = tabsContainer.querySelectorAll('.tab-menu li[data-tab]');
+        const panes = tabsContainer.querySelectorAll('.tab-pane');
+
+        if (!menuItems.length || !panes.length) {
+            return;
+        }
+
+        const activate = (tabId) => {
+            menuItems.forEach((item) => {
+                const isActive = item.dataset.tab === tabId;
+                item.classList.toggle('active', isActive);
+            });
+
+            panes.forEach((pane) => {
+                const isActive = pane.id === tabId;
+                pane.classList.toggle('active', isActive);
+                pane.hidden = !isActive;
+                pane.style.display = isActive ? '' : 'none';
+            });
+        };
+
+        const initialTab =
+            tabsContainer.querySelector('.tab-menu li.active[data-tab]') || menuItems[0];
+
+        if (initialTab) {
+            activate(initialTab.dataset.tab);
+        }
+    });
                 
     // --- controle de abas internas ---
     const tabGroups = container.querySelectorAll('[data-tabs]');
