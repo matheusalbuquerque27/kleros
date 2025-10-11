@@ -39,6 +39,15 @@ return [
                 'site' => ['label' => 'Institutional website (optional)', 'placeholder' => 'https://www.yourchurch.com'],
             ],
         ],
+        'visual' => [
+            'title' => 'Visual identity',
+            'subtitle' => 'Select logo and banner files to preview them before finishing the registration.',
+            'logo_label' => 'Congregation logo',
+            'logo_placeholder' => 'Select a PNG or SVG file',
+            'banner_label' => 'Login screen banner',
+            'banner_placeholder' => 'Horizontal image (JPG or PNG)',
+            'upload' => 'Choose file',
+        ],
         'manager' => [
             'title' => 'Responsible manager',
             'subtitle' => 'This person will receive full access to the dashboard and act as the main contact.',

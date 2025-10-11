@@ -9,6 +9,10 @@
     $sections = $edit['sections'];
     $placeholders = $edit['placeholders'];
     $scripts = $edit['scripts'];
+    $logoPath = optional($congregacao->config)->logo_caminho ? asset('storage/' . $congregacao->config->logo_caminho) : '';
+    $bannerPath = optional($congregacao->config)->banner_caminho ? asset('storage/' . $congregacao->config->banner_caminho) : '';
+    $hasLogo = !empty($logoPath);
+    $hasBanner = !empty($bannerPath);
 @endphp
 
 <div class="container">
@@ -99,21 +103,49 @@
                             <h4>{{ $sections['visual']['files']['title'] }}</h4>
                             <div class="form-item">
                                 <label for="logo">{{ $sections['visual']['files']['logo'] }}</label>
-                                <img class="image-small" id="logo-img" src="{{ asset('storage/' . $congregacao->config->logo_caminho) }}" alt="">
+                                <div class="preview-wrapper" data-preview-container="logo">
+                                    <img
+                                        class="image-small{{ $hasLogo ? '' : ' is-hidden' }}"
+                                        id="logo-img"
+                                        src="{{ $hasLogo ? $logoPath : '' }}"
+                                        alt="{{ $sections['visual']['files']['logo'] }}"
+                                        data-preview-image
+                                        data-preview-original="{{ $hasLogo ? $logoPath : '' }}">
+                                    <div class="preview-placeholder{{ $hasLogo ? ' is-hidden' : '' }}" data-preview-placeholder>
+                                        <i class="bi bi-image"></i>
+                                    </div>
+                                    <div class="loading-indicator is-hidden" data-preview-loader>
+                                        <img src="{{ asset('storage/images/loading.gif') }}" alt="{{ $scripts['loading'] }}">
+                                    </div>
+                                </div>
                                 <div class="logo">
-                                    <span id="file-logo">{{ $scripts['no_file'] }}</span>
-                                    <label for="logo" class="btn-line"><i class="bi bi-upload"></i> {{ $sections['visual']['files']['upload'] }}</label>
-                                    <input type="file" name="logo" id="logo" url="">
+                                    <span id="file-logo" data-preview-filename="logo" data-placeholder="{{ $scripts['no_file'] }}">{{ $scripts['no_file'] }}</span>
+                                    <label for="logo" class="btn-options"><i class="bi bi-upload"></i> {{ $sections['visual']['files']['upload'] }}</label>
+                                    <input type="file" name="logo" id="logo" url="" accept="image/*" data-preview-input="logo">
                                     <input type="hidden" name="logo_acervo" id="logo_acervo">
                                 </div>
                             </div>
                             <div class="form-item">
                                 <label for="banner">{{ $sections['visual']['files']['banner'] }}</label>
-                                <img class="image-small" id="banner-img" src="{{ asset('storage/' . $congregacao->config->banner_caminho) }}" alt="">
+                                <div class="preview-wrapper" data-preview-container="banner">
+                                    <img
+                                        class="image-small{{ $hasBanner ? '' : ' is-hidden' }}"
+                                        id="banner-img"
+                                        src="{{ $hasBanner ? $bannerPath : '' }}"
+                                        alt="{{ $sections['visual']['files']['banner'] }}"
+                                        data-preview-image
+                                        data-preview-original="{{ $hasBanner ? $bannerPath : '' }}">
+                                    <div class="preview-placeholder{{ $hasBanner ? ' is-hidden' : '' }}" data-preview-placeholder>
+                                        <i class="bi bi-images"></i>
+                                    </div>
+                                    <div class="loading-indicator is-hidden" data-preview-loader>
+                                        <img src="{{ asset('storage/images/loading.gif') }}" alt="{{ $scripts['loading'] }}">
+                                    </div>
+                                </div>
                                 <div class="banner">
-                                    <span id="file-banner">{{ $scripts['no_file'] }}</span>
-                                    <label for="banner" class="btn-line"><i class="bi bi-upload"></i> {{ $sections['visual']['files']['upload'] }}</label>
-                                    <input type="file" name="banner" id="banner" url="">
+                                    <span id="file-banner" data-preview-filename="banner" data-placeholder="{{ $scripts['no_file'] }}">{{ $scripts['no_file'] }}</span>
+                                    <label for="banner" class="btn-options"><i class="bi bi-upload"></i> {{ $sections['visual']['files']['upload'] }}</label>
+                                    <input type="file" name="banner" id="banner" url="" accept="image/*" data-preview-input="banner">
                                     <input type="hidden" name="banner_acervo" id="banner_acervo">
                                 </div>
                             </div>
@@ -268,6 +300,43 @@
         margin: 10px 0;
         display: block;
     }
+    .preview-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    .preview-placeholder {
+        width: 150px;
+        height: 100px;
+        border-radius: 10px;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f7f7f7;
+        border: 1px dashed #d0d0d0;
+        color: #888;
+    }
+    .preview-placeholder i {
+        font-size: 32px;
+    }
+    .loading-indicator {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 10px;
+    }
+    .loading-indicator img {
+        max-width: 64px;
+    }
+    .is-hidden {
+        display: none !important;
+    }
+    #file-logo, #file-banner {
+        max-width: 220px;
+    }
     .form-options {
         text-align: center;
         margin-top: 20px;
@@ -300,14 +369,80 @@
             $('#font-preview').css('font-family', this.value);
         });
 
-        $('#logo').on('change', function() {
-            const fileName = this.files[0] ? this.files[0].name : translations.no_file;
-            $('#file-logo').text(fileName);
-        });
+        const previewInputs = document.querySelectorAll('[data-preview-input]');
 
-        $('#banner').on('change', function() {
-            const fileName = this.files[0] ? this.files[0].name : translations.no_file;
-            $('#file-banner').text(fileName);
+        previewInputs.forEach((input) => {
+            const key = input.dataset.previewInput;
+            const container = document.querySelector(`[data-preview-container="${key}"]`);
+            if (!container) {
+                return;
+            }
+
+            const loader = container.querySelector('[data-preview-loader]');
+            const previewImage = container.querySelector('[data-preview-image]');
+            const placeholder = container.querySelector('[data-preview-placeholder]');
+            const filenameLabel = document.querySelector(`[data-preview-filename="${key}"]`);
+            const placeholderText = filenameLabel ? (filenameLabel.dataset.placeholder || translations.no_file) : translations.no_file;
+
+            if (filenameLabel && !filenameLabel.dataset.placeholder) {
+                filenameLabel.dataset.placeholder = placeholderText;
+            }
+
+            if (previewImage && !previewImage.dataset.previewOriginal) {
+                previewImage.dataset.previewOriginal = previewImage.getAttribute('src') || '';
+            }
+
+            const restoreOriginal = () => {
+                if (previewImage) {
+                    const original = previewImage.dataset.previewOriginal || '';
+                    if (original) {
+                        previewImage.src = original;
+                        previewImage.classList.remove('is-hidden');
+                        placeholder?.classList.add('is-hidden');
+                    } else {
+                        previewImage.src = '';
+                        previewImage.classList.add('is-hidden');
+                        placeholder?.classList.remove('is-hidden');
+                    }
+                } else {
+                    placeholder?.classList.remove('is-hidden');
+                }
+
+                if (filenameLabel) {
+                    filenameLabel.textContent = filenameLabel.dataset.placeholder || translations.no_file;
+                }
+            };
+
+            input.addEventListener('change', () => {
+                const file = input.files && input.files[0] ? input.files[0] : null;
+
+                if (filenameLabel) {
+                    filenameLabel.textContent = file ? file.name : (filenameLabel.dataset.placeholder || translations.no_file);
+                }
+
+                if (file) {
+                    placeholder?.classList.add('is-hidden');
+                    previewImage?.classList.add('is-hidden');
+                    loader?.classList.remove('is-hidden');
+
+                    const reader = new FileReader();
+                    reader.addEventListener('load', (event) => {
+                        loader?.classList.add('is-hidden');
+                        if (previewImage) {
+                            previewImage.src = event.target?.result || '';
+                            previewImage.classList.remove('is-hidden');
+                        }
+                    });
+                    reader.addEventListener('error', () => {
+                        loader?.classList.add('is-hidden');
+                        restoreOriginal();
+                    });
+                    reader.readAsDataURL(file);
+                } else {
+                    loader?.classList.add('is-hidden');
+                    restoreOriginal();
+                }
+            });
         });
 
         const paisSelect = document.getElementById('pais');

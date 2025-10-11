@@ -7,6 +7,7 @@
 @php
     $texts = trans('congregations.cadastro');
     $basicFields = $texts['basic']['fields'];
+    $visualSection = $texts['visual'] ?? null;
     $managerSection = $texts['manager'] ?? null;
     $managerFields = $managerSection['fields'] ?? [];
     $locationFields = $texts['location']['fields'];
@@ -60,7 +61,7 @@
             @endif
         </div>
 
-        <form action="{{ route('congregacoes.store') }}" method="POST" class="mt-10 bg-white/5 border border-white/10 rounded-3xl p-8 space-y-10">
+        <form action="{{ route('congregacoes.store') }}" method="POST" enctype="multipart/form-data" class="mt-10 bg-white/5 border border-white/10 rounded-3xl p-8 space-y-10">
             @csrf
             <input type="hidden" name="language" value="{{ app()->getLocale() }}">
             <div class="space-y-4">
@@ -129,6 +130,51 @@
                     @endforeach
                 </div>
             </div>
+            @if($visualSection)
+            <div class="space-y-6">
+                <div>
+                    <h2 class="text-xl font-semibold">{{ $visualSection['title'] }}</h2>
+                    <p class="text-white/60 text-sm mt-2">{{ $visualSection['subtitle'] }}</p>
+                </div>
+                <div class="grid gap-6 md:grid-cols-2">
+                    <label class="block">
+                        <span class="text-sm font-medium text-white/80">{{ $visualSection['logo_label'] }}</span>
+                        <div class="mt-3 flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+                            <div class="relative h-16 w-16 shrink-0 rounded-xl bg-white/10 flex items-center justify-center overflow-hidden" data-preview-container="logo">
+                                <img src="{{ asset('storage/images/loading.gif') }}" alt="Carregando logo" class="absolute inset-0 h-full w-full object-contain hidden" data-preview-loader>
+                                <img src="" alt="Pré-visualização do logo" class="hidden h-full w-full object-cover" data-preview-image>
+                                <i class="bi bi-image text-2xl text-white/40" data-preview-placeholder></i>
+                            </div>
+                            <div class="flex-1 space-y-2">
+                                <span data-preview-filename="logo" data-placeholder="{{ $visualSection['logo_placeholder'] }}" class="block text-sm text-white/60">{{ $visualSection['logo_placeholder'] }}</span>
+                                <label class="inline-flex items-center gap-2 rounded-lg border border-white/20 px-3 py-2 text-sm text-white/80 hover:border-white/50 cursor-pointer">
+                                    <i class="bi bi-upload"></i> {{ $visualSection['upload'] }}
+                                    <input type="file" name="logo" id="logo" class="hidden" accept="image/*" data-preview-input="logo">
+                                </label>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="block">
+                        <span class="text-sm font-medium text-white/80">{{ $visualSection['banner_label'] }}</span>
+                        <div class="mt-3 flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+                            <div class="relative h-16 w-24 shrink-0 rounded-xl bg-white/10 flex items-center justify-center overflow-hidden" data-preview-container="banner">
+                                <img src="{{ asset('storage/images/loading.gif') }}" alt="Carregando banner" class="absolute inset-0 h-full w-full object-contain hidden" data-preview-loader>
+                                <img src="" alt="Pré-visualização do banner" class="hidden h-full w-full object-cover" data-preview-image>
+                                <i class="bi bi-images text-2xl text-white/40" data-preview-placeholder></i>
+                            </div>
+                            <div class="flex-1 space-y-2">
+                                <span data-preview-filename="banner" data-placeholder="{{ $visualSection['banner_placeholder'] }}" class="block text-sm text-white/60">{{ $visualSection['banner_placeholder'] }}</span>
+                                <label class="inline-flex items-center gap-2 rounded-lg border border-white/20 px-3 py-2 text-sm text-white/80 hover:border-white/50 cursor-pointer">
+                                    <i class="bi bi-upload"></i> {{ $visualSection['upload'] }}
+                                    <input type="file" name="banner" id="banner" class="hidden" accept="image/*" data-preview-input="banner">
+                                </label>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            @endif
             @if($managerSection)
             <div class="space-y-6">
                 <div>
@@ -251,6 +297,93 @@
         $('#cep').mask('00000-000');
         $('#cnpj').mask('00.000.000/0000-00');
         $('#gestor_cpf').mask('000.000.000-00');
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const previewInputs = document.querySelectorAll('[data-preview-input]');
+
+        previewInputs.forEach((input) => {
+            const key = input.dataset.previewInput;
+            const container = document.querySelector(`[data-preview-container="${key}"]`);
+            if (!container) {
+                return;
+            }
+
+            const loader = container.querySelector('[data-preview-loader]');
+            const previewImage = container.querySelector('[data-preview-image]');
+            const placeholder = container.querySelector('[data-preview-placeholder]');
+            const filenameLabel = document.querySelector(`[data-preview-filename="${key}"]`);
+            const placeholderText = filenameLabel ? filenameLabel.dataset.placeholder || filenameLabel.textContent : '';
+
+            if (previewImage && !previewImage.dataset.previewOriginal) {
+                previewImage.dataset.previewOriginal = previewImage.getAttribute('src') || '';
+            }
+
+            input.addEventListener('change', () => {
+                const file = input.files && input.files[0] ? input.files[0] : null;
+
+                if (filenameLabel) {
+                    filenameLabel.textContent = file ? file.name : placeholderText;
+                }
+
+                if (file) {
+                    placeholder?.classList.add('hidden');
+                    if (previewImage) {
+                        previewImage.classList.add('hidden');
+                    }
+                    if (loader) {
+                        loader.classList.remove('hidden');
+                    }
+
+                    const reader = new FileReader();
+                    reader.addEventListener('load', (event) => {
+                        if (loader) {
+                            loader.classList.add('hidden');
+                        }
+                        if (previewImage) {
+                            previewImage.src = event.target?.result || '';
+                            previewImage.classList.remove('hidden');
+                        }
+                    });
+                    reader.addEventListener('error', () => {
+                        if (loader) {
+                            loader.classList.add('hidden');
+                        }
+                        if (previewImage) {
+                            const original = previewImage.dataset.previewOriginal || '';
+                            if (original) {
+                                previewImage.src = original;
+                                previewImage.classList.remove('hidden');
+                            } else {
+                                previewImage.src = '';
+                                previewImage.classList.add('hidden');
+                            }
+                        }
+                        placeholder?.classList.remove('hidden');
+                    });
+                    reader.readAsDataURL(file);
+                } else {
+                    if (loader) {
+                        loader.classList.add('hidden');
+                    }
+
+                    if (previewImage) {
+                        const original = previewImage.dataset.previewOriginal || '';
+                        if (original) {
+                            previewImage.src = original;
+                            previewImage.classList.remove('hidden');
+                        } else {
+                            previewImage.src = '';
+                            previewImage.classList.add('hidden');
+                        }
+                    }
+
+                    placeholder?.classList.remove('hidden');
+                }
+            });
+        });
     });
 </script>
 

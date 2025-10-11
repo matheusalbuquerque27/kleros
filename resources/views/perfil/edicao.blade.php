@@ -4,6 +4,10 @@
 
 @section('content')
 
+@php
+    $fotoPath = !empty($membro->foto) ? Storage::url($membro->foto) : asset('storage/images/newuser.png');
+@endphp
+
 <div class="container">
     <h1>Editar Perfil</h1>
     <div class="info">
@@ -69,20 +73,26 @@
                         <div class="form-item">
                             <label for="foto">Foto de perfil</label>
 
-                            @if(!empty($membro->foto))
-                                <img class="image-small" id="foto-img" 
-                                    src="{{ Storage::url($membro->foto) }}" 
-                                    alt="Foto de perfil">
-                            @else
-                                <img class="image-small" id="foto-img" 
-                                    src="{{ asset('storage/images/newuser.png') }}" 
-                                    alt="Sem foto">
-                            @endif
+                            <div class="preview-wrapper" data-preview-container="foto">
+                                <img
+                                    class="image-small image-preview"
+                                    id="foto-img"
+                                    src="{{ $fotoPath }}"
+                                    alt="Foto de perfil"
+                                    data-preview-image
+                                    data-preview-original="{{ $fotoPath }}">
+                                <div class="preview-placeholder is-hidden" data-preview-placeholder>
+                                    <i class="bi bi-image"></i>
+                                </div>
+                                <div class="loading-indicator is-hidden" data-preview-loader>
+                                    <img src="{{ asset('storage/images/loading.gif') }}" alt="Carregando">
+                                </div>
+                            </div>
 
                             <div class="foto-upload">
-                                <span id="file-logo">Nenhum arquivo selecionado</span>
+                                <span id="file-foto" data-preview-filename="foto" data-placeholder="Nenhum arquivo selecionado">Nenhum arquivo selecionado</span>
                                 <label for="foto" class="btn-line"><i class="bi bi-upload"></i> Upload</label>
-                                <input type="file" name="foto" id="foto">
+                                <input type="file" name="foto" id="foto" accept="image/*" data-preview-input="foto">
                             </div>
                         </div>
                     </div>
@@ -166,6 +176,7 @@
 }
 
 /* Foto */
+.image-small,
 .image-preview {
     max-width: 150px;
     border-radius: 10px;
@@ -191,6 +202,44 @@
 #foto {
     display: none;
 }
+.preview-wrapper {
+    position: relative;
+    display: inline-block;
+}
+.preview-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f7f7f7;
+    border: 1px dashed #d0d0d0;
+    color: #888;
+}
+.preview-placeholder i {
+    font-size: 32px;
+}
+.loading-indicator {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+}
+.loading-indicator img {
+    max-width: 64px;
+}
+.is-hidden {
+    display: none !important;
+}
+
+#file-foto {
+    max-width: 220px;
+}
 
 /* Botão salvar */
 .form-options {
@@ -204,5 +253,83 @@
     to {opacity: 1; transform: translateY(0);}
 }
 </style>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const input = document.querySelector('[data-preview-input="foto"]');
+        if (!input) {
+            return;
+        }
+
+        const container = document.querySelector('[data-preview-container="foto"]');
+        const loader = container?.querySelector('[data-preview-loader]');
+        const previewImage = container?.querySelector('[data-preview-image]');
+        const placeholder = container?.querySelector('[data-preview-placeholder]');
+        const filenameLabel = document.querySelector('[data-preview-filename="foto"]');
+        const placeholderText = filenameLabel ? (filenameLabel.dataset.placeholder || filenameLabel.textContent || 'Nenhum arquivo selecionado') : 'Nenhum arquivo selecionado';
+
+        if (filenameLabel && !filenameLabel.dataset.placeholder) {
+            filenameLabel.dataset.placeholder = placeholderText;
+        }
+
+        if (previewImage && !previewImage.dataset.previewOriginal) {
+            previewImage.dataset.previewOriginal = previewImage.getAttribute('src') || '';
+        }
+
+        const restoreOriginal = () => {
+            if (previewImage) {
+                const original = previewImage.dataset.previewOriginal || '';
+                if (original) {
+                    previewImage.src = original;
+                    previewImage.classList.remove('is-hidden');
+                    placeholder?.classList.add('is-hidden');
+                } else {
+                    previewImage.src = '';
+                    previewImage.classList.add('is-hidden');
+                    placeholder?.classList.remove('is-hidden');
+                }
+            } else {
+                placeholder?.classList.remove('is-hidden');
+            }
+
+            if (filenameLabel) {
+                filenameLabel.textContent = filenameLabel.dataset.placeholder || placeholderText;
+            }
+        };
+
+        input.addEventListener('change', () => {
+            const file = input.files && input.files[0] ? input.files[0] : null;
+
+            if (filenameLabel) {
+                filenameLabel.textContent = file ? file.name : (filenameLabel.dataset.placeholder || placeholderText);
+            }
+
+            if (file) {
+                placeholder?.classList.add('is-hidden');
+                previewImage?.classList.add('is-hidden');
+                loader?.classList.remove('is-hidden');
+
+                const reader = new FileReader();
+                reader.addEventListener('load', (event) => {
+                    loader?.classList.add('is-hidden');
+                    if (previewImage) {
+                        previewImage.src = event.target?.result || '';
+                        previewImage.classList.remove('is-hidden');
+                    }
+                });
+                reader.addEventListener('error', () => {
+                    loader?.classList.add('is-hidden');
+                    restoreOriginal();
+                });
+                reader.readAsDataURL(file);
+            } else {
+                loader?.classList.add('is-hidden');
+                restoreOriginal();
+            }
+        });
+    });
+</script>
+@endpush
 
 @endsection

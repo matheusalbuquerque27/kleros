@@ -39,6 +39,15 @@ return [
                 'site' => ['label' => 'Site institucional (opcional)', 'placeholder' => 'https://www.suaigreja.com'],
             ],
         ],
+        'visual' => [
+            'title' => 'Identidade visual',
+            'subtitle' => 'Selecione logo e banner para conferir a pré-visualização antes de concluir o cadastro.',
+            'logo_label' => 'Logo da congregação',
+            'logo_placeholder' => 'Selecione um arquivo PNG ou SVG',
+            'banner_label' => 'Banner para tela de login',
+            'banner_placeholder' => 'Imagem horizontal (JPG ou PNG)',
+            'upload' => 'Selecionar arquivo',
+        ],
         'manager' => [
             'title' => 'Gestor responsável',
             'subtitle' => 'Esta pessoa terá acesso completo ao painel e será o ponto focal para comunicações oficiais.',

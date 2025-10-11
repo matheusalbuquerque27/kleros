@@ -22,9 +22,11 @@
 @push('scripts')
 
 <script>
-    $(document).on('click', '.each-verse', function() {
-        alert(this.id);
-    });
+    /*Posteriormente, implementar a funcionalidade de manipular o versículo ao clicar nele
+    Ex: Adicionar aos favoritos, compartilhar e comentar etc. */
+    // $(document).on('click', '.each-verse', function() {
+    //     alert(this.id);
+    // });
 </script>
 
 @endpush
