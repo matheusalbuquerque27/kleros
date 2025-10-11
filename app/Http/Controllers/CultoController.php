@@ -12,7 +12,7 @@ class CultoController extends Controller
 {
     public function index() {
 
-        $cultos = Culto::whereDate('data_culto', '<', date('Y-m-d'))->paginate(10);
+        $cultos = Culto::where('congregacao_id', app('congregacao'))->whereDate('data_culto', '<', date('Y-m-d'))->paginate(10);
         
         if($cultos->isEmpty()){
             $cultos = '';
@@ -35,7 +35,7 @@ class CultoController extends Controller
     public function agenda() {
 
         $congregacao = app('congregacao');
-        $cultos = Culto::whereDate('data_culto', '>=', date('Y-m-d'))->paginate(10);
+        $cultos = Culto::where('congregacao_id', $congregacao->id)->whereDate('data_culto', '>=', date('Y-m-d'))->paginate(10);
         $cultos = $cultos->isEmpty() ? '' : $cultos;
 
         $eventos = Evento::whereDate('data_inicio', '>=', date('Y/m/d'))->distinct('titulo')->pluck('titulo');
@@ -79,14 +79,14 @@ class CultoController extends Controller
             $data_inicial = $request->data_inicial;
             $data_final = $request->data_final;
 
-            $cultos = Culto::whereDate('data_culto', '<=', date('Y/m/d'))->whereDate('data_culto', '>=', $data_inicial)->whereDate('data_culto', '<=', $data_final)->get();
+            $cultos = Culto::where('congregacao_id', app('congregacao'))->whereDate('data_culto', '<=', date('Y/m/d'))->whereDate('data_culto', '>=', $data_inicial)->whereDate('data_culto', '<=', $data_final)->get();
             $cultos = $cultos->isEmpty() ? '' : $cultos;
 
         } else if($origin == 'agenda'){
             $preletor = $request->preletor;
             $evento = $request->evento;
 
-            $cultos = Culto::whereDate('data_culto', '>=', date('Y/m/d'))->where('preletor', $preletor)->orWhere('evento_id', $evento)->get();
+            $cultos = Culto::where('congregacao_id', app('congregacao'))->whereDate('data_culto', '>=', date('Y/m/d'))->where('preletor', $preletor)->orWhere('evento_id', $evento)->get();
             $cultos = $cultos->isEmpty() ? '' : $cultos;
         }
 

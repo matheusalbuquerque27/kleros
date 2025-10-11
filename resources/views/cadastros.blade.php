@@ -131,9 +131,8 @@
                 </div>
             @endif
         </div>
-        <a href="{{ url('/eventos/adicionar') }}">
-            <button class="btn mg-top-10"><i class="bi bi-plus-circle"></i> {{ $sections['events']['buttons']['new'] }}</button>
-        </a>
+        <button class="btn mg-top-10" onclick="abrirJanelaModal('{{ route('eventos.form_criar') }}')">
+            <i class="bi bi-plus-circle"></i> {{ $sections['events']['buttons']['new'] }}</button>
         <a href="{{ url('/eventos/historico') }}">
             <button class="btn mg-top-10"><i class="bi bi-card-list"></i> {{ $sections['events']['buttons']['history'] }}</button>
         </a>

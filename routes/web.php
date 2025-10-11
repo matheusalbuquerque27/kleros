@@ -33,6 +33,7 @@ use App\Http\Controllers\SiteController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\AssinaturaController;
+use App\Http\Controllers\ProgramacaoController;
 
 Route::post('/locale', [LocaleController::class, 'update'])->name('locale.update');
 
@@ -92,6 +93,9 @@ Route::middleware(['web', 'dominio', 'setlocale'])->group(function () {
         Route::delete('/configuracoes/{id}', [CongregacaoController::class, 'destroy'])->name('configuracoes.excluir')->middleware(['auth','role:gestor']);
 
         Route::get('/', [HomeController::class, 'index'])->name('index');
+        Route::get('/programacoes', [ProgramacaoController::class, 'index'])->name('programacoes.painel');
+        Route::get('/programacoes/eventos/{evento}', [ProgramacaoController::class, 'showEvento'])->name('programacoes.eventos.show');
+        Route::get('/programacoes/cultos/{culto}', [ProgramacaoController::class, 'showCulto'])->name('programacoes.cultos.show');
         Route::get('/cadastros', [CadastroController::class, 'index'])->name('cadastros.index')->middleware(['auth','role:gestor']);
         
         Route::get('/tutoriais', [TutorialController::class, 'index'])->name('tutoriais.index')->middleware(['auth','role:gestor']);

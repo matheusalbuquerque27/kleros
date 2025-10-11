@@ -81,15 +81,16 @@
                     <div class="nav-menu">
                         <ul id="menu-express">
                             @role('gestor')
-                                <a href="{{ route('index') }}"><li><i class="bi bi-kanban"></i> Visão Geral</li></a>
+                                <a href="{{ route('index') }}"><li><i class="bi bi-kanban"></i> Controle</li></a>
                                 <a href="{{ route('membros.painel') }}"><li><i class="bi bi-people"></i> Membros</li></a>
                                 <a href="{{ route('cadastros.index') }}"><li><i class="bi bi-journals"></i> Cadastros</li></a>
                                 <a href="{{ route('visitantes.adicionar') }}"><li><i class="bi bi-people-fill"></i> Visitantes</li></a>
+                                <a href="{{ route('programacoes.painel') }}"><li><i class="bi bi-collection"></i> Programações</li></a>
                             @else
                                 <a href="{{ route('index') }}"><li><i class="bi bi-kanban"></i> Controle</li></a>
                                 <a href="{{ route('agenda.index') }}"><li><i class="bi bi-calendar3"></i> Agenda</li></a>
                                 <a href="{{ route('noticias.painel') }}"><li><i class="bi bi-newspaper"></i> Notícias</li></a>
-                                <a href="#"><li><i class="bi bi-collection"></i> Programações</li></a>
+                                <a href="{{ route('programacoes.painel') }}"><li><i class="bi bi-collection"></i> Programações</li></a>
                             @endrole
                         </ul>
                     </div>
@@ -247,6 +248,107 @@
 
         <!--Scripts gerais-->
         <script>
+            function fallbackInitTabs(container) {
+                if (!container) {
+                    return;
+                }
+
+                const legacyTabContainers = container.querySelectorAll('.tabs');
+                legacyTabContainers.forEach((tabsContainer) => {
+                    const menuItems = tabsContainer.querySelectorAll('.tab-menu li[data-tab]');
+                    const panes = tabsContainer.querySelectorAll('.tab-pane');
+                    if (!menuItems.length || !panes.length) {
+                        return;
+                    }
+
+                    const activate = (tabId) => {
+                        menuItems.forEach((item) => {
+                            const isActive = item.dataset.tab === tabId;
+                            item.classList.toggle('active', isActive);
+                        });
+
+                        panes.forEach((pane, index) => {
+                            const isActive = pane.id === tabId || (!tabId && index === 0);
+                            pane.classList.toggle('active', isActive);
+                            pane.hidden = !isActive;
+                            pane.style.display = isActive ? '' : 'none';
+                        });
+                    };
+
+                    const initialTab = tabsContainer.querySelector('.tab-menu li.active[data-tab]');
+                    if (initialTab) {
+                        activate(initialTab.dataset.tab);
+                    } else if (menuItems[0]) {
+                        activate(menuItems[0].dataset.tab);
+                    }
+                });
+            }
+
+            function fallbackInitOptionsMenus(container) {
+                if (!container) {
+                    return;
+                }
+
+                const triggers = container.querySelectorAll('[data-options-target], [data-options-trigger]');
+                triggers.forEach((trigger) => {
+                    if (trigger.dataset.optionsFallbackInitialized) {
+                        return;
+                    }
+
+                    const menuId = trigger.dataset.optionsTarget || trigger.dataset.optionsTrigger;
+                    if (!menuId) {
+                        return;
+                    }
+
+                    const menu = container.querySelector(`#${menuId}`) || document.getElementById(menuId);
+                    if (!menu) {
+                        return;
+                    }
+
+                    trigger.dataset.optionsFallbackInitialized = 'true';
+                    const buttons = Array.from(menu.querySelectorAll('[data-action]'));
+
+                    const handleAction = (button) => {
+                        const action = button.dataset.action;
+                        if (action === 'print') {
+                            window.print();
+                        } else if (action === 'back') {
+                            window.history.back();
+                        } else if (action === 'redirect') {
+                            const url = button.dataset.url;
+                            if (url) {
+                                window.location.href = url;
+                            }
+                        }
+                    };
+
+                    trigger.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        const willOpen = menu.hidden !== false && !menu.classList.contains('is-open');
+                        if (willOpen) {
+                            menu.hidden = false;
+                            menu.classList.add('is-open');
+                        } else {
+                            menu.hidden = true;
+                            menu.classList.remove('is-open');
+                        }
+                    });
+
+                    buttons.forEach((button) => {
+                        if (button.dataset.actionFallbackInitialized) {
+                            return;
+                        }
+                        button.dataset.actionFallbackInitialized = 'true';
+                        button.addEventListener('click', (event) => {
+                            event.preventDefault();
+                            menu.hidden = true;
+                            menu.classList.remove('is-open');
+                            handleAction(button);
+                        });
+                    });
+                });
+            }
+
             $(document).ready(function(){
 
                 // Exemplo de input : <input type="tel" id="telefone" placeholder="(00) 00000-0000">
@@ -259,6 +361,10 @@
                 $('.msg .close').click(function(){
                     this.closest('.msg').remove();
                 })
+
+                if (typeof initOptionsMenus !== 'function') {
+                    fallbackInitOptionsMenus(document);
+                }
                 
             });
         </script>
@@ -290,6 +396,18 @@
                 const container = document.getElementById('conteudoModal');
                 const modal = document.getElementById('janelaModal');
                 const { iframe = false, title = 'Visualização' } = options;
+                let targetUrl = url;
+
+                if (typeof url === 'string') {
+                    try {
+                        if (url.startsWith('http://') || url.startsWith('https://')) {
+                            const parsed = new URL(url, window.location.href);
+                            targetUrl = parsed.pathname + parsed.search + parsed.hash;
+                        }
+                    } catch (error) {
+                        targetUrl = url;
+                    }
+                }
 
                 if (iframe) {
                     container.innerHTML = '';
@@ -297,7 +415,7 @@
                     wrapper.className = 'modal-iframe-wrapper';
 
                     const iframeEl = document.createElement('iframe');
-                    iframeEl.src = url;
+                    iframeEl.src = targetUrl;
                     iframeEl.title = title;
                     iframeEl.loading = 'lazy';
                     iframeEl.style.width = '100%';
@@ -312,7 +430,7 @@
 
                 container.innerHTML = '';
 
-                fetch(url)
+                fetch(targetUrl)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Erro ao carregar o conteúdo.');
@@ -324,7 +442,35 @@
                         container.innerHTML = html;
                         modal.style.display = 'flex';
 
-                        initModalScripts(container);
+                        if (typeof initModalScripts === 'function') {
+                            try {
+                                initModalScripts(container);
+                            } catch (error) {
+                                console.error('Falha ao inicializar scripts do modal.', error);
+                                fallbackInitTabs(container);
+                            }
+                        } else {
+                            fallbackInitTabs(container);
+                        }
+
+                        if (typeof initOptionsMenus === 'function') {
+                            try {
+                                initOptionsMenus(container);
+                            } catch (error) {
+                                console.error('Falha ao inicializar menus do modal.', error);
+                                fallbackInitOptionsMenus(container);
+                            }
+                        } else {
+                            fallbackInitOptionsMenus(container);
+                        }
+
+                        if (typeof initOptionsMenus === 'function') {
+                            try {
+                                initOptionsMenus(container);
+                            } catch (error) {
+                                console.error('Falha ao inicializar menus do modal.', error);
+                            }
+                        }
                     })
                     .catch(() => {
                         container.innerHTML = '';
