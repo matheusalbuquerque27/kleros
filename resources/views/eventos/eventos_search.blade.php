@@ -1,7 +1,7 @@
 @if ($eventos)
     @if ($origin == 'historico')
         @foreach ($eventos as $item)
-        <div class="list-item">
+        <div class="list-item" onclick="abrirJanelaModal('{{ route('eventos.form_editar', $item->id) }}')">
             <div class="item item-1">
                 <p>{{$item->data_inicio}}</p>
             </div>
@@ -18,7 +18,7 @@
         @endforeach       
     @elseif($origin == 'agenda')
         @foreach ($eventos as $item)
-        <div class="list-item">
+        <div class="list-item" onclick="abrirJanelaModal('{{ route('eventos.form_editar', $item->id) }}')">
             <div class="item item-1">
                 <p>{{$item->data_inicio}}</p>
             </div>

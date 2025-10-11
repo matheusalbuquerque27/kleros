@@ -12,24 +12,26 @@
             <div class="search-panel-item">
                 <label>Preletor: </label>
                 <select name="" id="preletor">
-                    @if ($cultos)
-                        @foreach ($cultos as $item)
-                        <option value="{{$item->preletor}}">{{$item->preletor}}</option>
+                    <option value="">Todos</option>
+                    @if (isset($preletores) && $preletores->isNotEmpty())
+                        @foreach ($preletores as $item)
+                        <option value="{{ $item }}">{{ $item }}</option>
                         @endforeach
                     @else
-                        <option value="">Nenhum cadastro de preletores.</option>
+                        <option value="" disabled>Nenhum cadastro de preletores.</option>
                     @endif
                 </select>
             </div>
             <div class="search-panel-item">
                 <label>Evento: </label>
                 <select name="" id="evento">
-                    @if ($eventos)
-                        @foreach ($eventos as $item)
-                        <option value="{{$item}}">{{$item}}</option>
+                    <option value="">Todos</option>
+                    @if (isset($eventosFiltro) && $eventosFiltro->isNotEmpty())
+                        @foreach ($eventosFiltro as $evento)
+                        <option value="{{ $evento->id }}">{{ $evento->titulo }}</option>
                         @endforeach
                     @else
-                        <option value="">Nenhum evento cadastrado</option>
+                        <option value="" disabled>Nenhum evento cadastrado</option>
                     @endif
                 </select>
             </div>

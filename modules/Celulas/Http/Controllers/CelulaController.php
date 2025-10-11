@@ -88,6 +88,42 @@ class CelulaController extends Controller
         ]);
     }
 
+    public function search(Request $request)
+    {
+        $congregacaoId = app('congregacao')->id;
+        $termo = trim($request->input('membro', ''));
+
+        $query = Celula::with(['lider', 'colider', 'anfitriao'])
+            ->where('congregacao_id', $congregacaoId)
+            ->orderBy('identificacao');
+
+        if ($termo !== '') {
+            $query->where(function ($builder) use ($termo) {
+                $builder
+                    ->whereHas('lider', function ($sub) use ($termo) {
+                        $sub->where('nome', 'like', '%' . $termo . '%');
+                    })
+                    ->orWhereHas('colider', function ($sub) use ($termo) {
+                        $sub->where('nome', 'like', '%' . $termo . '%');
+                    })
+                    ->orWhereHas('anfitriao', function ($sub) use ($termo) {
+                        $sub->where('nome', 'like', '%' . $termo . '%');
+                    })
+                    ->orWhereHas('participantes', function ($sub) use ($termo) {
+                        $sub->where('nome', 'like', '%' . $termo . '%');
+                    });
+            });
+        }
+
+        $celulas = $query->get();
+
+        $view = view('celulas::includes.lista', [
+            'celulas' => $celulas,
+        ])->render();
+
+        return response()->json(['view' => $view]);
+    }
+
     public function adicionarParticipante(Request $request)
     {
         $congregacaoId = app('congregacao')->id;

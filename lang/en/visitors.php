@@ -56,7 +56,8 @@ return [
         'filter' => [
             'heading' => 'Filter by period',
             'name_label' => 'Name',
-            'date_label' => 'Date',
+            'date_start_label' => 'Start date',
+            'date_end_label' => 'End date',
         ],
         'table' => [
             'name' => 'Name',

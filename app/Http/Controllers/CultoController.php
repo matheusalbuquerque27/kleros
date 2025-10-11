@@ -12,7 +12,11 @@ class CultoController extends Controller
 {
     public function index() {
 
-        $cultos = Culto::where('congregacao_id', app('congregacao'))->whereDate('data_culto', '<', date('Y-m-d'))->paginate(10);
+        $congregacaoId = app('congregacao')->id;
+
+        $cultos = Culto::where('congregacao_id', $congregacaoId)
+            ->whereDate('data_culto', '<', date('Y-m-d'))
+            ->paginate(10);
         
         if($cultos->isEmpty()){
             $cultos = '';
@@ -24,7 +28,11 @@ class CultoController extends Controller
     public function create() {
         $congregacao = app('congregacao');
 
-        $cultos = Culto::whereDate('data_culto', '>', date('Y/m/d'))->limit(4)->orderBy('data_culto', 'asc')->get();
+        $cultos = Culto::where('congregacao_id', $congregacao->id)
+            ->whereDate('data_culto', '>', date('Y/m/d'))
+            ->orderBy('data_culto', 'asc')
+            ->limit(4)
+            ->get();
         $cultos = $cultos->isEmpty() ? '' : $cultos;
 
         $eventos = Evento::all();
@@ -35,12 +43,30 @@ class CultoController extends Controller
     public function agenda() {
 
         $congregacao = app('congregacao');
-        $cultos = Culto::where('congregacao_id', $congregacao->id)->whereDate('data_culto', '>=', date('Y-m-d'))->paginate(10);
-        $cultos = $cultos->isEmpty() ? '' : $cultos;
+        $congregacaoId = $congregacao->id;
 
-        $eventos = Evento::whereDate('data_inicio', '>=', date('Y/m/d'))->distinct('titulo')->pluck('titulo');
+        $cultos = Culto::where('congregacao_id', $congregacaoId)
+            ->whereDate('data_culto', '>=', date('Y-m-d'))
+            ->orderBy('data_culto')
+            ->paginate(10);
 
-        return view('cultos/agenda', ['cultos' => $cultos, 'eventos' => $eventos, 'congregacao' => $congregacao]);
+        $eventosFiltro = Evento::where('congregacao_id', $congregacaoId)
+            ->whereDate('data_inicio', '>=', date('Y-m-d'))
+            ->orderBy('titulo')
+            ->get(['id', 'titulo']);
+
+        $preletores = Culto::where('congregacao_id', $congregacaoId)
+            ->whereNotNull('preletor')
+            ->distinct()
+            ->orderBy('preletor')
+            ->pluck('preletor');
+
+        return view('cultos/agenda', [
+            'cultos' => $cultos->isEmpty() ? '' : $cultos,
+            'eventosFiltro' => $eventosFiltro,
+            'preletores' => $preletores,
+            'congregacao' => $congregacao,
+        ]);
     }
 
     public function store(Request $request) {
@@ -74,23 +100,37 @@ class CultoController extends Controller
     public function search(Request $request) {
 
         $origin = $request->origin;
+        $congregacaoId = app('congregacao')->id;
 
-        if($origin == 'historico'){
-            $data_inicial = $request->data_inicial;
-            $data_final = $request->data_final;
+        $query = Culto::with('evento')
+            ->where('congregacao_id', $congregacaoId);
 
-            $cultos = Culto::where('congregacao_id', app('congregacao'))->whereDate('data_culto', '<=', date('Y/m/d'))->whereDate('data_culto', '>=', $data_inicial)->whereDate('data_culto', '<=', $data_final)->get();
-            $cultos = $cultos->isEmpty() ? '' : $cultos;
+        if ($origin === 'historico') {
+            $query->whereDate('data_culto', '<=', date('Y-m-d'));
 
-        } else if($origin == 'agenda'){
-            $preletor = $request->preletor;
-            $evento = $request->evento;
+            if ($request->filled('data_inicial')) {
+                $query->whereDate('data_culto', '>=', $request->input('data_inicial'));
+            }
 
-            $cultos = Culto::where('congregacao_id', app('congregacao'))->whereDate('data_culto', '>=', date('Y/m/d'))->where('preletor', $preletor)->orWhere('evento_id', $evento)->get();
-            $cultos = $cultos->isEmpty() ? '' : $cultos;
+            if ($request->filled('data_final')) {
+                $query->whereDate('data_culto', '<=', $request->input('data_final'));
+            }
+        } else {
+            $query->whereDate('data_culto', '>=', date('Y-m-d'));
+
+            if ($request->filled('preletor')) {
+                $query->where('preletor', $request->input('preletor'));
+            }
+
+            if ($request->filled('evento')) {
+                $query->where('evento_id', $request->input('evento'));
+            }
         }
 
-        $view = view('cultos/cultos_search', ['cultos' => $cultos,  'origin' => $origin])->render();
+        $cultosCollection = $query->orderBy('data_culto')->get();
+        $cultos = $cultosCollection->isEmpty() ? '' : $cultosCollection;
+
+        $view = view('cultos/cultos_search', ['cultos' => $cultos, 'origin' => $origin])->render();
 
         return response()->json(['view' => $view]);
     }

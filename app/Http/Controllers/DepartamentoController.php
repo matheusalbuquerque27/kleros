@@ -173,8 +173,7 @@ class DepartamentoController extends Controller
             $membro = $request->input('membro');
 
             $query->where(function ($q) use ($membro) {
-                $q->where('nome', 'like', "%{$membro}%")
-                    ->orWhereHas('lider', function ($sub) use ($membro) {
+                $q->whereHas('lider', function ($sub) use ($membro) {
                         $sub->where('nome', 'like', "%{$membro}%");
                     })
                     ->orWhereHas('colider', function ($sub) use ($membro) {

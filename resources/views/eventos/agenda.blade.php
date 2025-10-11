@@ -12,24 +12,26 @@
             <div class="search-panel-item">
                 <label>Nome do evento: </label>
                 <select name="" id="titulo">
-                    @if ($eventos)
-                        @foreach ($eventos as $item)
-                        <option value="{{$item->titulo}}">{{$item->titulo}}</option>
+                    <option value="">Todos</option>
+                    @if (isset($titulosFiltro) && $titulosFiltro->isNotEmpty())
+                        @foreach ($titulosFiltro as $titulo)
+                        <option value="{{ $titulo }}">{{ $titulo }}</option>
                         @endforeach
                     @else
-                        <option value="">Nenhum evento cadastrado.</option>
+                        <option value="" disabled>Nenhum evento cadastrado.</option>
                     @endif
                 </select>
             </div>
             <div class="search-panel-item">
                 <label>Grupo responsável: </label>
                 <select name="" id="grupo">
-                    @if ($grupos)
+                    <option value="">Todos</option>
+                    @if ($grupos->isNotEmpty())
                         @foreach ($grupos as $item)
                         <option value="{{$item->id}}">{{$item->nome}}</option>
                         @endforeach
                     @else
-                        <option value="">Nenhum evento cadastrado</option>
+                        <option value="" disabled>Nenhum evento cadastrado</option>
                     @endif
                 </select>
             </div>
@@ -45,50 +47,52 @@
         </div>
     </div>
     <div class="list">
-        @if ($eventos)
-        <div class="list-title">
-            <div class="item-1">
-                <b>Início do Evento</b>
-            </div>
-            <div class="item-1">
-                <b>Título</b>
-            </div>
-            <div class="item-1">
-                <b>Grupo responsável</b>
-            </div>
-            <div class="item-15">
-                <b>Descrição</b>
-            </div>
-        </div><!--list-item-->
-        <div id="content">
-            @foreach ($eventos as $item)
-            <div class="list-item" onclick="abrirJanelaModal('{{route('eventos.form_editar', $item->id)}}')">
-                <div class="item item-1">
-                    <p><i class="bi bi-calendar-event"></i> {{$item->data_inicio}}</p>
+        @if ($eventos->count() > 0)
+            <div class="list-title">
+                <div class="item-1">
+                    <b>Início do Evento</b>
                 </div>
-                <div class="item item-1">
-                    <p>{{$item->titulo}}</p>
+                <div class="item-1">
+                    <b>Título</b>
                 </div>
-                <div class="item item-1">
-                    <p>{{$item->grupo->nome ?? 'Geral'}}</p>
+                <div class="item-1">
+                    <b>Grupo responsável</b>
                 </div>
-                <div class="item item-15">
-                    <p>{{$item->descricao}}</p>
+                <div class="item-15">
+                    <b>Descrição</b>
                 </div>
             </div><!--list-item-->
-            @endforeach
-            @if($eventos->total() > 10)
-                <div class="pagination">
-                    {{ $eventos->links('pagination::default') }}
+            <div id="content">
+                @foreach ($eventos as $item)
+                <div class="list-item" onclick="abrirJanelaModal('{{route('eventos.form_editar', $item->id)}}')">
+                    <div class="item item-1">
+                        <p><i class="bi bi-calendar-event"></i> {{ \Carbon\Carbon::parse($item->data_inicio)->format('d/m/Y') }}</p>
+                    </div>
+                    <div class="item item-1">
+                        <p>{{$item->titulo}}</p>
+                    </div>
+                    <div class="item item-1">
+                        <p>{{$item->grupo->nome ?? 'Geral'}}</p>
+                    </div>
+                    <div class="item item-15">
+                        <p>{{$item->descricao}}</p>
+                    </div>
+                </div><!--list-item-->
+                @endforeach
+                @if($eventos->total() > 10)
+                    <div class="pagination">
+                        {{ $eventos->links('pagination::default') }}
+                    </div>
+                @endif       
+            </div>
+        @else
+            <div id="content">
+                <div class="card">
+                    <p><i class="bi bi-exclamation-triangle"></i> Ainda não há eventos previstos para exibição.</p>
                 </div>
-            @endif       
-        </div>                   
-    </div> 
-    @else
-        <div class="card">
-            <p><i class="bi bi-exclamation-triangle"></i> Ainda não há eventos previstos para exibição.</p>
-        </div>
-    @endif
+            </div>
+        @endif
+    </div>
 </div>
 
 @endsection

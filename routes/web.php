@@ -215,6 +215,7 @@ Route::middleware(['web', 'dominio', 'setlocale'])->group(function () {
         Route::get('/reunioes', [ReuniaoController::class, 'create'])->name('reunioes.create')->middleware(['auth','role:gestor']);
         Route::get('/reunioes/painel', [ReuniaoController::class, 'index'])->name('reunioes.painel')->middleware(['auth','role:gestor']);
         Route::post('/reunioes', [ReuniaoController::class, 'store'])->name('reunioes.store')->middleware(['auth','role:gestor']);
+        Route::post('/reunioes/search', [ReuniaoController::class, 'search'])->name('reunioes.search')->middleware(['auth','role:gestor']);
         Route::get('/reunioes/novo', [ReuniaoController::class, 'form_criar'])->name('reunioes.form_criar')->middleware(['auth','role:gestor']);
         Route::get('/reunioes/editar/{id}', [ReuniaoController::class, 'form_editar'])->name('reunioes.form_editar')->middleware(['auth','role:gestor']);
         Route::put('/reunioes/{reuniao}', [ReuniaoController::class, 'update'])->name('reunioes.update')->middleware(['auth','role:gestor']);

@@ -27,8 +27,12 @@
                     <input type="text" id="nome" placeholder="{{ $common['placeholders']['search_name'] }}">
                 </div>
                 <div class="search-panel-item">
-                    <label for="data_visita">{{ $history['filter']['date_label'] }}:</label>
-                    <input type="date" id="data_visita">
+                    <label for="data_inicial">{{ $history['filter']['date_start_label'] }}:</label>
+                    <input type="date" id="data_inicial">
+                </div>
+                <div class="search-panel-item">
+                    <label for="data_final">{{ $history['filter']['date_end_label'] }}:</label>
+                    <input type="date" id="data_final">
                 </div>
                 <div class="search-panel-item">
                     <button id="btn_filtrar" type="button"><i class="bi bi-search"></i> {{ $common['buttons']['search'] }}</button>
@@ -129,7 +133,8 @@
         const historyEmpty = @json($history['empty']);
 
         const nomeInput = document.getElementById('nome');
-        const dataInput = document.getElementById('data_visita');
+        const dataInicialInput = document.getElementById('data_inicial');
+        const dataFinalInput = document.getElementById('data_final');
         const contentTarget = document.getElementById('content');
 
         function renderEmpty(message) {
@@ -142,7 +147,8 @@
                 return;
             }
             const nome = nomeInput?.value ?? '';
-            const data_visita = dataInput?.value ?? '';
+            const data_inicial = dataInicialInput?.value ?? '';
+            const data_final = dataFinalInput?.value ?? '';
 
             fetch('{{ route('visitantes.search') }}', {
                 method: 'POST',
@@ -151,7 +157,7 @@
                     'X-CSRF-TOKEN': csrfToken,
                     'Accept': 'application/json',
                 },
-                body: JSON.stringify({ nome, data_visita }),
+                body: JSON.stringify({ nome, data_inicial, data_final }),
             })
                 .then(response => response.json())
                 .then(({ view }) => {
@@ -211,12 +217,18 @@
             const url = this.dataset.exportUrl;
             const params = new URLSearchParams();
             if (nomeInput?.value) params.append('nome', nomeInput.value);
-            if (dataInput?.value) params.append('data_visita', dataInput.value);
+            if (dataInicialInput?.value) params.append('data_inicial', dataInicialInput.value);
+            if (dataFinalInput?.value) params.append('data_final', dataFinalInput.value);
             window.location.href = params.toString() ? `${url}?${params.toString()}` : url;
         });
 
         if (nomeInput) {
-            nomeInput.addEventListener('keydown', pesquisarVisitantes);
+            nomeInput.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    pesquisarVisitantes();
+                }
+            });
         }
 
         attachCopyHandlers();

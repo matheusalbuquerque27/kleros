@@ -1,4 +1,5 @@
 <h1>Editar Célula</h1>
+<div class="info">
 <form action="{{ route('celulas.update', $celula->id) }}" method="post">
     @csrf
     @method('PUT')
@@ -258,6 +259,7 @@
         </div>
     </div>
 </form>
+</div>
 
 <!-- Estilo (pode extrair para CSS separado) -->
 <style>
@@ -285,11 +287,12 @@
     color: #fff;
     font-weight: bold;
 }
-.card {
-    background: #fff;
-    border-radius: 0 8px 8px 8px;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+.tabs > .tab-content.card {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: clamp(18px, 2vw, 24px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 18px 34px rgba(15, 23, 42, 0.24);
 }
 .tab-pane {
     display: none;
@@ -343,12 +346,13 @@
     margin-top: 12px;
 }
 
+
 .participantes-pagination .page-btn {
-    border: 1px solid var(--secondary-color);
-    background: #fff;
-    color: var(--secondary-color);
-    border-radius: 6px;
-    padding: 4px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-color);
+    border-radius: 8px;
+    padding: 4px 12px;
     cursor: pointer;
     transition: all .2s;
 }

@@ -56,7 +56,8 @@ return [
         'filter' => [
             'heading' => 'Filtrar por período',
             'name_label' => 'Nome',
-            'date_label' => 'Data',
+            'date_start_label' => 'Data inicial',
+            'date_end_label' => 'Data final',
         ],
         'table' => [
             'name' => 'Nome',

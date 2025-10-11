@@ -63,12 +63,23 @@ class VisitanteController extends Controller
         
         $query = Visitante::where('congregacao_id', app('congregacao')->id);
 
-        if ($request->filled('data_visita')) {
-            $query->whereDate('data_visita', $request->data_visita);
+        $dataInicial = $request->input('data_inicial');
+        $dataFinal = $request->input('data_final');
+
+        if ($dataInicial && $dataFinal && $dataInicial > $dataFinal) {
+            [$dataInicial, $dataFinal] = [$dataFinal, $dataInicial];
         }
 
         if ($request->filled('nome')) {
             $query->where('nome', 'LIKE', '%' . $request->nome . '%');
+        }
+
+        if ($dataInicial) {
+            $query->whereDate('data_visita', '>=', $dataInicial);
+        }
+
+        if ($dataFinal) {
+            $query->whereDate('data_visita', '<=', $dataFinal);
         }
 
         $visitantes = $query->orderByDesc('data_visita')->get();
@@ -85,8 +96,19 @@ class VisitanteController extends Controller
             ->with('sit_visitante')
             ->orderByDesc('data_visita');
 
-        if ($request->filled('data_visita')) {
-            $query->whereDate('data_visita', $request->input('data_visita'));
+        $dataInicial = $request->input('data_inicial');
+        $dataFinal = $request->input('data_final');
+
+        if ($dataInicial && $dataFinal && $dataInicial > $dataFinal) {
+            [$dataInicial, $dataFinal] = [$dataFinal, $dataInicial];
+        }
+
+        if ($dataInicial) {
+            $query->whereDate('data_visita', '>=', $dataInicial);
+        }
+
+        if ($dataFinal) {
+            $query->whereDate('data_visita', '<=', $dataFinal);
         }
 
         if ($request->filled('nome')) {

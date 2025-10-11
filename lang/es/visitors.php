@@ -56,7 +56,8 @@ return [
         'filter' => [
             'heading' => 'Filtrar por período',
             'name_label' => 'Nombre',
-            'date_label' => 'Fecha',
+            'date_start_label' => 'Fecha inicial',
+            'date_end_label' => 'Fecha final',
         ],
         'table' => [
             'name' => 'Nombre',

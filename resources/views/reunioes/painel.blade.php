@@ -12,11 +12,15 @@
             <div class="search-panel">
                 <div class="search-panel-item">
                     <label>Assunto: </label>
-                    <input type="text" name="" id="nome" placeholder="Assunto">
+                    <input type="text" id="assunto" placeholder="Assunto">
                 </div>
                 <div class="search-panel-item">
-                    <label>Data: </label>
-                    <input type="date" name="" id="data_visita">
+                    <label>Data inicial: </label>
+                    <input type="date" name="" id="data_inicial">
+                </div>
+                <div class="search-panel-item">
+                    <label>Data final: </label>
+                    <input type="date" name="" id="data_final">
                 </div>
                 <div class="search-panel-item">
                     <button class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
@@ -44,33 +48,82 @@
                 </div>
             </div><!--list-item-->
             <div id="content">
-            @foreach ($reunioes as $item)
-            <div class="list-item" onclick="abrirJanelaModal('{{ route('reunioes.form_editar', $item->id)}}')">
-                <div class="item item-1">
-                    <p><i class="bi bi-people-fill"></i> {{ date('d/m/Y', strtotime($item->data_inicio)) }}</p>                
-                </div>
-                <div class="item item-1">
-                    <p class="tag">{{ date('H:i', strtotime($item->data_inicio)) }}</p>
-                </div>
-                <div class="item item-15">
-                    <p>{{ $item->descricao }}</p>
-                </div>
-                <div class="item item-1">
-                    <p>{{ $item->local }}</p>
-                </div>
-                <div class="item item-1">
-                    <p>{{ $item->online ? 'Online' : 'Presencial'}}</p>
-                </div>                 
-            </div><!--list-item-->
-            @endforeach
-            @if($reunioes->total() > 10)
-                <div class="pagination">
-                    {{ $reunioes->links('pagination::default') }}
-                </div>
-            @endif
+                @include('reunioes.includes.lista', ['reunioes' => $reunioes, 'mostrarPaginacao' => true])
             </div><!--content-->
         </div><!--list-->
     </div>
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    (function () {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        const endpoint = @json(route('reunioes.search'));
+
+        function coletarFiltros() {
+            return {
+                assunto: document.getElementById('assunto')?.value || '',
+                data_inicial: document.getElementById('data_inicial')?.value || '',
+                data_final: document.getElementById('data_final')?.value || '',
+            };
+        }
+
+        function aplicarResultado(viewHtml) {
+            const container = document.getElementById('content');
+            if (container) {
+                container.innerHTML = viewHtml;
+                if (typeof initModalScripts === 'function') {
+                    try {
+                        initModalScripts(container);
+                    } catch (error) {
+                        console.error('Falha ao reinicializar scripts do modal após busca.', error);
+                    }
+                }
+                if (typeof initOptionsMenus === 'function') {
+                    try {
+                        initOptionsMenus(container);
+                    } catch (error) {
+                        console.error('Falha ao reinicializar menus após busca.', error);
+                    }
+                }
+            }
+        }
+
+        function executarBusca() {
+            const filtros = coletarFiltros();
+
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify(filtros),
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Não foi possível carregar a lista de reuniões.');
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    aplicarResultado(data.view || '');
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+
+        document.getElementById('btn_filtrar')?.addEventListener('click', executarBusca);
+        document.getElementById('assunto')?.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                executarBusca();
+            }
+        });
+    })();
+</script>
+@endpush

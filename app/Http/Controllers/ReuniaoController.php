@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Auth;
 class ReuniaoController extends Controller
 {
     public function index() {
-        $reunioes = Reuniao::where('congregacao_id', app('congregacao')->id)->paginate(10);
+        $reunioes = Reuniao::where('congregacao_id', app('congregacao')->id)
+            ->orderBy('data_inicio', 'asc')
+            ->paginate(10);
         $congregacao = app('congregacao');
         return view('reunioes.painel', ['congregacao' => $congregacao ,'reunioes' => $reunioes]);
     }
@@ -232,5 +234,39 @@ class ReuniaoController extends Controller
         $reuniao->delete();
 
         return redirect('/cadastros#reunioes')->with('msg', 'Reunião excluída com sucesso.');
+    }
+
+    public function search(Request $request)
+    {
+        $congregacaoId = app('congregacao')->id;
+
+        $query = Reuniao::query()
+            ->where('congregacao_id', $congregacaoId)
+            ->orderBy('data_inicio', 'asc');
+
+        if ($request->filled('assunto')) {
+            $termo = $request->input('assunto');
+            $query->where(function ($q) use ($termo) {
+                $q->where('assunto', 'like', '%' . $termo . '%')
+                    ->orWhere('descricao', 'like', '%' . $termo . '%');
+            });
+        }
+
+        if ($request->filled('data_inicial')) {
+            $query->whereDate('data_inicio', '>=', $request->input('data_inicial'));
+        }
+
+        if ($request->filled('data_final')) {
+            $query->whereDate('data_inicio', '<=', $request->input('data_final'));
+        }
+
+        $reunioes = $query->get();
+
+        $view = view('reunioes.includes.lista', [
+            'reunioes' => $reunioes,
+            'mostrarPaginacao' => false,
+        ])->render();
+
+        return response()->json(['view' => $view]);
     }
 }

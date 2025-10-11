@@ -44,6 +44,7 @@
                 <input type="date" name="data_fim" id="data_fim" value="{{ request('data_fim') }}">
             </div>
             <div class="search-panel-item">
+                <button type="button" class="" id="btn_filtrar"><i class="bi bi-search"></i> Procurar</button>
                 <button type="button" class="" id="btn_novo_lancamento"
                     data-base-url="{{ route('financeiro.lancamentos.form_criar', ['caixa' => '__CAIXA__']) }}"
                     data-default-caixa="{{ optional($caixas->first())->id }}">
@@ -55,8 +56,8 @@
             </div>
         </div>
         <div class="options-menu" id="financeiroPainelOptions" hidden>
-            <button type="button" class="options-menu__item" data-action="financeiro:novo-caixa"><i class="bi bi-bank"></i> Novo caixa</button>
-            <button type="button" class="options-menu__item" data-action="financeiro:novo-tipo"><i class="bi bi-sliders"></i> Tipo de lançamento</button>
+            <button type="button" class="btn" data-action="financeiro:novo-caixa"><i class="bi bi-bank"></i> Novo caixa</button>
+            <button type="button" class="btn" data-action="financeiro:novo-tipo"><i class="bi bi-sliders"></i> Tipo de lançamento</button>
         </div>
 
         <div class="list">
@@ -131,7 +132,6 @@
         }
 
         $('#btn_filtrar').on('click', filtrar);
-        $('#caixa, #tipo, #tipo_lancamento_id, #data_inicio, #data_fim').on('change', filtrar);
 
         $('#btn_limpar').on('click', function () {
             window.location.href = window.location.pathname;

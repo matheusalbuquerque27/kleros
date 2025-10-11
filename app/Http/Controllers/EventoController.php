@@ -27,15 +27,34 @@ class EventoController extends Controller
     }
 
     public function agenda() {
-
-        $eventos = Evento::where('congregacao_id', $this->congregacao->id)->whereDate('data_inicio', '>=', date('Y-m-d'))->paginate(10);
-        
-        $eventos = $eventos->isEmpty() ? '' : $eventos;
-
-        $grupos = Agrupamento::where('congregacao_id', $this->congregacao->id)->where('tipo', 'grupo')->get();
         $congregacao = app('congregacao');
+        $congregacaoId = $congregacao->id;
 
-        return view('eventos/agenda', ['eventos' => $eventos, 'grupos' => $grupos, 'congregacao' => $congregacao]);
+        $eventos = Evento::with('grupo')
+            ->where('congregacao_id', $congregacaoId)
+            ->where('recorrente', false)
+            ->whereDate('data_inicio', '>=', date('Y-m-d'))
+            ->orderBy('data_inicio')
+            ->paginate(10);
+
+        $titulosFiltro = Evento::where('congregacao_id', $congregacaoId)
+            ->where('recorrente', false)
+            ->whereDate('data_inicio', '>=', date('Y-m-d'))
+            ->orderBy('titulo')
+            ->distinct()
+            ->pluck('titulo');
+
+        $grupos = Agrupamento::where('congregacao_id', $congregacaoId)
+            ->where('tipo', 'grupo')
+            ->orderBy('nome')
+            ->get();
+
+        return view('eventos/agenda', [
+            'eventos' => $eventos,
+            'titulosFiltro' => $titulosFiltro,
+            'grupos' => $grupos,
+            'congregacao' => $congregacao,
+        ]);
     }
 
     public function create() {

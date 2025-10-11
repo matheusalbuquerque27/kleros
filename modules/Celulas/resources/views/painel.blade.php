@@ -20,7 +20,6 @@
             </div>
         </div>
 
-        @if($celulas->count()>0)
         <div id="list" class="list">
             <div class="list-title">
                 <div class="item-1">
@@ -35,39 +34,11 @@
                 <div class="item-1">
                     <b>Local</b>
                 </div>
-            </div><!--list-item-->
+            </div><!--list-title-->
             <div id="content">
-                @foreach ($celulas as $item)
-                @php
-                    $corBorda = $item->cor_borda ?? '#ffffff';
-                @endphp
-                <div class="list-item" onclick="abrirJanelaModal('{{route('celulas.form_editar', $item->id)}}')" style="border-left: 4px solid {{ $corBorda }};">
-                    <div class="item item-1">
-                        <p><i class="bi bi-house"></i> {{$item->identificacao}}</p>
-                    </div>
-                    <div class="item item-1">
-                        <p>{{ optional($item->lider)->nome }} @if($item->colider) {{" / " .$item->colider->nome}} @endif </p>
-                    </div>
-                    <div class="item item-1">
-                        <p>{{ optional($item->anfitriao)->nome }}</p>
-                    </div>
-                    <div class="item item-1">
-                        <p>{{ $item->endereco. ", ".$item->numero." - ".$item->bairro }}</p>
-                    </div>
-                </div><!--list-item-->
-                @endforeach
-                @if($celulas->total() > 10)
-                    <div class="pagination">
-                        {{ $celulas->links('pagination::default') }}
-                    </div>
-                @endif
-            </div>{{-- content --}}
-        </div>
-        @else
-            <div class="card">
-                <p><i class="bi bi-exclamation-triangle"></i> Ainda não há departamentos para exibição.</p>
+                @include('celulas::includes.lista', ['celulas' => $celulas])
             </div>
-        @endif
+        </div>
 
         <br>
         
@@ -82,6 +53,72 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    (function () {
+        const trigger = document.getElementById('btn_filtrar');
+        const inputMembro = document.getElementById('membro');
+        const contentTarget = document.getElementById('content');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        const endpoint = @json(route('celulas.search'));
+
+        function aplicarResultado(html) {
+            if (!contentTarget) {
+                return;
+            }
+
+            contentTarget.innerHTML = html;
+
+            if (typeof initModalScripts === 'function') {
+                try {
+                    initModalScripts(contentTarget);
+                } catch (error) {
+                    console.error('Falha ao reinicializar scripts do modal em células.', error);
+                }
+            }
+        }
+
+        function pesquisarCelulas() {
+            if (!csrfToken || !endpoint) {
+                return;
+            }
+
+            const payload = {
+                membro: inputMembro?.value || '',
+            };
+
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify(payload),
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Não foi possível carregar a lista de células.');
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    aplicarResultado(data.view || '');
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+
+        trigger?.addEventListener('click', function (event) {
+            event.preventDefault();
+            pesquisarCelulas();
+        });
+    })();
+</script>
+@endpush
 
 @if(!empty($googleMapsKey)) 
     <style>

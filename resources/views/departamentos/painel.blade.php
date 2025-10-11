@@ -27,7 +27,7 @@
                 </div>
             @endif
             <div class="search-panel-item">
-                <label>Membro: </label>
+                <label>Membro associado: </label>
                 <input type="text" name="" placeholder="Nome" id="membro">
             </div>
             <div class="search-panel-item">
@@ -73,6 +73,13 @@
             $.post('{{ route('departamentos.search') }}', { _token, setor, membro })
                 .done(function (response) {
                     $('#content').html(response.view);
+                    if (typeof initModalScripts === 'function') {
+                        try {
+                            initModalScripts(document.getElementById('content'));
+                        } catch (error) {
+                            console.error('Falha ao reinicializar scripts após busca de departamentos.', error);
+                        }
+                    }
                 })
                 .fail(function (err) {
                     console.error(err);
