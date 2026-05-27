@@ -9,6 +9,7 @@ class Congregacao extends Model
     protected $table = 'congregacoes';
     protected $casts = [
         'gestor_notificado_em' => 'datetime',
+        'responsaveis_administrativos' => 'array',
         'responsavel_financeiro' => 'array',
     ];
 
@@ -73,6 +74,21 @@ class Congregacao extends Model
     public function responsavelPrincipal()
     {
         return $this->belongsTo(Membro::class, 'responsavel_principal_id');
+    }
+
+    public function responsaveisAdministrativosIds(): array
+    {
+        $ids = $this->responsaveis_administrativos;
+
+        if (is_array($ids) && count($ids) > 0) {
+            return array_values(array_unique(array_map('intval', $ids)));
+        }
+
+        if ($this->responsavel_principal_id) {
+            return [(int) $this->responsavel_principal_id];
+        }
+
+        return [];
     }
 
 }
