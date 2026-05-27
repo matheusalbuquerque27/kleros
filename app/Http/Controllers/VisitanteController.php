@@ -12,7 +12,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Spatie\LaravelPdf\Facades\Pdf;
+use App\Helpers\PdfHelper;
 
 class VisitanteController extends Controller
 {
@@ -205,7 +205,7 @@ class VisitanteController extends Controller
             'media_visitas' => $mediaVisitas,
         ];
 
-        return Pdf::view('visitantes.relatorios.historico_pdf', [
+        return PdfHelper::view('visitantes.relatorios.historico_pdf', [
             'congregacao' => $congregacao,
             'visitantes' => $visitantes,
             'periodo' => $periodo,
