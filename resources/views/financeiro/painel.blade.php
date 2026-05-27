@@ -50,12 +50,13 @@
                     data-default-caixa="{{ optional($caixas->first())->id }}">
                     <i class="bi bi-plus-circle"></i> Lançar
                 </button>
-                <button type="button" class="" id="btn_exportar_financeiro" data-export-url="{{ route('financeiro.lancamentos.export') }}"><i class="bi bi-file-arrow-up"></i> Exportar</button>
+                <button type="button" class="" id="btn_imprimir_financeiro" data-print-url="{{ route('financeiro.lancamentos.imprimir') }}"><i class="bi bi-file-earmark-pdf"></i> PDF</button>
                 <button class="" id="btn_limpar"><i class="bi bi-eraser"></i> Limpar</button>
                 <button class="options-menu__trigger" type="button" data-options-target="financeiroPainelOptions"><i class="bi bi-three-dots-vertical"></i> Opções</button>
             </div>
         </div>
         <div class="options-menu" id="financeiroPainelOptions" hidden>
+            <button type="button" class="btn" id="btn_exportar_financeiro" data-export-url="{{ route('financeiro.lancamentos.export') }}"><i class="bi bi-file-arrow-up"></i> Exportar CSV</button>
             <button type="button" class="btn" data-action="financeiro:novo-caixa"><i class="bi bi-bank"></i> Novo caixa</button>
             <button type="button" class="btn" data-action="financeiro:novo-tipo"><i class="bi bi-sliders"></i> Tipo de lançamento</button>
         </div>
@@ -155,10 +156,7 @@
             abrirJanelaModal(url);
         });
 
-        $('#btn_exportar_financeiro').on('click', function (event) {
-            event.preventDefault();
-
-            const url = this.dataset.exportUrl;
+        function buildFilterParams() {
             const params = new URLSearchParams();
 
             const caixa = $('#caixa').val();
@@ -173,6 +171,23 @@
             if (dataInicio) params.append('data_inicio', dataInicio);
             if (dataFim) params.append('data_fim', dataFim);
 
+            return params;
+        }
+
+        $('#btn_imprimir_financeiro').on('click', function (event) {
+            event.preventDefault();
+
+            const url = this.dataset.printUrl;
+            const params = buildFilterParams();
+            const finalUrl = params.toString() ? `${url}?${params.toString()}` : url;
+            window.open(finalUrl, '_blank');
+        });
+
+        $('#btn_exportar_financeiro').on('click', function (event) {
+            event.preventDefault();
+
+            const url = this.dataset.exportUrl;
+            const params = buildFilterParams();
             const finalUrl = params.toString() ? `${url}?${params.toString()}` : url;
             window.location.href = finalUrl;
         });

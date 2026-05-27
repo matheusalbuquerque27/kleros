@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ResolvesCongregacaoLogoDataUri;
 use App\Http\Controllers\Controller;
 use App\Models\Membro;
 use App\Models\SituacaoVisitante;
@@ -10,12 +11,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Helpers\PdfHelper;
 
 class VisitanteController extends Controller
 {
+    use ResolvesCongregacaoLogoDataUri;
+
     public function create(Request $request)
     {
         $situacao_visitante = SituacaoVisitante::orderBy('titulo')->get();
@@ -392,57 +394,6 @@ class VisitanteController extends Controller
         }
 
         return $query->orderByDesc('data_visita');
-    }
-
-    private function resolveCongregacaoLogoDataUri($congregacao): ?string
-    {
-        $logoPath = (string) data_get($congregacao, 'config.logo_caminho', '');
-
-        if ($logoPath === '') {
-            return null;
-        }
-
-        $normalizedPath = ltrim($logoPath, '/');
-        $normalizedPath = str_starts_with($normalizedPath, 'storage/') ? substr($normalizedPath, 8) : $normalizedPath;
-        $normalizedPath = str_starts_with($normalizedPath, 'public/') ? substr($normalizedPath, 7) : $normalizedPath;
-
-        $candidates = array_values(array_unique(array_filter([
-            $normalizedPath,
-            'congregacoes/' . $congregacao->id . '/imagens/' . basename($normalizedPath),
-        ])));
-
-        $directoryPath = Storage::disk('public')->path('congregacoes/' . $congregacao->id . '/imagens');
-
-        if (is_dir($directoryPath)) {
-            $fallbackFiles = glob($directoryPath . '/*.{png,jpg,jpeg,webp,svg}', GLOB_BRACE) ?: [];
-
-            usort($fallbackFiles, fn (string $a, string $b) => filemtime($b) <=> filemtime($a));
-
-            foreach ($fallbackFiles as $fallbackFile) {
-                $relativeFallback = 'congregacoes/' . $congregacao->id . '/imagens/' . basename($fallbackFile);
-                $candidates[] = $relativeFallback;
-            }
-
-            $candidates = array_values(array_unique($candidates));
-        }
-
-        foreach ($candidates as $candidate) {
-            if (! Storage::disk('public')->exists($candidate)) {
-                continue;
-            }
-
-            $absolutePath = Storage::disk('public')->path($candidate);
-
-            if (! is_file($absolutePath)) {
-                continue;
-            }
-
-            $mimeType = mime_content_type($absolutePath) ?: 'image/png';
-
-            return 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($absolutePath));
-        }
-
-        return null;
     }
 
     public function quickSearch(Request $request): JsonResponse

@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="options-menu" id="eventosAgendaOptions" hidden>
-            <button type="button" class="btn" data-action="print"><i class="bi bi-printer"></i> Imprimir</button>
+            <button type="button" class="btn" data-action="eventos:agenda-pdf"><i class="bi bi-printer"></i> Imprimir</button>
             <button type="button" class="btn" data-action="back"><i class="bi bi-arrow-return-left"></i> Voltar</button>
         </div>
     </div>
@@ -118,6 +118,27 @@
 
             }).catch((err) => {console.log(err)})
             
+        });
+
+        document.addEventListener('options-menu:action', function (event) {
+            if (event.detail?.action !== 'eventos:agenda-pdf') {
+                return;
+            }
+
+            const params = new URLSearchParams();
+            const titulo = $('#titulo').val();
+            const grupo = $('#grupo').val();
+
+            if (titulo) {
+                params.set('titulo', titulo);
+            }
+
+            if (grupo) {
+                params.set('grupo', grupo);
+            }
+
+            const url = `{{ route('eventos.agenda.imprimir') }}${params.toString() ? '?' + params.toString() : ''}`;
+            window.open(url, '_blank');
         });
     })
 
