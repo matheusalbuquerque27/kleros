@@ -91,27 +91,31 @@ class AppServiceProvider extends ServiceProvider
             $view->with('destaques', $destaques);
         });
 
-        if (class_exists(Role::class) && Schema::hasTable('roles') && Schema::hasTable('users') && Schema::hasTable('model_has_roles')) {
-            foreach (['gestor', 'membro', 'principal', 'tesoureiro'] as $roleName) {
-                Role::findOrCreate($roleName, 'web');
-            }
+        try {
+            if (class_exists(Role::class) && Schema::hasTable('roles') && Schema::hasTable('users') && Schema::hasTable('model_has_roles')) {
+                foreach (['gestor', 'membro', 'principal', 'tesoureiro'] as $roleName) {
+                    Role::findOrCreate($roleName, 'web');
+                }
 
-            User::whereDoesntHave('roles')->cursor()->each(function (User $user) {
-                $user->assignRole('membro');
-            });
-
-            User::created(function (User $user) {
-                if (! $user->hasAnyRole()) {
+                User::whereDoesntHave('roles')->cursor()->each(function (User $user) {
                     $user->assignRole('membro');
-                }
-            });
+                });
 
-            if (User::role('gestor')->count() === 0) {
-                $firstUser = User::first();
-                if ($firstUser && ! $firstUser->hasRole('gestor')) {
-                    $firstUser->assignRole('gestor');
+                User::created(function (User $user) {
+                    if (! $user->hasAnyRole()) {
+                        $user->assignRole('membro');
+                    }
+                });
+
+                if (User::role('gestor')->count() === 0) {
+                    $firstUser = User::first();
+                    if ($firstUser && ! $firstUser->hasRole('gestor')) {
+                        $firstUser->assignRole('gestor');
+                    }
                 }
             }
+        } catch (\Throwable $exception) {
+            // Avoid failing app boot for CLI/test contexts before the database is ready.
         }
     }
 

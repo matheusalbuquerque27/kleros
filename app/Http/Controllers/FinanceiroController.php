@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ResolvesCongregacaoLogoDataUri;
 use App\Models\Caixa;
 use App\Models\LancamentoFinanceiro;
 use App\Models\Agrupamento;
@@ -11,9 +12,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class FinanceiroController extends Controller
 {
+    use ResolvesCongregacaoLogoDataUri;
+
     public function formCaixa()
     {
         $congregacaoId = app('congregacao')->id;
@@ -285,6 +289,59 @@ class FinanceiroController extends Controller
         ]);
     }
 
+    public function imprimirLancamentos(Request $request)
+    {
+        $congregacao = app('congregacao')->loadMissing('config');
+
+        $lancamentos = $this->buildLancamentosQuery($request)
+            ->with(['caixa', 'tipoLancamento'])
+            ->orderByDesc('data_lancamento')
+            ->orderByDesc('id')
+            ->get();
+
+        $totalEntradas = (float) $lancamentos
+            ->where('tipo', 'entrada')
+            ->sum(fn (LancamentoFinanceiro $lancamento) => (float) $lancamento->valor);
+
+        $totalSaidas = (float) $lancamentos
+            ->where('tipo', 'saida')
+            ->sum(fn (LancamentoFinanceiro $lancamento) => (float) $lancamento->valor);
+
+        $filtros = [];
+        if ($request->filled('caixa')) {
+            $caixa = Caixa::where('congregacao_id', $congregacao->id)->find($request->input('caixa'));
+            if ($caixa) {
+                $filtros['Caixa'] = $caixa->nome;
+            }
+        }
+        if ($request->filled('tipo')) {
+            $filtros['Tipo'] = $request->input('tipo') === 'entrada' ? 'Entradas' : 'Saídas';
+        }
+        if ($request->filled('tipo_lancamento_id')) {
+            $tipoLancamento = TipoLancamento::where('congregacao_id', $congregacao->id)->find($request->input('tipo_lancamento_id'));
+            if ($tipoLancamento) {
+                $filtros['Categoria'] = $tipoLancamento->nome;
+            }
+        }
+
+        return Pdf::view('financeiro.relatorios.historico_pdf', [
+            'congregacao' => $congregacao,
+            'lancamentos' => $lancamentos,
+            'periodo' => $this->formatPeriodoFinanceiro($request->input('data_inicio'), $request->input('data_fim')),
+            'filtros' => $filtros,
+            'resumo' => [
+                'total_lancamentos' => $lancamentos->count(),
+                'total_entradas' => $totalEntradas,
+                'total_saidas' => $totalSaidas,
+                'saldo_liquido' => $totalEntradas - $totalSaidas,
+            ],
+            'logoDataUri' => $this->resolveCongregacaoLogoDataUri($congregacao),
+            'geradoEm' => now(),
+        ])
+            ->format('A4')
+            ->name('relatorio-financeiro.pdf');
+    }
+
     protected function buildLancamentosQuery(Request $request)
     {
         $congregacaoId = app('congregacao')->id;
@@ -314,6 +371,16 @@ class FinanceiroController extends Controller
         }
 
         return $query;
+    }
+
+    protected function formatPeriodoFinanceiro(?string $dataInicio, ?string $dataFim): string
+    {
+        return match (true) {
+            $dataInicio && $dataFim => 'De ' . date('d/m/Y', strtotime($dataInicio)) . ' até ' . date('d/m/Y', strtotime($dataFim)),
+            $dataInicio => 'A partir de ' . date('d/m/Y', strtotime($dataInicio)),
+            $dataFim => 'Até ' . date('d/m/Y', strtotime($dataFim)),
+            default => 'Todo o histórico financeiro',
+        };
     }
 
     public function formLancamentoEditar(int $id)

@@ -203,6 +203,7 @@ Route::middleware(['web', 'dominio', 'setlocale'])->group(function () {
         Route::post('/membros/aniversariantes/config', [MembroController::class, 'salvarMensagemAniversariantes'])->name('membros.aniversariantes.config.salvar');
         Route::get('/membros/inativos', [MembroController::class, 'inativos'])->name('membros.inativos');
         Route::get('/membros/export', [MembroController::class, 'export'])->name('membros.export');
+        Route::get('/membros/imprimir', [MembroController::class, 'imprimir'])->name('membros.imprimir');
         Route::get('/membros/{id}', [MembroController::class, 'editar'])->name('membros.editar');
         Route::post('/membros/search', [MembroController::class, 'search'])->name('membros.search');
         Route::get('/membros/exibir/{id}', [MembroController::class, 'show']);
@@ -241,8 +242,10 @@ Route::middleware(['web', 'dominio', 'setlocale'])->group(function () {
         Route::post('/eventos', [EventoController::class, 'store'])->name('eventos.store');
         Route::get('/eventos/adicionar', [EventoController::class, 'create'])->name('eventos.create');
         Route::get('/eventos/historico', [EventoController::class, 'index'])->name('eventos.historico');
+        Route::get('/eventos/historico/imprimir', [EventoController::class, 'imprimirHistorico'])->name('eventos.historico.imprimir');
         Route::post('/eventos/search', [EventoController::class, 'search'])->name('eventos.search');
         Route::get('/eventos/agenda', [EventoController::class, 'agenda'])->name('eventos.agenda');
+        Route::get('/eventos/agenda/imprimir', [EventoController::class, 'imprimirAgenda'])->name('eventos.agenda.imprimir');
         Route::delete('/eventos/{id}', [EventoController::class, 'destroy'])->name('eventos.destroy');
         Route::get('/eventos/novo', [EventoController::class, 'form_criar'])->name('eventos.form_criar');
         Route::get('/eventos/editar/{id}', [EventoController::class, 'form_editar'])->name('eventos.form_editar');
@@ -386,6 +389,7 @@ Route::middleware(['web', 'dominio', 'setlocale'])->group(function () {
         Route::get('/financeiro/lancamentos/{id}/editar', [FinanceiroController::class, 'formLancamentoEditar'])->name('financeiro.lancamentos.form_editar');
         Route::put('/financeiro/lancamentos/{id}', [FinanceiroController::class, 'updateLancamento'])->name('financeiro.lancamentos.update');
         Route::get('/financeiro/lancamentos/export', [FinanceiroController::class, 'exportLancamentos'])->name('financeiro.lancamentos.export');
+        Route::get('/financeiro/lancamentos/imprimir', [FinanceiroController::class, 'imprimirLancamentos'])->name('financeiro.lancamentos.imprimir');
         Route::get('/financeiro/painel', [FinanceiroController::class, 'painel'])->name('financeiro.painel');
         Route::get('/financeiro/caixas/novo', [FinanceiroController::class, 'formCaixa'])->name('financeiro.caixas.form_criar');
 

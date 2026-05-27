@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ResolvesCongregacaoLogoDataUri;
 use App\Http\Controllers\Controller;
+use App\Models\Congregacao;
 use App\Models\Escolaridade;
 use App\Models\EstadoCiv;
 use App\Models\Membro;
@@ -18,14 +20,17 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class MembroController extends Controller
 {
+    use ResolvesCongregacaoLogoDataUri;
+
     private $congregacao;
 
     public function __construct()
     {
-        $this->congregacao = app('congregacao');
+        $this->congregacao = app()->bound('congregacao') ? app('congregacao') : null;
     }
 
     public function adicionar() {
@@ -308,6 +313,80 @@ class MembroController extends Controller
         return response()->streamDownload($callback, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
+    }
+
+    public function imprimir(Request $request)
+    {
+        $congregacao = $this->congregacaoAtual()->loadMissing('config');
+        $showInactives = $request->boolean('showInactives');
+        $filter = $request->input('filtro', 'nome');
+        $keyword = trim((string) $request->input('chave', ''));
+
+        $membros = $this->buildRelatorioMembrosQuery($filter, $keyword, $showInactives)->get();
+
+        $resumo = [
+            'total_membros' => $membros->count(),
+            'com_telefone' => $membros->filter(fn (Membro $membro) => filled($membro->telefone))->count(),
+            'com_email' => $membros->filter(fn (Membro $membro) => filled($membro->email))->count(),
+            'com_ministerio' => $membros->filter(fn (Membro $membro) => ! empty(optional($membro->ministerio)->titulo))->count(),
+        ];
+
+        $labelsFiltros = [
+            'nome' => 'Nome',
+            'telefone' => 'Telefone',
+            'email' => 'E-mail',
+        ];
+
+        return Pdf::view('membros.relatorios.historico_pdf', [
+            'congregacao' => $congregacao,
+            'membros' => $membros,
+            'contexto' => $showInactives ? 'Membros inativos' : 'Membros ativos',
+            'filtroLabel' => $labelsFiltros[$filter] ?? 'Nome',
+            'keyword' => $keyword,
+            'showInactives' => $showInactives,
+            'resumo' => $resumo,
+            'logoDataUri' => $this->resolveCongregacaoLogoDataUri($congregacao),
+            'geradoEm' => now(),
+        ])
+            ->format('A4')
+            ->name('relatorio-membros.pdf');
+    }
+
+    private function buildRelatorioMembrosQuery(?string $filter = null, ?string $keyword = null, bool $showInactives = false)
+    {
+        $congregacao = $this->congregacaoAtual();
+        $allowedFilters = ['nome', 'telefone', 'email'];
+        $column = in_array($filter, $allowedFilters, true) ? $filter : 'nome';
+
+        $query = Membro::where('congregacao_id', $congregacao->id)
+            ->where('ativo', $showInactives ? false : true)
+            ->with('ministerio')
+            ->orderBy('nome');
+
+        if ($keyword !== null && $keyword !== '') {
+            $query->where($column, 'LIKE', '%' . $keyword . '%');
+        }
+
+        return $query;
+    }
+
+    private function congregacaoAtual()
+    {
+        $congregacao = app()->bound('congregacao') ? app('congregacao') : null;
+
+        if ($congregacao) {
+            return $congregacao;
+        }
+
+        $congregacaoId = optional(Auth::user())->congregacao_id;
+
+        if ($congregacaoId) {
+            $this->congregacao = Congregacao::find($congregacaoId);
+
+            return $this->congregacao;
+        }
+
+        return $this->congregacao;
     }
 
     public function show($id) {

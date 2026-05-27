@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="options-menu" id="membrosPainelOptions" hidden>
-                    <button type="button" class="btn" data-action="print"><i class="bi bi-printer"></i> {{ $painel['options']['print'] }}</button>
+                    <button type="button" class="btn" data-action="membros:pdf"><i class="bi bi-printer"></i> {{ $painel['options']['print'] }}</button>
                     @if($showingInactives)
                         <button type="button" class="btn" data-action="redirect" data-url="{{ route('membros.painel') }}"><i class="bi bi-people"></i> {{ $painel['options']['show_actives'] ?? 'Ver ativos' }}</button>
                     @else
@@ -178,6 +178,23 @@
                 window.location.href = params.toString() ? `${url}?${params.toString()}` : url;
             });
         }
+
+        document.addEventListener('options-menu:action', function (event) {
+            if (event.detail?.action !== 'membros:pdf') {
+                return;
+            }
+
+            const params = new URLSearchParams();
+            const filtro = filterInput.value;
+            const chave = keywordInput.value;
+
+            if (filtro) params.append('filtro', filtro);
+            if (chave) params.append('chave', chave);
+            if (showingInactives) params.append('showInactives', '1');
+
+            const url = `{{ route('membros.imprimir') }}${params.toString() ? '?' + params.toString() : ''}`;
+            window.open(url, '_blank');
+        });
     })();
 </script>
 @endpush
