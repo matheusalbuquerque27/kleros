@@ -10,22 +10,21 @@ return new class extends Migration
     public function up(): void
     {
         $defaultCongregacaoId = DB::table('congregacoes')->min('id');
-
-        if (! $defaultCongregacaoId) {
-            throw new \RuntimeException('Nenhuma congregação encontrada para definir congregacao_id em culto_categorias.');
-        }
+        $driver = DB::getDriverName();
 
         if (! Schema::hasColumn('culto_categorias', 'congregacao_id')) {
-            Schema::table('culto_categorias', function (Blueprint $table) use ($defaultCongregacaoId) {
+            Schema::table('culto_categorias', function (Blueprint $table) {
                 $table->unsignedBigInteger('congregacao_id')
-                    ->default($defaultCongregacaoId)
+                    ->nullable()
                     ->after('id');
             });
 
-            // Garante que linhas existentes fiquem com um congregacao_id válido antes da FK
-            DB::table('culto_categorias')->update(['congregacao_id' => $defaultCongregacaoId]);
-        } else {
-            // Se a coluna já existe, garante que todos os registros tenham congregacao_id válido
+            if ($defaultCongregacaoId) {
+                DB::table('culto_categorias')->update(['congregacao_id' => $defaultCongregacaoId]);
+            }
+        }
+
+        if ($defaultCongregacaoId) {
             DB::table('culto_categorias')
                 ->whereNull('congregacao_id')
                 ->update(['congregacao_id' => $defaultCongregacaoId]);
@@ -38,12 +37,16 @@ return new class extends Migration
             }
         }
 
-        $foreignExists = DB::table('information_schema.KEY_COLUMN_USAGE')
-            ->where('TABLE_SCHEMA', DB::getDatabaseName())
-            ->where('TABLE_NAME', 'culto_categorias')
-            ->where('COLUMN_NAME', 'congregacao_id')
-            ->where('REFERENCED_TABLE_NAME', 'congregacoes')
-            ->exists();
+        $foreignExists = false;
+
+        if ($driver === 'mysql') {
+            $foreignExists = DB::table('information_schema.KEY_COLUMN_USAGE')
+                ->where('TABLE_SCHEMA', DB::getDatabaseName())
+                ->where('TABLE_NAME', 'culto_categorias')
+                ->where('COLUMN_NAME', 'congregacao_id')
+                ->where('REFERENCED_TABLE_NAME', 'congregacoes')
+                ->exists();
+        }
 
         if (! $foreignExists) {
             Schema::table('culto_categorias', function (Blueprint $table) {

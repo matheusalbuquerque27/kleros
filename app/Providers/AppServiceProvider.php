@@ -92,7 +92,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         if (class_exists(Role::class) && Schema::hasTable('roles') && Schema::hasTable('users') && Schema::hasTable('model_has_roles')) {
-            foreach (['gestor', 'membro', 'principal'] as $roleName) {
+            foreach (['gestor', 'membro', 'principal', 'tesoureiro'] as $roleName) {
                 Role::findOrCreate($roleName, 'web');
             }
 

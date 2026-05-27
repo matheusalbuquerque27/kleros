@@ -40,7 +40,7 @@ export function submitFormAjax(form, options = {}) {
         }
 
         // Captura dados do formulário
-        const formData = new FormData(formElement);
+        let formData = new FormData(formElement);
         
         // Transformação de dados se necessário
         if (dataTransform && typeof dataTransform === 'function') {

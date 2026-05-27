@@ -366,9 +366,16 @@ class CongregacaoController extends Controller
         }
 
         // Buscar todos os membros da congregação
-        $membros = Membro::where('congregacao_id', $congregacao->id)
+        $membros = Membro::with('user')
+            ->where('congregacao_id', $congregacao->id)
             ->orderBy('nome')
             ->get();
+
+        $membrosComUsuario = $membros->filter(fn (Membro $membro) => $membro->user !== null)->values();
+        $responsaveisAdministrativosSelecionados = old(
+            'responsaveis_administrativos',
+            $congregacao->responsaveisAdministrativosIds()
+        );
 
         return view('congregacoes.edicao', [
             'config' => $config,
@@ -377,38 +384,109 @@ class CongregacaoController extends Controller
             'fontes' => $fontes,
             'languageOptions' => $languageOptions,
             'membros' => $membros,
+            'membrosComUsuario' => $membrosComUsuario,
+            'responsaveisAdministrativosSelecionados' => $responsaveisAdministrativosSelecionados,
         ]);
     }
 
     public function update(Request $request, $id){
-        
         $congregacao = Congregacao::findOrFail($id);
-        $congregacao->identificacao = $request->identificacao;
-        $congregacao->nome_curto = $request->nome_curto;
-        $congregacao->cnpj = $request->cnpj;
-        $congregacao->email = $request->email;
-        $congregacao->endereco = $request->endereco;
-        $congregacao->numero = $request->numero;
-        $congregacao->complemento = $request->complemento;
-        $congregacao->bairro = $request->bairro;
-        $congregacao->cep = $request->cep;
-        $congregacao->telefone = $request->telefone;
         $supportedLocales = Config::get('locales.supported', ['pt', 'en', 'es']);
         $defaultLocale = Config::get('locales.default', Config::get('app.locale', 'pt'));
-        $language = in_array($request->language, $supportedLocales, true)
-            ? $request->language
+        $validated = $request->validate([
+            'identificacao' => ['nullable', 'string', 'max:255'],
+            'nome_curto' => ['nullable', 'string', 'max:255'],
+            'cnpj' => ['nullable', 'string', 'max:32'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'endereco' => ['nullable', 'string', 'max:255'],
+            'numero' => ['nullable', 'string', 'max:20'],
+            'complemento' => ['nullable', 'string', 'max:120'],
+            'bairro' => ['nullable', 'string', 'max:120'],
+            'cep' => ['nullable', 'string', 'max:20'],
+            'telefone' => ['nullable', 'string', 'max:50'],
+            'language' => ['nullable', 'string', Rule::in($supportedLocales)],
+            'cidade' => ['nullable', 'exists:cidades,id'],
+            'estado' => ['nullable', 'exists:estados,id'],
+            'pais' => ['nullable', 'exists:paises,id'],
+            'agrupamentos' => ['nullable', 'in:grupo,departamento,setor'],
+            'font_family' => ['nullable', 'string', 'max:255'],
+            'tema' => ['nullable', 'integer', 'exists:temas,id'],
+            'conjunto_cores' => ['nullable', 'array'],
+            'conjunto_cores.primaria' => ['nullable', 'string'],
+            'conjunto_cores.secundaria' => ['nullable', 'string'],
+            'conjunto_cores.terciaria' => ['nullable', 'string'],
+            'links' => ['nullable', 'array'],
+            'links.*' => ['nullable', 'string'],
+            'responsaveis_administrativos' => ['nullable', 'array'],
+            'responsaveis_administrativos.*' => [
+                'integer',
+                function ($attribute, $value, $fail) use ($congregacao) {
+                    $membroValido = Membro::query()
+                        ->where('congregacao_id', $congregacao->id)
+                        ->where('id', $value)
+                        ->whereHas('user')
+                        ->exists();
+
+                    if (! $membroValido) {
+                        $fail('Responsável administrativo inválido para esta congregação.');
+                    }
+                },
+            ],
+            'responsavel_financeiro' => ['nullable', 'array'],
+            'responsavel_financeiro.*' => [
+                'integer',
+                function ($attribute, $value, $fail) use ($congregacao) {
+                    $membroValido = Membro::query()
+                        ->where('congregacao_id', $congregacao->id)
+                        ->where('id', $value)
+                        ->exists();
+
+                    if (! $membroValido) {
+                        $fail('Responsável financeiro inválido para esta congregação.');
+                    }
+                },
+            ],
+        ]);
+
+        $language = in_array($validated['language'] ?? null, $supportedLocales, true)
+            ? $validated['language']
             : $defaultLocale;
 
-        $congregacao->cidade_id = $request->cidade;
-        $congregacao->estado_id = $request->estado;
-        $congregacao->pais_id = $request->pais;
+        $responsaveisAdministrativos = $this->sanitizeResponsaveis($validated['responsaveis_administrativos'] ?? null);
+        $responsaveisFinanceiros = $this->sanitizeResponsaveis($validated['responsavel_financeiro'] ?? null);
+        $responsavelPrincipalId = $responsaveisAdministrativos[0] ?? null;
+        $links = $request->input('links', []);
+
+        if (! is_array($links)) {
+            $links = [];
+        }
+
+        $links = array_filter(array_map('trim', $links), fn ($url) => $url !== '');
+
+        $responsaveisAdministrativosAnteriores = $congregacao->responsaveisAdministrativosIds();
+        $responsaveisFinanceirosAnteriores = $this->sanitizeResponsaveis($congregacao->responsavel_financeiro);
+
+        $congregacao->identificacao = $validated['identificacao'] ?? null;
+        $congregacao->nome_curto = $validated['nome_curto'] ?? null;
+        $congregacao->cnpj = $validated['cnpj'] ?? null;
+        $congregacao->email = $validated['email'] ?? null;
+        $congregacao->endereco = $validated['endereco'] ?? null;
+        $congregacao->numero = $validated['numero'] ?? null;
+        $congregacao->complemento = $validated['complemento'] ?? null;
+        $congregacao->bairro = $validated['bairro'] ?? null;
+        $congregacao->cep = $validated['cep'] ?? null;
+        $congregacao->telefone = $validated['telefone'] ?? null;
+        $congregacao->cidade_id = $validated['cidade'] ?? null;
+        $congregacao->estado_id = $validated['estado'] ?? null;
+        $congregacao->pais_id = $validated['pais'] ?? null;
         $congregacao->language = $language;
-        $congregacao->responsavel_principal_id = $request->responsavel_principal;
-        $congregacao->responsavel_financeiro = $request->responsavel_financeiro;
+        $congregacao->responsavel_principal_id = $responsavelPrincipalId;
+        $congregacao->responsaveis_administrativos = $responsaveisAdministrativos;
+        $congregacao->responsavel_financeiro = $responsaveisFinanceiros;
         $congregacao->save();
 
-        // Alterar responsabilidades e atribuir roles
-        $this->alterarResponsabilidades($congregacao, $request->responsavel_principal, $request->responsavel_financeiro);
+        $this->syncAdministrativeRoles($responsaveisAdministrativosAnteriores, $responsaveisAdministrativos);
+        $this->syncTesoureiroRoles($responsaveisFinanceirosAnteriores, $responsaveisFinanceiros);
 
         $request->session()->put('app_locale', $language);
         app()->setLocale($language);
@@ -472,17 +550,11 @@ class CongregacaoController extends Controller
         
          // Atualiza as configurações gerais
 
-        $links = $request->input('links', []);
-        if (!is_array($links)) {
-            $links = [];
-        }
-        $links = array_filter(array_map('trim', $links), fn ($url) => $url !== '');
-
         $congregacao->config->update([
-            'agrupamentos' => $request->agrupamentos,
-            'conjunto_cores' => $request->conjunto_cores,
-            'font_family' => $request->font_family,
-            'tema_id' => $request->tema,
+            'agrupamentos' => $validated['agrupamentos'] ?? $congregacao->config->agrupamentos,
+            'conjunto_cores' => $validated['conjunto_cores'] ?? $congregacao->config->conjunto_cores,
+            'font_family' => $validated['font_family'] ?? $congregacao->config->font_family,
+            'tema_id' => $validated['tema'] ?? $congregacao->config->tema_id,
             'links' => $links,
         ]);
 
@@ -508,49 +580,91 @@ class CongregacaoController extends Controller
         //return redirect()->route('congregacoes.index')->with('success', 'Congregação excluída com sucesso.');
     }
 
-    /**
-     * Altera as responsabilidades da congregação e atribui roles aos usuários
-     */
-    private function alterarResponsabilidades($congregacao, $responsavelPrincipalId, $responsaveisFinanceirosIds)
+    private function sanitizeResponsaveis($responsaveis): array
     {
-        // Obter responsáveis anteriores
-        $responsavelPrincipalAnterior = $congregacao->getOriginal('responsavel_principal_id');
-
-        // Remover role 'principal' do responsável anterior se houver
-        if ($responsavelPrincipalAnterior && $responsavelPrincipalAnterior != $responsavelPrincipalId) {
-            $membroAnterior = Membro::find($responsavelPrincipalAnterior);
-            if ($membroAnterior && $membroAnterior->user) {
-                $membroAnterior->user->removeRole('principal');
-            }
+        if (! is_array($responsaveis)) {
+            return [];
         }
 
-        // Remover role 'tesoureiro' de TODOS os membros da congregação
-        // (isso garante que apenas os selecionados terão a role)
-        $todosMembros = Membro::where('congregacao_id', $congregacao->id)->get();
-        foreach ($todosMembros as $membro) {
-            if ($membro->user && $membro->user->hasRole('tesoureiro')) {
-                $membro->user->removeRole('tesoureiro');
-            }
-        }
+        return collect($responsaveis)
+            ->filter(fn ($id) => ! is_null($id) && $id !== '')
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+    }
 
-        // Atribuir role 'principal' ao novo responsável principal
-        if ($responsavelPrincipalId) {
-            $membroPrincipal = Membro::find($responsavelPrincipalId);
-            if ($membroPrincipal && $membroPrincipal->user) {
-                if (!$membroPrincipal->user->hasRole('principal')) {
-                    $membroPrincipal->user->assignRole('principal');
+    private function syncAdministrativeRoles(array $previousIds, array $newIds): void
+    {
+        $addedIds = array_values(array_diff($newIds, $previousIds));
+        $removedIds = array_values(array_diff($previousIds, $newIds));
+
+        if ($addedIds) {
+            $membrosAdicionados = Membro::with('user')->whereIn('id', $addedIds)->get();
+
+            foreach ($membrosAdicionados as $membro) {
+                $user = $membro->user;
+
+                if (! $user) {
+                    continue;
+                }
+
+                if (! $user->hasRole('membro')) {
+                    $user->assignRole('membro');
+                }
+
+                foreach (['gestor', 'principal'] as $role) {
+                    if (! $user->hasRole($role)) {
+                        $user->assignRole($role);
+                    }
                 }
             }
         }
 
-        // Atribuir role 'tesoureiro' aos novos responsáveis financeiros (array)
-        if ($responsaveisFinanceirosIds && is_array($responsaveisFinanceirosIds)) {
-            foreach ($responsaveisFinanceirosIds as $membroId) {
-                $membroFinanceiro = Membro::find($membroId);
-                if ($membroFinanceiro && $membroFinanceiro->user) {
-                    if (!$membroFinanceiro->user->hasRole('tesoureiro')) {
-                        $membroFinanceiro->user->assignRole('tesoureiro');
+        if ($removedIds) {
+            $membrosRemovidos = Membro::with('user')->whereIn('id', $removedIds)->get();
+
+            foreach ($membrosRemovidos as $membro) {
+                $user = $membro->user;
+
+                if (! $user) {
+                    continue;
+                }
+
+                foreach (['gestor', 'principal'] as $role) {
+                    if ($user->hasRole($role)) {
+                        $user->removeRole($role);
                     }
+                }
+
+                if (! $user->hasRole('membro')) {
+                    $user->assignRole('membro');
+                }
+            }
+        }
+    }
+
+    private function syncTesoureiroRoles(array $previousIds, array $newIds): void
+    {
+        $addedIds = array_values(array_diff($newIds, $previousIds));
+        $removedIds = array_values(array_diff($previousIds, $newIds));
+
+        if ($addedIds) {
+            $membrosAdicionados = Membro::with('user')->whereIn('id', $addedIds)->get();
+
+            foreach ($membrosAdicionados as $membro) {
+                if ($membro->user && ! $membro->user->hasRole('tesoureiro')) {
+                    $membro->user->assignRole('tesoureiro');
+                }
+            }
+        }
+
+        if ($removedIds) {
+            $membrosRemovidos = Membro::with('user')->whereIn('id', $removedIds)->get();
+
+            foreach ($membrosRemovidos as $membro) {
+                if ($membro->user && $membro->user->hasRole('tesoureiro')) {
+                    $membro->user->removeRole('tesoureiro');
                 }
             }
         }

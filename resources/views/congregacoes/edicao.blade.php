@@ -258,16 +258,22 @@
                         <h3>Responsabilidades</h3>
                         <div class="form-control">
                             <div class="form-item">
-                                <label for="responsavel_principal">Responsável Principal</label>
-                                <select name="responsavel_principal" id="responsavel_principal" class="select2-membros">
-                                    <option value="">Selecione o responsável principal</option>
-                                    @foreach($membros as $membro)
-                                        <option value="{{ $membro->id }}" @selected(old('responsavel_principal', $congregacao->responsavel_principal_id ?? '') == $membro->id)>
+                                <label for="responsaveis_administrativos">Responsáveis Administrativos</label>
+                                <select
+                                    name="responsaveis_administrativos[]"
+                                    id="responsaveis_administrativos"
+                                    class="select2-membros"
+                                    data-placeholder="Selecione os gestores administrativos"
+                                    multiple
+                                >
+                                    @foreach($membrosComUsuario as $membro)
+                                        <option value="{{ $membro->id }}" @selected(collect($responsaveisAdministrativosSelecionados)->contains($membro->id))>
                                             {{ $membro->nome }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
+                            <small class="hint" style="display:block;text-align:right;">Os membros selecionados receberão acesso administrativo completo enquanto permanecerem nesta lista.</small>
                             <div class="form-item">
                                 <label for="responsavel_financeiro">Responsáveis Financeiros</label>
                                 <select name="responsavel_financeiro[]" id="responsavel_financeiro" class="select2-membros" multiple>
@@ -485,18 +491,20 @@
 
         // Inicializa Select2 para os selects de membros
         if (typeof $.fn.select2 !== 'undefined') {
-            $('.select2-membros').select2({
-                placeholder: 'Selecione um membro',
-                allowClear: true,
-                width: '100%',
-                language: {
-                    noResults: function() {
-                        return 'Nenhum membro encontrado';
-                    },
-                    searching: function() {
-                        return 'Buscando...';
+            $('.select2-membros').each(function() {
+                $(this).select2({
+                    placeholder: $(this).data('placeholder') || 'Selecione um membro',
+                    allowClear: true,
+                    width: '100%',
+                    language: {
+                        noResults: function() {
+                            return 'Nenhum membro encontrado';
+                        },
+                        searching: function() {
+                            return 'Buscando...';
+                        }
                     }
-                }
+                });
             });
         }
 
