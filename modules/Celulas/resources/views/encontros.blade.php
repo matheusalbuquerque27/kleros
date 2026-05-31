@@ -200,18 +200,17 @@
                 <div class="list-title">
                     <div class="item item-15"><b>Nome</b></div>
                     <div class="item item-1"><b>Tipo</b></div>
-                    <div class="item item-1 nao-imprimir"><b>Ações</b></div>
                 </div>
                 <div id="encontros-presentes-itens">
                     @foreach ($presentesColecao as $presenca)
-                        <div class="list-item" data-presenca-id="{{ $presenca->id }}">
+                        <div class="list-item taggable-item" data-presenca-id="{{ $presenca->id }}">
                             <div class="item item-15">
                                 <p>{{ optional($presenca->membro)->nome ?? $presenca->visitante_nome ?? 'Participante sem identificação' }}</p>
                             </div>
                             <div class="item item-1">
                                 <p>{{ $presenca->membro_id ? 'Membro' : 'Visitante' }}</p>
                             </div>
-                            <div class="item item-1 nao-imprimir">
+                            <div class="taggable-actions nao-imprimir">
                                 <button type="button" class="taggable-action btn-remover-presenca" title="Remover"
                                     data-url="{{ route('celulas.encontros.presentes.remover', $presenca->id) }}">
                                     <i class="bi bi-trash"></i>
