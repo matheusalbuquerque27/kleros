@@ -162,6 +162,7 @@
         </form>
     </div>
 
+    @if ($encontroDoDia)
     <div class="info">
         <h3>Presentes em {{ $dataFormatada }}</h3>
         <div class="search-panel encontros-presentes-actions">
@@ -199,19 +200,19 @@
                 <div class="list-title">
                     <div class="item item-15"><b>Nome</b></div>
                     <div class="item item-1"><b>Tipo</b></div>
-                    <div class="item item-1 nao-imprimir"><b>Ações</b></div>
                 </div>
                 <div id="encontros-presentes-itens">
                     @foreach ($presentesColecao as $presenca)
-                        <div class="list-item" data-presenca-id="{{ $presenca->id }}">
+                        <div class="list-item taggable-item" data-presenca-id="{{ $presenca->id }}">
                             <div class="item item-15">
-                                <p>{{ optional($presenca->membro)->nome ?? $presenca->nome ?? 'Participante sem identificação' }}</p>
+                                <p>{{ optional($presenca->membro)->nome ?? $presenca->visitante_nome ?? 'Participante sem identificação' }}</p>
                             </div>
                             <div class="item item-1">
-                                <p>{{ optional($presenca->membro)->id ? 'Membro' : 'Visitante' }}</p>
+                                <p>{{ $presenca->membro_id ? 'Membro' : 'Visitante' }}</p>
                             </div>
-                            <div class="item item-1 nao-imprimir">
-                                <button type="button" class="taggable-action" title="Remover">
+                            <div class="taggable-actions nao-imprimir">
+                                <button type="button" class="taggable-action btn-remover-presenca" title="Remover"
+                                    data-url="{{ route('celulas.encontros.presentes.remover', $presenca->id) }}">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>
@@ -221,6 +222,7 @@
             </div>
         @endif
     </div>
+    @endif
 
     <div class="info">
         <h3>Histórico recente</h3>
@@ -264,6 +266,7 @@
 @push('scripts')
 <script>
     (function () {
+        // Botão "Adicionar presente"
         const modalButton = document.getElementById('encontros-btn-adicionar-presente');
 
         if (modalButton) {
@@ -278,6 +281,94 @@
                 abrirJanelaModal(url);
             });
         }
+
+        // Formulário de encontro — salvar via AJAX
+        const encontroForm = document.querySelector('[data-encontro-form="principal"]');
+
+        if (encontroForm) {
+            encontroForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const celulaId  = {{ $selectedCelulaId ?? 'null' }};
+                const data      = '{{ $selectedDate }}';
+                const submitBtn = encontroForm.querySelector('[type="submit"]');
+
+                if (!celulaId) return;
+
+                const payload = {
+                    celula_id:     celulaId,
+                    data:          data,
+                    status:        encontroForm.querySelector('#encontros-status')?.value,
+                    hora_encontro: encontroForm.querySelector('#encontros-hora')?.value || null,
+                    tema:          encontroForm.querySelector('#encontros-tema')?.value || null,
+                    observacoes:   encontroForm.querySelector('#encontros-observacoes')?.value || null,
+                    _token:        document.querySelector('meta[name="csrf-token"]')?.content,
+                };
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Salvando...';
+
+                try {
+                    const response = await fetch('{{ route('celulas.encontros.salvar') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': payload._token,
+                        },
+                        body: JSON.stringify(payload),
+                    });
+
+                    const json = await response.json();
+
+                    if (response.ok && json.success) {
+                        submitBtn.innerHTML = '<i class="bi bi-check-lg"></i> Salvo!';
+                        setTimeout(() => window.location.reload(), 800);
+                    } else {
+                        const erros = json.errors ? Object.values(json.errors).flat().join('\n') : (json.message || 'Erro ao salvar.');
+                        alert(erros);
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="bi bi-save"></i> Salvar encontro';
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Falha na comunicação com o servidor.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="bi bi-save"></i> Salvar encontro';
+                }
+            });
+        }
+        // Remoção de presença via AJAX
+        document.addEventListener('click', async function (e) {
+            const btn = e.target.closest('.btn-remover-presenca');
+            if (!btn) return;
+
+            if (!confirm('Deseja remover esta presença?')) return;
+
+            const url = btn.dataset.url;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                });
+
+                const json = await response.json();
+
+                if (response.ok && json.success) {
+                    btn.closest('[data-presenca-id]')?.remove();
+                } else {
+                    alert(json.message || 'Erro ao remover presença.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Falha na comunicação com o servidor.');
+            }
+        });
     })();
 </script>
 @endpush

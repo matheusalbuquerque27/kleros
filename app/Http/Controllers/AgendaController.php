@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\Culto;
 use App\Models\Evento;
 use App\Models\Reuniao;
+use App\Models\EncontroCelula;
 
 class AgendaController extends Controller
 {
@@ -108,6 +109,37 @@ class AgendaController extends Controller
             ];
         });
 
+
+        $encontros_celulas = module_enabled('celulas')
+            ? EncontroCelula::with(['celula'])
+                ->where('congregacao_id', $congregacao->id)
+                ->get()
+                ->map(function ($encontro) {
+                    $cor = optional($encontro->celula)->cor_borda ?: '#f44336';
+
+                    $celula = $encontro->celula;
+                    $local = collect([
+                        optional($celula)->endereco,
+                        optional($celula)->numero,
+                        optional($celula)->bairro,
+                    ])->filter()->implode(', ');
+
+                    return [
+                        'id' => 'encontro-' . $encontro->id,
+                        'title' => 'Encontro - ' . optional($celula)->identificacao,
+                        'start' => Carbon::parse($encontro->data_encontro . ' ' . $encontro->hora_encontro)->toIso8601String(),
+                        'color' => $cor,
+                        'backgroundColor' => $cor,
+                        'extendedProps' => [
+                            'type' => 'encontro',
+                            'local' => $local ?: null,
+                            'editUrl' => route('celulas.encontros.form_editar', $encontro->id),
+                            'detailUrl' => route('agenda.detalhes', ['tipo' => 'encontro', 'id' => $encontro->id]),
+                        ],
+                    ];
+                })
+            : collect();
+
         $eventos = Evento::with('ocorrencias')->select([
             'id',
             'titulo as title',
@@ -169,6 +201,7 @@ class AgendaController extends Controller
             ->concat($eventos)
             ->concat($reunioes)
             ->concat($aniversarios)
+            ->concat($encontros_celulas)
             ->values();
 
         return response()->json($todosEventos);

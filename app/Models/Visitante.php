@@ -6,6 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Visitante extends Model
 {
+    protected $fillable = [
+        'congregacao_id',
+        'nome',
+        'telefone',
+        'data_visita',
+        'sit_visitante_id',
+        'observacoes',
+    ];
+
     public function sit_visitante(){
         return $this->belongsTo(SituacaoVisitante::class);
     }
