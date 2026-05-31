@@ -18,6 +18,12 @@ jobs:
         php-version: '8.2'
         extensions: mbstring, dom, fileinfo, mysql, gd
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
     - name: Install Composer Dependencies
       run: composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction --no-scripts
 
@@ -34,6 +40,8 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT || 22 }}
+        timeout: 120s
+        command_timeout: 30m
         script: |
           cd ${{ secrets.APP_PATH || '/var/www/kleros' }}
           

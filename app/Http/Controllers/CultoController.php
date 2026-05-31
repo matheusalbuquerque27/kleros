@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Spatie\LaravelPdf\Facades\Pdf;
+use App\Helpers\PdfHelper;
 
 class CultoController extends Controller
 {
@@ -70,7 +70,7 @@ class CultoController extends Controller
             'publico_total_media' => $totalCultos ? round($cultos->avg(fn (Culto $culto) => (int) $culto->publico_total), 1) : 0,
         ];
 
-        return Pdf::view('cultos.relatorios.historico_pdf', [
+        return PdfHelper::view('cultos.relatorios.historico_pdf', [
             'congregacao' => $congregacao,
             'cultos' => $cultos,
             'periodo' => $periodo,
