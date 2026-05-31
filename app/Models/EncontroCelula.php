@@ -8,6 +8,18 @@ class EncontroCelula extends Model
 {
     protected $table = 'encontros_celulas';
 
+    protected $fillable = [
+        'celula_id',
+        'congregacao_id',
+        'status',
+        'data_encontro',
+        'hora_encontro',
+        'preletor_id',
+        'tema',
+        'observacoes',
+        'quantidade_presentes',
+    ];
+
     public function celula()
     {
         return $this->belongsTo(Celula::class);

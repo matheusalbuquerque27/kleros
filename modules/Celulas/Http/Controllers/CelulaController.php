@@ -109,7 +109,7 @@ class CelulaController extends Controller
         $situacoesVisitante = SituacaoVisitante::orderBy('titulo')->get();
 
         $statusOptions = [
-            'pendente' => 'Pendente',
+            'pendente' => 'Agendado',
             'confirmado' => 'Confirmado',
             'cancelado' => 'Cancelado',
         ];
@@ -128,6 +128,94 @@ class CelulaController extends Controller
             'historicoEncontros' => $historicoEncontros,
             'situacoesVisitante' => $situacoesVisitante,
             'statusOptions' => $statusOptions,
+        ]);
+    }
+
+    public function formEditarEncontro(int $id)
+    {
+        $congregacao = app('congregacao');
+
+        $encontro = EncontroCelula::with('celula')
+            ->where('congregacao_id', $congregacao->id)->findOrFail($id);
+
+        $celulas = Celula::where('congregacao_id', $congregacao->id)
+            ->orderBy('identificacao')
+            ->get();
+
+        $membros = Membro::where('congregacao_id', $congregacao->id)
+            ->orderBy('nome')
+            ->get();
+
+        return view('celulas::includes.encontro_form_editar', compact('encontro', 'celulas', 'membros'));
+    }
+
+    public function updateEncontro(Request $request, int $id)
+    {
+        $congregacao = app('congregacao');
+
+        $encontro = EncontroCelula::where('congregacao_id', $congregacao->id)->findOrFail($id);
+
+        $validated = $request->validate([
+            'celula_id'           => 'required|integer|exists:celulas,id',
+            'data_encontro'       => 'required|date',
+            'status'              => 'required|in:pendente,confirmado,cancelado',
+            'hora_encontro'       => 'nullable|date_format:H:i',
+            'preletor_id'         => 'nullable|integer|exists:membros,id',
+            'tema'                => 'nullable|string|max:255',
+            'quantidade_presentes'=> 'nullable|integer|min:0',
+            'observacoes'         => 'nullable|string',
+        ]);
+
+        $encontro->update($validated);
+
+        return redirect()->back()->with('msg', 'Encontro atualizado com sucesso.');
+    }
+
+    public function destroyEncontro(Request $request, int $id)
+    {
+        if (! $request->isMethod('DELETE')) {
+            abort(405);
+        }
+
+        $congregacao = app('congregacao');
+
+        $encontro = EncontroCelula::where('congregacao_id', $congregacao->id)->findOrFail($id);
+        $encontro->delete();
+
+        return redirect()->route('celulas.encontros')->with('msg', 'Encontro excluído com sucesso.');
+    }
+
+    public function salvarEncontro(Request $request)
+    {
+        $congregacao = app('congregacao');
+
+        $validated = $request->validate([
+            'celula_id'     => 'required|integer|exists:celulas,id',
+            'data'          => 'required|date',
+            'status'        => 'required|in:pendente,confirmado,cancelado',
+            'hora_encontro' => 'nullable|date_format:H:i',
+            'tema'          => 'nullable|string|max:255',
+            'observacoes'   => 'nullable|string',
+        ]);
+
+        $encontro = EncontroCelula::updateOrCreate(
+            [
+                'celula_id'      => $validated['celula_id'],
+                'congregacao_id' => $congregacao->id,
+                'data_encontro'  => $validated['data'],
+            ],
+            [
+                'status'        => $validated['status'],
+                'hora_encontro' => $validated['hora_encontro'] ?? null,
+                'tema'          => $validated['tema'] ?? null,
+                'observacoes'   => $validated['observacoes'] ?? null,
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Encontro salvo com sucesso.',
+            'encontro_id' => $encontro->id,
         ]);
     }
 
@@ -177,6 +265,99 @@ class CelulaController extends Controller
             'situacoesVisitante' => $situacoesVisitante,
             'panelUrl' => $panelUrl,
         ]);
+    }
+
+    public function registrarPresenca(Request $request)
+    {
+        $congregacao = app('congregacao');
+
+        $tipo = $request->input('tipo_participante', 'membro');
+
+        // Localiza ou cria o encontro do dia
+        $celulaId = $request->integer('celula_id');
+        $dataEncontro = $request->input('data_encontro');
+
+        $celula = Celula::where('congregacao_id', $congregacao->id)->findOrFail($celulaId);
+
+        $encontro = \App\Models\EncontroCelula::firstOrCreate(
+            [
+                'celula_id'      => $celula->id,
+                'congregacao_id' => $congregacao->id,
+                'data_encontro'  => $dataEncontro,
+            ],
+            ['status' => 'pendente']
+        );
+
+        if ($tipo === 'membro') {
+            $request->validate(['membro_id' => 'required|integer|exists:membros,id']);
+
+            // Evita duplicata
+            $jaPresente = \App\Models\PresenteEncontro::where('encontro_id', $encontro->id)
+                ->where('membro_id', $request->integer('membro_id'))
+                ->exists();
+
+            if ($jaPresente) {
+                return response()->json(['success' => false, 'message' => 'Este membro já está registrado neste encontro.'], 422);
+            }
+
+            $presenca = \App\Models\PresenteEncontro::create([
+                'encontro_id' => $encontro->id,
+                'membro_id'   => $request->integer('membro_id'),
+            ]);
+
+        } else {
+            $request->validate([
+                'visitante_nome'     => 'required|string|max:255',
+                'visitante_telefone' => 'nullable|string|max:30',
+                'visitante_situacao' => 'nullable|integer|exists:situacao_visitantes,id',
+                'visitante_data'     => 'nullable|date',
+                'visitante_observacoes' => 'nullable|string',
+            ]);
+
+            // Cadastra o visitante na tabela geral de visitantes
+            $visitante = \App\Models\Visitante::create([
+                'congregacao_id'  => $congregacao->id,
+                'nome'            => $request->input('visitante_nome'),
+                'telefone'        => $request->input('visitante_telefone'),
+                'data_visita'     => $request->input('visitante_data', $dataEncontro),
+                'sit_visitante_id'=> $request->input('visitante_situacao') ?? \App\Models\SituacaoVisitante::first()?->id,
+                'observacoes'     => $request->input('visitante_observacoes'),
+            ]);
+
+            $presenca = \App\Models\PresenteEncontro::create([
+                'encontro_id'          => $encontro->id,
+                'membro_id'            => null,
+                'visitante_id'         => $visitante->id,
+                'visitante_nome'       => $visitante->nome,
+                'visitante_telefone'   => $visitante->telefone,
+                'visitante_sit_id'     => $visitante->sit_visitante_id,
+                'visitante_observacoes'=> $visitante->observacoes,
+            ]);
+        }
+
+        $returnTo = $request->input('return_to', route('celulas.encontros'));
+
+        return response()->json([
+            'success'    => true,
+            'message'    => 'Presença registrada com sucesso.',
+            'presenca_id'=> $presenca->id,
+            'nome'       => $presenca->nome,
+            'tipo'       => $tipo,
+            'return_to'  => $returnTo,
+        ]);
+    }
+
+    public function removerPresenca(Request $request, int $id)
+    {
+        $congregacao = app('congregacao');
+
+        $presenca = \App\Models\PresenteEncontro::whereHas('encontro', function ($q) use ($congregacao) {
+            $q->where('congregacao_id', $congregacao->id);
+        })->findOrFail($id);
+
+        $presenca->delete();
+
+        return response()->json(['success' => true, 'message' => 'Presença removida.']);
     }
 
     public function integrantes($celulaId)

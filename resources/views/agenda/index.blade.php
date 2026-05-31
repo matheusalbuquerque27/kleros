@@ -93,6 +93,7 @@
                     evento: 'bi-calendar-event',
                     reuniao: 'bi-people-fill',
                     aniversario: 'bi-cake2',
+                    encontro: 'bi bi-cup-hot',
                 };
 
                 const iconClass = iconMap[type];
