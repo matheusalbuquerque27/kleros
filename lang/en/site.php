@@ -11,7 +11,7 @@ return [
         'unsupported' => 'Selected language is not available.',
     ],
     'header' => [
-        'brand_tagline' => 'by Youcan Business Services',
+        'brand_tagline' => 'by Talanta Technology',
         'nav' => [
             'resources' => 'Resources',
             'extensions' => 'Extensions',
@@ -116,11 +116,11 @@ return [
     'cta' => [
         'title' => 'Ready to organize and connect your church?',
         'description' => 'Subscribe for $19/month and get your subdomain instantly.',
-        'primary' => 'Talk to Youcan',
+        'primary' => 'Talk to Y',
         'secondary' => 'Watch demo',
     ],
     'footer' => [
-        'legal' => 'Kleros — Ecosystem for Churches. Built by <strong>Youcan Business Services</strong>.',
+        'legal' => 'Kleros — Ecosystem for Churches. Built by <strong>Talanta Technology</strong>.',
         'rights' => '© :year All rights reserved.',
     ],
 ];

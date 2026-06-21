@@ -116,11 +116,11 @@ return [
     'cta' => [
         'title' => '¿Listo para organizar e integrar tu iglesia?',
         'description' => 'Suscríbete por R$110/mes y recibe tu subdominio de inmediato.',
-        'primary' => 'Hablar con Youcan',
+        'primary' => 'Hablar con Talanta',
         'secondary' => 'Ver demostración',
     ],
     'footer' => [
-        'legal' => 'Kleros — Ecosistema para Iglesias. Desarrollado por <strong>Youcan Servicios Empresariales</strong>.',
+        'legal' => 'Kleros — Ecosistema para Iglesias. Desarrollado por <strong>Talanta Tecnología</strong>.',
         'rights' => '© :year Todos los derechos reservados.',
     ],
 ];
