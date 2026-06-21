@@ -120,7 +120,7 @@ return [
         'secondary' => 'Conhecer mais',
     ],
     'footer' => [
-        'legal' => 'Kleros — Ecossistema para Igrejas. Desenvolvido por <strong>Youcan Serviços Empresariais</strong>.',
+        'legal' => 'Kleros — Ecossistema para Igrejas. Desenvolvido por <strong>Talanta Tecnologia</strong>.',
         'rights' => '© :year Todos os direitos reservados.',
     ],
 ];
