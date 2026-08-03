@@ -1,0 +1,61 @@
+# Substitui o `* * * * * cd /var/www/kleros && php artisan schedule:run`
+# do crontab do host. Ver routes/console.php para as tarefas agendadas
+# (backup 06:00, aniversariantes 08:00, feeds 08:00/14:00).
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kleros-scheduler
+  namespace: kleros
+  labels:
+    app: kleros-scheduler
+spec:
+  schedule: "* * * * *"
+  # Nunca dois schedule:run simultâneos
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 60
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      # Um tick de scheduler nunca deve passar de 2 min
+      activeDeadlineSeconds: 120
+      ttlSecondsAfterFinished: 120
+      template:
+        metadata:
+          labels:
+            app: kleros-scheduler
+        spec:
+          restartPolicy: Never
+          nodeSelector:
+            kubernetes.io/hostname: srv1158721
+          imagePullSecrets:
+            - name: ghcr-credentials
+          containers:
+            - name: kleros-scheduler
+              image: ghcr.io/matheusffalbuquerque/kleros:latest
+              imagePullPolicy: IfNotPresent
+              command: ["php", "artisan", "schedule:run", "--no-interaction"]
+              envFrom:
+                - configMapRef:
+                    name: kleros-config
+                - secretRef:
+                    name: kleros-secrets
+              volumeMounts:
+                - name: storage
+                  mountPath: /var/www/html/storage/app
+                  subPath: app
+                - name: storage
+                  mountPath: /var/www/html/storage/backups
+                  subPath: backups
+              resources:
+                requests:
+                  cpu: 25m
+                  memory: 128Mi
+                limits:
+                  cpu: 400m
+                  memory: 256Mi
+          volumes:
+            - name: storage
+              persistentVolumeClaim:
+                claimName: kleros-storage

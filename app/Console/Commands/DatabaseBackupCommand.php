@@ -37,8 +37,9 @@ class DatabaseBackupCommand extends Command
             
             // Diretórios
             $backupDir = storage_path('backups/database');
-            $testDir = '/var/www/klerostest';
-            
+            // Caminho do ambiente de teste. Vazio (padrão em container) desliga a cópia.
+            $testDir = trim((string) env('BACKUP_TEST_PATH', ''));
+
             // Criar diretório se não existir
             if (!File::exists($backupDir)) {
                 File::makeDirectory($backupDir, 0755, true);
@@ -88,7 +89,9 @@ class DatabaseBackupCommand extends Command
             $this->info("✅ Backup criado: {$filename} ({$filesizeMB} MB)");
 
             // Copiar para ambiente de teste
-            if (File::exists($testDir)) {
+            if ($testDir === '') {
+                $this->line('ℹ️  BACKUP_TEST_PATH não configurado — cópia para o ambiente de teste ignorada');
+            } elseif (File::exists($testDir)) {
                 $testFilename = "kleros_dump_{$date}.sql";
                 $testFilepath = "{$testDir}/{$testFilename}";
                 

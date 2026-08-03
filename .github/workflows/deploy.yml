@@ -1,86 +1,113 @@
-name: Deploy to Production
+name: Deploy to Production (k3s)
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:  # Também permite deploy manual
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  K8S_NAMESPACE: kleros
 
 jobs:
-  deploy:
+  build-and-deploy:
+    name: Build image & rollout
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
-        extensions: mbstring, dom, fileinfo, mysql, gd
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-        cache: 'npm'
+      - name: Prepare image name
+        id: image
+        run: echo "name=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
 
-    - name: Install Composer Dependencies
-      run: composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction --no-scripts
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Install NPM Dependencies
-      run: npm ci
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}
+          tags: |
+            type=raw,value=${{ github.sha }}
+            type=raw,value=latest,enable={{is_default_branch}}
 
-    - name: Build Assets for Production
-      run: npm run build
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-    - name: Deploy to Server via SSH
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_KEY }}
-        port: ${{ secrets.SSH_PORT || 22 }}
-        timeout: 120s
-        command_timeout: 30m
-        script: |
-          cd ${{ secrets.APP_PATH || '/var/www/kleros' }}
-          
-          echo "🔄 Ativando modo manutenção..."
-          php artisan down || true
-          
-          echo "📥 Atualizando código..."
-          git pull origin main
-          
-          echo "📦 Instalando dependências..."
-          composer install --no-dev --optimize-autoloader --no-interaction
-          
-          echo "🎨 Compilando assets..."
-          npm ci --omit=dev
-          npm run build
-          
-          echo "🗄️ Executando migrations..."
-          php artisan migrate --force
-          
-          echo "🧹 Limpando cache..."
-          php artisan optimize:clear
-          
-          echo "⚡ Otimizando aplicação..."
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
-          
-          echo "🔄 Reiniciando queue workers..."
-          php artisan queue:restart
-          
-          echo "✅ Desativando modo manutenção..."
-          php artisan up
-          
-          echo "🎉 Deploy concluído com sucesso!"
+      - name: Configure kubectl
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > /tmp/kubeconfig.yaml
+          echo "KUBECONFIG=/tmp/kubeconfig.yaml" >> $GITHUB_ENV
 
-    - name: Deployment Success Notification
-      if: success()
-      run: echo "✅ Deploy para produção concluído com sucesso!"
+      - name: Create or update k8s secrets
+        run: |
+          kubectl create secret generic kleros-secrets \
+            --namespace="$K8S_NAMESPACE" \
+            --from-literal=APP_KEY="${{ secrets.APP_KEY }}" \
+            --from-literal=DB_USERNAME="${{ secrets.DB_USERNAME }}" \
+            --from-literal=DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            --from-literal=MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" \
+            --from-literal=MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
+            --from-literal=MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
+            --from-literal=GOOGLE_MAPS_KEY="${{ secrets.GOOGLE_MAPS_KEY }}" \
+            --from-literal=GOOGLE_MAPS_ID="${{ secrets.GOOGLE_MAPS_ID }}" \
+            --save-config \
+            --dry-run=client -o yaml | kubectl apply -f -
 
-    - name: Deployment Failure Notification
-      if: failure()
-      run: echo "❌ Falha no deploy! Verifique os logs."
+      - name: Pin manifests to the image just built
+        env:
+          IMAGE_BASE: ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}
+        run: |
+          # Os manifests versionados apontam para :latest. Trocar pela tag do
+          # SHA ANTES do apply: se o spec chegasse a apontar para uma tag
+          # inexistente, o rollout entraria em ImagePullBackOff.
+          sed -i "s|image: ${IMAGE_BASE}:.*|image: ${IMAGE_BASE}:${GITHUB_SHA}|g" \
+            k8s/deployment.yml k8s/worker-deployment.yml k8s/scheduler-cronjob.yml
+          grep -h 'image:' k8s/deployment.yml k8s/worker-deployment.yml k8s/scheduler-cronjob.yml
+
+      - name: Apply k8s manifests
+        run: |
+          kubectl apply -f k8s/namespace.yml
+          kubectl apply -f k8s/configmap.yml
+          kubectl apply -f k8s/pvc.yml
+          kubectl apply -f k8s/db-deployment.yml
+          kubectl apply -f k8s/db-service.yml
+          kubectl -n "$K8S_NAMESPACE" rollout status deployment/kleros-db --timeout=300s
+          # kleros-main faz rolling update (maxUnavailable 0): o pod novo só
+          # recebe tráfego depois do readiness probe, e o initContainer
+          # 'migrate' roda antes disso.
+          kubectl apply -f k8s/deployment.yml
+          kubectl apply -f k8s/service.yml
+          kubectl apply -f k8s/worker-deployment.yml
+          kubectl apply -f k8s/scheduler-cronjob.yml
+
+      - name: Wait for rollout
+        run: |
+          kubectl -n "$K8S_NAMESPACE" rollout status deployment/kleros-main --timeout=420s
+          kubectl -n "$K8S_NAMESPACE" rollout status deployment/kleros-worker --timeout=180s
+
+      - name: Deployment summary
+        if: always()
+        run: kubectl -n "$K8S_NAMESPACE" get pods -o wide || true

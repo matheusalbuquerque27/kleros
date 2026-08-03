@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kleros-config
+  namespace: kleros
+data:
+  APP_NAME: Kleros
+  APP_ENV: production
+  APP_DEBUG: "false"
+  APP_URL: https://kleros.app
+  APP_TIMEZONE: UTC
+  APP_LOCALE: pt-br
+  APP_FALLBACK_LOCALE: pt-br
+  APP_FAKER_LOCALE: pt_BR
+  APP_MAINTENANCE_DRIVER: file
+
+  BCRYPT_ROUNDS: "12"
+
+  # stderr => os logs aparecem em `kubectl logs`
+  LOG_CHANNEL: stderr
+  LOG_STACK: single
+  LOG_DEPRECATIONS_CHANNEL: "null"
+  LOG_LEVEL: warning
+
+  DB_CONNECTION: mysql
+  DB_HOST: kleros-db
+  DB_PORT: "3306"
+  DB_DATABASE: kleros_db
+
+  SESSION_DRIVER: database
+  SESSION_LIFETIME: "43200"
+  SESSION_ENCRYPT: "false"
+  SESSION_PATH: /
+  SESSION_DOMAIN: .kleros.app
+  SESSION_SECURE_COOKIE: "true"
+
+  BROADCAST_CONNECTION: log
+  FILESYSTEM_DISK: local
+  QUEUE_CONNECTION: database
+  CACHE_STORE: database
+
+  MAIL_MAILER: smtp
+  MAIL_HOST: smtp.hostinger.com
+  MAIL_PORT: "587"
+  MAIL_ENCRYPTION: tls
+  MAIL_FROM_ADDRESS: notificacoes@kleros.app
+  MAIL_FROM_NAME: Kleros
+
+  # Produção usa dompdf; Chrome/Browsershot não está na imagem
+  LARAVEL_PDF_DRIVER: dompdf
+
+  # Vazio => `php artisan db:backup` não tenta copiar para o ambiente de teste
+  BACKUP_TEST_PATH: ""

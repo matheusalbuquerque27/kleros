@@ -1,9 +1,13 @@
 #!/bin/bash
 
 ###############################################################################
-# Script de Deploy Manual - Kleros Production
+# Script de Deploy Manual - Kleros (LEGADO / ambiente klerostest)
 ###############################################################################
-# 
+#
+# ATENÇÃO: produção roda em containers no cluster k3s. O deploy de produção é
+# push na main -> imagem no GHCR -> rollout (.github/workflows/deploy.yml).
+# Ver docs/DEPLOY_K8S.md e k8s/README.md.
+#
 # Uso:
 #   ./deploy.sh
 #

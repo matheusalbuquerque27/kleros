@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kleros-db
+  namespace: kleros
+  labels:
+    app: kleros-db
+spec:
+  # Só acessível de dentro do cluster (DB_HOST=kleros-db)
+  type: ClusterIP
+  selector:
+    app: kleros-db
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: mysql

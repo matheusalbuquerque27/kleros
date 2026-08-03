@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kleros-main
+  namespace: kleros
+  labels:
+    app: kleros-main
+spec:
+  # O nginx do host faz proxy_pass para 127.0.0.1:30311 (TLS termina no host)
+  type: NodePort
+  selector:
+    app: kleros-main
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30311

@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kleros-main
+  namespace: kleros
+  labels:
+    app: kleros-main
+spec:
+  # Preso em 1 réplica: o PVC de uploads é RWO (local-path).
+  # Para escalar, mover o disco `public` para S3 (config/filesystems.php).
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    # Sobe o pod novo antes de derrubar o antigo — deploy sem downtime.
+    # O PVC é RWO, mas os dois pods ficam no mesmo (único) node, então o
+    # mount simultâneo durante a transição funciona.
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: kleros-main
+  template:
+    metadata:
+      labels:
+        app: kleros-main
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: srv1158721
+      imagePullSecrets:
+        - name: ghcr-credentials
+      # Tempo para o preStop drenar + processos encerrarem
+      terminationGracePeriodSeconds: 40
+      initContainers:
+        # Único lugar que aplica schema. Se a migration falhar, o rollout falha.
+        - name: migrate
+          image: ghcr.io/matheusffalbuquerque/kleros:latest
+          imagePullPolicy: Always
+          command: ["php", "artisan", "migrate", "--force"]
+          envFrom:
+            - configMapRef:
+                name: kleros-config
+            - secretRef:
+                name: kleros-secrets
+          resources:
+            requests:
+              cpu: 25m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      containers:
+        - name: kleros-main
+          image: ghcr.io/matheusffalbuquerque/kleros:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+          lifecycle:
+            # Sem isso o pod recebe SIGTERM enquanto o nginx do host ainda
+            # tem conexões keepalive abertas para ele -> 502 no deploy.
+            # O sleep dá tempo do kube-proxy tirar o endpoint do Service
+            # antes de qualquer processo morrer.
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 15"]
+          envFrom:
+            - configMapRef:
+                name: kleros-config
+            - secretRef:
+                name: kleros-secrets
+          volumeMounts:
+            - name: storage
+              mountPath: /var/www/html/storage/app
+              subPath: app
+            - name: storage
+              mountPath: /var/www/html/storage/backups
+              subPath: backups
+          readinessProbe:
+            httpGet:
+              path: /up
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: kleros.app
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /up
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: kleros.app
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          # O node tem 2 vCPUs e ~97% deles já reservados pelos outros
+          # namespaces (uso real do node é ~45%). Os requests precisam ser
+          # pequenos o bastante para caber DOIS pods durante o rolling update
+          # — uso real medido deste container: ~12m CPU / 73Mi.
+          resources:
+            requests:
+              cpu: 25m
+              memory: 256Mi
+            limits:
+              cpu: 800m
+              memory: 768Mi
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: kleros-storage

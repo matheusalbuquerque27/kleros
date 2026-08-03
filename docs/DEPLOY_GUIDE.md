@@ -1,8 +1,17 @@
 # 🚀 Guia de Deploy - Kleros
 
+> ⚠️ **Este guia descreve o deploy bare-metal legado** (`/var/www/kleros`, nginx +
+> php-fpm do host). Produção migrou para containers no cluster k3s — o deploy
+> atual é push na `main` → imagem no GHCR → rollout.
+>
+> - Arquitetura e runbook de migração: **`docs/DEPLOY_K8S.md`**
+> - Operação (logs, artisan, rollback, backup): **`k8s/README.md`**
+>
+> O conteúdo abaixo segue válido para o ambiente **`klerostest`**.
+
 ## 📋 Métodos de Deploy
 
-### 1. Deploy Manual com Script (Recomendado)
+### 1. Deploy Manual com Script (legado / klerostest)
 
 O método mais simples e confiável para deploy manual no servidor.
 

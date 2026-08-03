@@ -1,0 +1,29 @@
+# Volumes persistentes (StorageClass local-path do k3s — RWO, preso ao node).
+# Os pods rodam todos em srv1158721, então o mount simultâneo funciona.
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kleros-storage
+  namespace: kleros
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      # Uploads (storage/app): fotos, logos, anexos, módulo Drive — hoje ~16 MB
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kleros-db-data
+  namespace: kleros
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 10Gi

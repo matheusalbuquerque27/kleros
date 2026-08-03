@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,6 +13,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Em produção a aplicação roda atrás do nginx do host (proxy_pass para o
+        // NodePort do k3s). Sem isso o Laravel enxerga http e gera URLs erradas,
+        // além de quebrar o SESSION_SECURE_COOKIE.
+        $middleware->trustProxies(
+            at: '*',
+            headers: Request::HEADER_X_FORWARDED_FOR
+                | Request::HEADER_X_FORWARDED_HOST
+                | Request::HEADER_X_FORWARDED_PORT
+                | Request::HEADER_X_FORWARDED_PROTO
+        );
+
         $middleware->alias([
             'dominio' => \App\Http\Middleware\AcessarCongregacaoPeloDominio::class,
             'check.session' => \App\Http\Middleware\CheckSession::class,

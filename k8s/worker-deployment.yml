@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kleros-worker
+  namespace: kleros
+  labels:
+    app: kleros-worker
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: kleros-worker
+  template:
+    metadata:
+      labels:
+        app: kleros-worker
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: srv1158721
+      imagePullSecrets:
+        - name: ghcr-credentials
+      # Deixa o job em andamento terminar antes do SIGKILL
+      terminationGracePeriodSeconds: 120
+      containers:
+        - name: kleros-worker
+          image: ghcr.io/matheusffalbuquerque/kleros:latest
+          imagePullPolicy: Always
+          # Sobrescreve o ENTRYPOINT (nginx+php-fpm) da imagem
+          command:
+            - php
+            - artisan
+            - queue:work
+            - database
+            - --sleep=3
+            - --tries=3
+            - --timeout=90
+            - --max-time=3600
+          envFrom:
+            - configMapRef:
+                name: kleros-config
+            - secretRef:
+                name: kleros-secrets
+          volumeMounts:
+            # Anexos e dumps gerados por jobs precisam do mesmo storage do web
+            - name: storage
+              mountPath: /var/www/html/storage/app
+              subPath: app
+            - name: storage
+              mountPath: /var/www/html/storage/backups
+              subPath: backups
+          resources:
+            requests:
+              cpu: 50m
+              memory: 192Mi
+            limits:
+              cpu: 400m
+              memory: 512Mi
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: kleros-storage
