@@ -5,6 +5,8 @@ deploy bare-metal (`/var/www/kleros` + nginx/php-fpm do host) para o cluster k3s
 que já roda no mesmo VPS.
 
 Para operação do dia a dia (logs, artisan, rollback, backup), ver `k8s/README.md`.
+Para o registro de como a migração foi feita — o que existia antes, o que mudou
+em cada parte e os problemas encontrados — ver `MIGRACAO_KUBERNETES.md`.
 
 ---
 
